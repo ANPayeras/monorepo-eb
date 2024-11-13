@@ -1,0 +1,70 @@
+"use client"
+import React from 'react'
+import { useQuery } from 'convex/react'
+import { api } from '../../../../convex/_generated/api'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Pagination } from 'swiper/modules'
+import EmptyTemplates from '@/components/empty-templates'
+import TemplateBtnsOptions from '@/components/template-btns-options'
+import LoaderSpinner from '@/components/loader-spinner'
+import Template from '@/components/template'
+import { useUser } from '@clerk/nextjs'
+import 'swiper/css';
+import 'swiper/css/grid';
+import 'swiper/css/pagination';
+
+const Templates = () => {
+  const { user } = useUser()
+  const listTemplates = useQuery(api.templates.listTemplates, !user ? 'skip' : undefined)
+
+  if (!listTemplates || !user) return <LoaderSpinner />
+
+  return (
+    <div className='flex flex-wrap gap-4 w-full h-full'>
+      {
+        listTemplates?.length ?
+          <Swiper
+            slidesPerView={1}
+            spaceBetween={30}
+            grabCursor={true}
+            pagination={{
+              clickable: true,
+            }}
+            modules={[Pagination]}
+            breakpoints={{
+              0: {
+                centeredSlides: false
+              },
+              450: {
+                centeredSlides: false,
+              },
+              768: {
+                slidesPerView: 2,
+                centeredSlides: false
+              },
+              1024: {
+                slidesPerView: 3,
+              },
+            }}
+            className="w-full max-w-6xl h-full"
+          >
+            {
+              listTemplates?.map((t, i) => (
+                <SwiperSlide key={i} className='max-w-[400px] min-w-[300px] h-[95%] relative'>
+                  <Template {...{ template: t, user }} />
+                  <TemplateBtnsOptions t={t} i={i} />
+                </SwiperSlide>
+              ))
+            }
+          </Swiper> :
+          <EmptyTemplates
+            mainTitle='Agrega Plantillas para ver las aca'
+            linkTitle='Crear'
+            linkUrl='/build'
+          />
+      }
+    </div >
+  )
+}
+
+export default Templates
