@@ -18,7 +18,9 @@ import { Input } from "@/components/ui/input"
 import { ClerkAPIError } from '@clerk/types/dist/index'
 
 export const formSchema = z.object({
-    oldPassword: z.string().min(8),
+    oldPassword: z.optional(z.string().min(8, {
+        message: "La contraseña debe contener 8 o más caracteres.",
+    })),
     newPassword: z.string().min(8, {
         message: "La contraseña debe contener 8 o más caracteres.",
     }),
@@ -42,12 +44,11 @@ const errors: { [key: string]: { type: "oldPassword" | "newPassword" | "repeatNe
     }
 }
 
-const ChangePassword = ({ setOpen, handleAccept }: { setOpen: Dispatch<SetStateAction<boolean>>, handleAccept: (data: z.infer<typeof formSchema>) => Promise<boolean> }) => {
+const ChangePassword = ({ setOpen, handleAccept, isPassword }: { setOpen: Dispatch<SetStateAction<boolean>>, handleAccept: (data: z.infer<typeof formSchema>) => Promise<boolean>, isPassword: boolean }) => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            oldPassword: '',
             newPassword: '',
             repeatNewPassword: '',
             check: 'true',
@@ -66,7 +67,7 @@ const ChangePassword = ({ setOpen, handleAccept }: { setOpen: Dispatch<SetStateA
         }
     }
 
-    const { newPassword, repeatNewPassword, check } = form.watch()
+    const { newPassword, repeatNewPassword, oldPassword } = form.watch()
 
     useEffect(() => {
         if (newPassword !== repeatNewPassword) {
@@ -76,28 +77,42 @@ const ChangePassword = ({ setOpen, handleAccept }: { setOpen: Dispatch<SetStateA
         }
     }, [form, newPassword, repeatNewPassword])
 
+    useEffect(() => {
+        if (isPassword) {
+            form.reset({
+                check: 'true',
+                newPassword: '',
+                oldPassword: '',
+                repeatNewPassword: '',
+            })
+        }
+    }, [form, isPassword])
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <FormField
-                    control={form.control}
-                    name="oldPassword"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Contraseña actual</FormLabel>
-                            <FormControl>
-                                <Input type='password' {...field} autoComplete='' />
-                            </FormControl>
-                            {
-                                form.formState.errors[field.name] ?
-                                    <FormMessage className='ml-4 text-xs opacity-50' /> :
-                                    <FormDescription className='ml-4 text-xs opacity-50'>
-                                        Debe contener 8 o más caracteres.
-                                    </FormDescription>
-                            }
-                        </FormItem>
-                    )}
-                />
+                {
+                    isPassword && typeof oldPassword === 'string' &&
+                    <FormField
+                        control={form.control}
+                        name="oldPassword"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Contraseña actual</FormLabel>
+                                <FormControl>
+                                    <Input type='password' {...field} autoComplete='' />
+                                </FormControl>
+                                {
+                                    form.formState.errors[field.name] ?
+                                        <FormMessage className='ml-4 text-xs opacity-50' /> :
+                                        <FormDescription className='ml-4 text-xs opacity-50'>
+                                            Debe contener 8 o más caracteres.
+                                        </FormDescription>
+                                }
+                            </FormItem>
+                        )}
+                    />
+                }
                 <FormField
                     control={form.control}
                     name="newPassword"
@@ -146,7 +161,7 @@ const ChangePassword = ({ setOpen, handleAccept }: { setOpen: Dispatch<SetStateA
                                     type='checkbox'
                                     defaultChecked
                                     onChange={(e) => form.setValue('check', String(e.target.checked))}
-                                    className='w-5 h-5 accent-black cursor-pointer'
+                                    className='w-4 h-4 accent-black cursor-pointer mt-2'
                                 />
                             </FormControl>
                             <FormDescription className='text-sm'>

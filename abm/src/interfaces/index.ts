@@ -14,12 +14,12 @@ export interface SectionsProps {}
 
 export type InputCardProps = {
   type: string;
-  openType: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   handleAccept: (data: any) => Promise<any>;
   textButton: string;
   inputValue?: string;
+  isPassword?: boolean;
 };
 
 export type GenericInputProps = {

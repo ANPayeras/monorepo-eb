@@ -1,6 +1,6 @@
 "use client"
-import { UserProfile, useUser } from '@clerk/nextjs'
 import React, { useEffect, useRef, useState } from 'react'
+import { useUser, } from '@clerk/nextjs'
 import { Tabs } from './ui/tabs'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -9,7 +9,6 @@ import { EffectCreative } from 'swiper/modules';
 import { Swiper as SwiperType } from 'swiper/types'
 // import { UserProfile } from '@clerk/clerk-react';
 import InputCard from './profile/input-card';
-import Link from 'next/link';
 import { formSchema } from './profile/change-password';
 import { z } from 'zod';
 import { ClerkAPIError } from '@clerk/types/dist/index'
@@ -18,6 +17,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useParams } from 'next/navigation';
 import { motion } from "framer-motion";
+import { statusClerk } from '@/constants';
 
 const Profile = () => {
     const { profile } = useParams()
@@ -25,7 +25,6 @@ const Profile = () => {
     const userConvex = useQuery(api.users.getCurrentUser, !user ? 'skip' : undefined)
     const updateUser = useMutation(api.users.updateUser)
     const swiperRef = useRef<SwiperType>()
-    const [openType, setOpenType] = useState('')
     const [moveTabIdx, setMoveTabIdx] = useState<number>(0)
 
     useEffect(() => {
@@ -61,13 +60,11 @@ const Profile = () => {
     const changePassword = async (data: z.infer<typeof formSchema>) => {
         const { check, newPassword, oldPassword } = data
         try {
-            const a = await user?.updatePassword({ currentPassword: oldPassword, newPassword, signOutOfOtherSessions: Boolean(check) })
-            return a
+            await user?.updatePassword({ currentPassword: oldPassword, newPassword, signOutOfOtherSessions: Boolean(check) })
         } catch (error) {
             const _err = error as { errors: ClerkAPIError[] }
             const err = _err.errors[0] as ClerkAPIError
             throw new Error(JSON.stringify(err));
-
         }
     }
 
@@ -114,10 +111,6 @@ const Profile = () => {
                                 title: "Perfil",
                                 value: '0',
                             },
-                            // {
-                            //     title: "Seguridad",
-                            //     value: '1',
-                            // },
                             {
                                 title: "Precios",
                                 value: '1',
@@ -148,139 +141,52 @@ const Profile = () => {
                 >
                     <SwiperSlide>
                         <div className='flex flex-col gap-4 h-full overflow-y-scroll'>
-                            <div className='flex gap-2 bg-slate-300 p-2 rounded-sm'>
-                                <span>Vista previa de url:</span>
-                                <Link className='hover:underline' href={`https://ebrochure.com/${user?.username}`}>
-                                    <span>https://ebrochure.com/{user?.username}</span>
-                                </Link>
-                            </div>
-                            <div className='grid grid-cols-3 p-2 rounded-sm items-start'>
-                                <span>Nombre de usuario:</span>
-                                <span>{user?.username}</span>
+                            <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14 border-b'>
+                                <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
+                                    <span>Nombre de usuario:</span>
+                                    <span className='font-bold'>{user?.username}</span>
+                                </div>
                                 <InputCard
                                     type='username'
-                                    openType={openType}
-                                    title={'Titulo'}
-                                    description={'Description'}
+                                    title={'Cambiar nombre de usuario'}
                                     handleAccept={changeUsername}
                                     textButton='Cambiar nombre de usuario'
                                     inputValue={user?.username || ''}
                                 />
                             </div>
-                            <div className='grid grid-cols-3 p-2 rounded-sm items-start'>
-                                <span>Contraseña:</span>
-                                <span>**********</span>
+                            <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14 border-b'>
+                                <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
+                                    <span>Contraseña:</span>
+                                    <span className='font-bold'>{user.passwordEnabled ? '********' : 'No hay contraseña'}</span>
+                                </div>
                                 <InputCard
                                     type='password'
-                                    openType={openType}
-                                    title={'Titulo'}
-                                    description={'Description'}
+                                    isPassword={user.passwordEnabled}
                                     handleAccept={changePassword}
-                                    textButton='Cambiar contraseña'
+                                    textButton={user.passwordEnabled ? 'Cambiar contraseña' : 'Establecer contraseña'}
                                 />
                             </div>
-                            <div className='grid grid-cols-3 p-2 rounded-sm items-start'>
-                                <span>Direccion de email:</span>
-                                <div className='flex gap-1'>
-                                    <span>{user?.primaryEmailAddress?.emailAddress}</span>
-                                    <span className='text-xs px-1 rounded-sm flex items-center bg-slate-200'>{user?.primaryEmailAddress?.verification.status}</span>
+                            <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14 border-b'>
+                                <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
+                                    <span>Direccion de email:</span>
+                                    <div className='flex gap-1'>
+                                        <span className='font-bold'>{user?.primaryEmailAddress?.emailAddress}</span>
+                                        <span className='text-xs px-1 rounded-sm flex items-center bg-slate-200'>{statusClerk[user?.primaryEmailAddress?.verification.status || 'failed']}</span>
+                                    </div>
                                 </div>
-                                {/* <InputCard
-                                    type='email'
-                                    openType={openType}
-                                    title={'Titulo'}
-                                    description={'Description'}
-                                    handleAccept={changeEmail}
-                                    textButton='Cambiar email'
-                                    inputValue={user?.primaryEmailAddress?.emailAddress}
-                                /> */}
                             </div>
-                            <div className='grid grid-cols-3 p-2 rounded-sm items-start'>
-                                <span>Numero de telefono:</span>
-                                {/* {
-                                    user?.primaryPhoneNumber?.phoneNumber ?
-                                        <div>
-                                            <span>{user?.primaryPhoneNumber?.phoneNumber}</span>
-                                            <span>{user?.primaryPhoneNumber?.verification.status}</span>
-                                        </div> :
-                                        <InputCard
-                                            type='phone'
-                                            openType={openType}
-                                            title={'Agregar el número de teléfono'}
-                                            description={'Se enviará un mensaje de texto con un enlace de verificación a este número de teléfono.'}
-                                            handleAccept={handlePhone}
-                                            textButton='Agregar numero de telefono'
-                                        />
-                                } */}
-                                {
-                                    userConvex?.phone ?
-                                        <>
-                                            <span>{userConvex?.phone}</span>
-                                            <InputCard
-                                                type='phone'
-                                                openType={openType}
-                                                title={'Modificar numero de telefono'}
-                                                description={'Cambiar numero'}
-                                                handleAccept={handlePhone}
-                                                textButton='Modificar numero de telefono'
-                                            />
-                                        </> :
-                                        <InputCard
-                                            type='phone'
-                                            openType={openType}
-                                            title={'Agregar numero de telefono'}
-                                            description={'Agregar numero para que los usuarios se puedan comunicar'}
-                                            handleAccept={handlePhone}
-                                            textButton='Agregar numero de telefono'
-                                        />
-                                }
+                            <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14'>
+                                <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
+                                    <span>Numero de telefono:</span>
+                                    <span className='font-bold'>{userConvex?.phone ? userConvex?.phone : 'No hay número de teléfono'}</span>
+                                </div>
+                                <InputCard
+                                    type='phone'
+                                    title={userConvex?.phone ? 'Modificar numero de telefono' : 'Agregar numero de telefono'}
+                                    handleAccept={handlePhone}
+                                    textButton={userConvex?.phone ? 'Modificar numero de telefono' : 'Agregar numero de telefono'}
+                                />
                             </div>
-                            {/* <div className='grid grid-cols-3'>
-                                <span>Cuentas vinculadas:</span>
-                                {
-                                    user?.externalAccounts[0] ?
-                                        <div>
-                                            <span>{user?.primaryPhoneNumber?.phoneNumber}</span>
-                                            <span>{user?.primaryPhoneNumber?.verification.status}</span>
-                                        </div> :
-                                        <InputCard
-                                            type='phone'
-                                            openType={openType}
-                                            title={'Titulo'}
-                                            description={'Description'}
-                                            handleAccept={() => console.log('bbb')}
-                                            textButton='Agregar'
-                                        />
-                                }
-                                <div>
-                                    <span>{user?.primaryPhoneNumber?.phoneNumber}</span>
-                                    <span>{user?.primaryPhoneNumber?.verification.status}</span>
-                                </div>
-                                <button onClick={() => { }}>Crear</button>
-                            </div> */}
-                            {/* <div className='grid grid-cols-3'>
-                                <span>Elminar cuenta</span>
-                                {
-                                    user?.externalAccounts[0] ?
-                                        <div>
-                                            <span>{user?.primaryPhoneNumber?.phoneNumber}</span>
-                                            <span>{user?.primaryPhoneNumber?.verification.status}</span>
-                                        </div> :
-                                        <InputCard
-                                            type='phone'
-                                            openType={openType}
-                                            title={'Titulo'}
-                                            description={'Description'}
-                                            handleAccept={() => console.log('bbb')}
-                                            textButton='Agregar'
-                                        />
-                                }
-                                <div>
-                                    <span>{user?.primaryPhoneNumber?.phoneNumber}</span>
-                                    <span>{user?.primaryPhoneNumber?.verification.status}</span>
-                                </div>
-                                <button onClick={() => { }}>Ekiminar cuenta</button>
-                            </div> */}
                         </div>
                     </SwiperSlide>
                     {/* <SwiperSlide className='flex-col justify-around items-center overflow-hidden rounded-sm bg-slate-400'>

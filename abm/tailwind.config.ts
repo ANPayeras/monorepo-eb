@@ -103,6 +103,9 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         aurora: "aurora 60s linear infinite",
       },
+      screens: {
+        'xs': '481px'
+      }
     },
   },
   plugins: [

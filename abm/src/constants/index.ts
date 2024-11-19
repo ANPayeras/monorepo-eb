@@ -1,5 +1,6 @@
 import { LayoutFeatures } from "@/interfaces";
 import { IconBuildingStore, IconMotorbike } from "@tabler/icons-react";
+import { VerificationStatus } from "@clerk/types/dist/index";
 
 export const paymentMethodsLabel = [
   "Efectivo",
@@ -54,4 +55,12 @@ export const layoutFeatures: {
     tabs: [],
     widgets: true,
   },
+};
+
+export const statusClerk: { [key in VerificationStatus]: string } = {
+  unverified: "No verificado",
+  verified: "Verificado",
+  transferable: "Transferible",
+  failed: "Fallido",
+  expired: "Expirado",
 };

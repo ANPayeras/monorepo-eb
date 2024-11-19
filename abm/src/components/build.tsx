@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Swiper as SwiperType } from 'swiper/types'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
-import { Doc, Id } from '../../convex/_generated/dataModel'
+import { Doc } from '../../convex/_generated/dataModel'
 import { AlertDialogComponent } from './dialog'
 import { useRouter } from 'next/navigation'
 import LoaderSpinner from './loader-spinner'
@@ -13,7 +13,7 @@ import ClassicLayout from './templates-layout/classic-layout'
 import NavBuild from './nav-build'
 import SwiperTemplatesPreview from './swiper-templates-preview'
 import { LayoutFeatures } from '@/interfaces'
-import { initDataStore, Widget } from '@/stores/data-store'
+import { Widget } from '@/stores/data-store'
 import { useUser } from '@clerk/nextjs'
 import EmptyTemplates from './empty-templates'
 import RightSection from './build/right-section';
@@ -92,7 +92,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
         classic: <ClassicLayout {...{ selectSection, editSection }} />,
     }
 
-    if ((!template && !listTemplates) || (!template && lastBuildTemplate) || !userConvex) return <LoaderSpinner />
+    if ((!template && lastBuildTemplate) || !userConvex || !listTemplates) return <LoaderSpinner />
 
     if (!listTemplates?.length) return (
         <EmptyTemplates

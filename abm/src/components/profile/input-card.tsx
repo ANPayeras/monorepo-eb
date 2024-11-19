@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
     AnimatePresence,
     motion,
@@ -8,27 +8,19 @@ import { helperTexts } from '@/constants';
 import { InputCardProps } from '@/interfaces';
 import GenericInput from './generic-input';
 
-const InputCard = ({ type, openType, title, description, handleAccept, textButton, inputValue = '' }: InputCardProps) => {
+const InputCard = ({ type, title = '', description = '', handleAccept, textButton, inputValue = '', isPassword = false }: InputCardProps) => {
     const [open, setOpen] = useState(false)
-
-    useEffect(() => {
-        if (openType === type) {
-            setOpen(true)
-        } else {
-            setOpen(false)
-        }
-    }, [openType, type])
 
     const Comp: { [key: string]: JSX.Element } = {
         username: <GenericInput {...{ description, handleAccept, setOpen, title, inputValue, helperText: helperTexts[type], type }} />,
         email: <GenericInput {...{ description, handleAccept, setOpen, title, inputValue, helperText: '', type }} />,
         phone: <GenericInput {...{ description, handleAccept, setOpen, title, inputValue, helperText: '', type }} />,
-        password: <ChangePassword  {...{ setOpen, handleAccept }} />,
+        password: <ChangePassword  {...{ setOpen, handleAccept, isPassword }} />,
     }
 
     return (
-        <AnimatePresence>
-            <motion.div>
+        <AnimatePresence initial={false}>
+            <motion.div className='w-full xs:w-auto'>
                 {open && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}

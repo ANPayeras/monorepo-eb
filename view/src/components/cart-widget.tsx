@@ -11,20 +11,15 @@ const CartWidget = ({ user }: { user: string }) => {
         <>
             {
                 cart.length ?
-                    <div className='flex justify-between border p-2 rounded-full fixed bottom-1 right-1 md:bottom-4 md:right-4 bg-slate-800'>
-                        {/* <span>
-                            Tenes un pedido pendiente
-                        </span> */}
-                        <AnimateIcon active={true}>
-                            <Link href={`${user}/list/confirmation`} className='relative'>
-                                {/* {
-                                    cart.length ?
-                                        <span className='rounded-full bg-white absolute top-0 right-0 text-sm w-2 h-2' /> : <></>
-                                } */}
-                                <IconShoppingCartFilled size={20} className='text-slate-50' />
-                            </Link>
+                    <Link
+                        href={`${user}/list/confirmation`}>
+                        <AnimateIcon
+                            active={true}
+                            className='flex justify-between border p-2 rounded-full fixed bottom-1 right-1 md:bottom-4 md:right-4 bg-slate-800'
+                        >
+                            <IconShoppingCartFilled size={20} className='text-slate-50' />
                         </AnimateIcon>
-                    </div> : <></>
+                    </Link> : <></>
             }
         </>
     )

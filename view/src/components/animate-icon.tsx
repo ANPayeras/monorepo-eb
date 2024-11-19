@@ -10,7 +10,7 @@ const variants = {
     }),
 };
 
-const AnimateIcon = ({ children, active }: { children: JSX.Element, active: boolean }) => {
+const AnimateIcon = ({ children, active, className }: { children: JSX.Element, active: boolean, className: string }) => {
     const controls = useAnimation();
 
     useEffect(() => {
@@ -21,6 +21,7 @@ const AnimateIcon = ({ children, active }: { children: JSX.Element, active: bool
         <motion.div
             variants={variants}
             animate={controls}
+            className={className}
         >
             {children}
         </motion.div>
