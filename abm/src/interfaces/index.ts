@@ -10,6 +10,12 @@ import { MutableRefObject } from "react";
 import { Swiper as SwiperType } from "swiper/types";
 import { IColor } from "react-color-palette";
 
+declare global {
+  interface Window {
+    cardPaymentBrickController: any;
+  }
+}
+
 export interface SectionsProps {}
 
 export type InputCardProps = {
@@ -77,4 +83,11 @@ export type ChangeColorFeatureInterface = {
   type: keyof Layout;
   color: IColor;
   onChange: (color: IColor, type: string) => void;
+};
+
+export type MpBrickInterface = {
+  email: string;
+  amount: number;
+  onReady: () => void;
+  onUnmount: () => void;
 };

@@ -1,5 +1,6 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const createUser = internalMutation({
   args: {
@@ -8,6 +9,7 @@ export const createUser = internalMutation({
     imageUrl: v.string(),
     name: v.string(),
     username: v.string(),
+    isPremiun: v.boolean(),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("users", {
@@ -17,6 +19,7 @@ export const createUser = internalMutation({
       name: args.name,
       username: args.username,
       phone: "",
+      isPremium: args.isPremiun,
     });
   },
 });
@@ -58,7 +61,8 @@ export const updateInternalUser = internalMutation({
 
 export const updateUser = mutation({
   args: {
-    phone: v.string(),
+    phone: v.optional(v.string()),
+    isPremium: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -77,7 +81,7 @@ export const updateUser = mutation({
     }
 
     await ctx.db.patch(user._id, {
-      phone: args.phone,
+      ...args,
     });
   },
 });
@@ -101,5 +105,40 @@ export const getCurrentUser = query({
     }
 
     return user;
+  },
+});
+
+export const updateUserWh = internalMutation({
+  args: {
+    isPremium: v.boolean(),
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId as Id<"users">);
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    await ctx.db.patch(user._id, {
+      isPremium: args.isPremium,
+    });
+  },
+});
+
+// Borrar
+export const createUsertest = internalMutation({
+  args: {
+    username: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert("users", {
+      clerkId: "args.clerkId",
+      email: "args.email",
+      imageUrl: "args.imageUrl",
+      name: "args.name",
+      username: args.username,
+      phone: "",
+    });
   },
 });

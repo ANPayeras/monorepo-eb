@@ -16,8 +16,9 @@ import LoaderSpinner from './loader-spinner';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useParams } from 'next/navigation';
-import { motion } from "framer-motion";
 import { statusClerk } from '@/constants';
+import { Compare } from './ui/compare';
+import Plans from './profile/plans';
 
 const Profile = () => {
     const { profile } = useParams()
@@ -193,8 +194,8 @@ const Profile = () => {
                         <UserProfile />
                     </SwiperSlide> */}
                     <SwiperSlide>
-                        <div className='flex flex-col items-center justify-center gap-4 h-full overflow-y-scroll bg-slate-100'>
-                            <motion.h3
+                        <div className='flex flex-col items-center justify-start gap-4 h-full overflow-y-scroll bg-slate-100'>
+                            {/* <motion.h3
                                 initial={{ opacity: 0.5, y: 0 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{
@@ -205,7 +206,24 @@ const Profile = () => {
                                 className="bg-gradient-to-br from-slate-500 to-slate-900 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent"
                             >
                                 Proximamente
-                            </motion.h3>
+                            </motion.h3> */}
+                            {/* <CardPayment
+                                // customization={{ paymentMethods: { maxInstallments: 1, minInstallments: 1 } }}
+                                initialization={{ amount: 5000 }}
+                                onSubmit={() => createPlan({})}
+                            /> */}
+                            <div className='w-full'>
+                                <Compare
+                                    firstImage="https://assets.aceternity.com/code-problem.png"
+                                    secondImage="https://assets.aceternity.com/code-solution.png"
+                                    firstImageClassName="object-cover object-left-top"
+                                    secondImageClassname="object-cover object-left-top"
+                                    className="w-full"
+                                    slideMode="drag"
+
+                                />
+                            </div>
+                            <Plans />
                         </div>
                     </SwiperSlide>
                 </Swiper>
