@@ -19,6 +19,7 @@ import { useParams } from 'next/navigation';
 import { statusClerk } from '@/constants';
 import { Compare } from './ui/compare';
 import Plans from './profile/plans';
+import PlanFeatures from './profile/plan-features';
 
 const Profile = () => {
     const { profile } = useParams()
@@ -214,13 +215,12 @@ const Profile = () => {
                             /> */}
                             <div className='w-full'>
                                 <Compare
-                                    firstImage="https://assets.aceternity.com/code-problem.png"
-                                    secondImage="https://assets.aceternity.com/code-solution.png"
+                                    firstComponent={<PlanFeatures type='free' />}
+                                    secondComponent={<PlanFeatures type='premium' />}
                                     firstImageClassName="object-cover object-left-top"
                                     secondImageClassname="object-cover object-left-top"
                                     className="w-full"
                                     slideMode="drag"
-
                                 />
                             </div>
                             <Plans />

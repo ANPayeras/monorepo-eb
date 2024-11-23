@@ -90,4 +90,5 @@ export type MpBrickInterface = {
   amount: number;
   onReady: () => void;
   onUnmount: () => void;
+  description: string;
 };

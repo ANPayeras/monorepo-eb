@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, ReactNode } from "react";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -7,7 +7,9 @@ import { IconDotsVertical } from "@tabler/icons-react";
 
 interface CompareProps {
   firstImage?: string;
+  firstComponent?: ReactNode;
   secondImage?: string;
+  secondComponent?: ReactNode;
   className?: string;
   firstImageClassName?: string;
   secondImageClassname?: string;
@@ -19,7 +21,9 @@ interface CompareProps {
 }
 export const Compare = ({
   firstImage = "",
+  firstComponent,
   secondImage = "",
+  secondComponent,
   className,
   firstImageClassName,
   secondImageClassname,
@@ -153,14 +157,11 @@ export const Compare = ({
       className={cn("w-[400px] h-[400px] overflow-hidden", className)}
       style={{
         position: "relative",
-        cursor: slideMode === "drag" ? "grab" : "col-resize",
+
       }}
       onMouseMove={handleMouseMove}
       onMouseLeave={mouseLeaveHandler}
-      onMouseEnter={mouseEnterHandler}
-      onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
-      onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
@@ -187,15 +188,23 @@ export const Compare = ({
             />
           </div>
           {showHandlebar && (
-            <div className="h-5 w-5 rounded-md top-1/2 -translate-y-1/2 bg-white z-30 -right-2.5 absolute   flex items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40]">
-              <IconDotsVertical className="h-4 w-4 text-black" />
+            <div className="h-5 w-5 rounded-md top-1/2 -translate-y-1/2 bg-white z-30 -right-2.5 absolute flex items-center justify-center shadow-[0px_-1px_0px_0px_#FFFFFF40]">
+              <IconDotsVertical
+                onClick={() => { }}
+                onMouseEnter={mouseEnterHandler}
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
+                style={{
+                  cursor: slideMode === "drag" ? "grab" : "col-resize",
+                }}
+                className="h-4 w-4 text-black" />
             </div>
           )}
         </motion.div>
       </AnimatePresence>
       <div className="overflow-hidden w-full h-full relative z-20 pointer-events-none">
         <AnimatePresence initial={false}>
-          {firstImage ? (
+          {firstImage || firstComponent ? (
             <motion.div
               className={cn(
                 "absolute inset-0 z-20 rounded-2xl flex-shrink-0 w-full h-full select-none overflow-hidden bg-slate-400",
@@ -206,31 +215,39 @@ export const Compare = ({
               }}
               transition={{ duration: 0 }}
             >
-              {/* <img
-                alt="first image"
-                src={firstImage}
-                className={cn(
-                  "absolute inset-0  z-20 rounded-2xl flex-shrink-0 w-full h-full select-none",
-                  firstImageClassName
-                )}
-                draggable={false}
-              /> */}
-              algoo
+              {
+                firstImage ?
+                  <img
+                    alt="first image"
+                    src={firstImage}
+                    className={cn(
+                      "absolute inset-0  z-20 rounded-2xl flex-shrink-0 w-full h-full select-none",
+                      firstImageClassName
+                    )}
+                    draggable={false}
+                  /> : null
+              }
+              {
+                firstComponent ? firstComponent : null
+              }
             </motion.div>
           ) : null}
         </AnimatePresence>
       </div>
       <AnimatePresence initial={false}>
-        {secondImage ? (
-          // <motion.img
-          //   className={cn(
-          //     "absolute top-0 left-0 z-[19] rounded-2xl w-full h-full select-none",
-          //     secondImageClassname
-          //   )}
-          //   alt="second image"
-          //   src={secondImage}
-          //   draggable={false}
-          // />
+        {
+          secondImage ?
+            <motion.img
+              className={cn(
+                "absolute top-0 left-0 z-[19] rounded-2xl w-full h-full select-none",
+                secondImageClassname
+              )}
+              alt="second image"
+              src={secondImage}
+              draggable={false}
+            /> : null
+        }
+        {secondComponent ? (
           <motion.div
             className={cn(
               "absolute top-0 left-0 z-[19] rounded-2xl w-full h-full select-none flex flex-col items-end bg-slate-500",
@@ -238,11 +255,7 @@ export const Compare = ({
             )}
             draggable={false}
           >
-            <span>a</span>
-            <span>b</span>
-            <span>c</span>
-            <span>d</span>
-            <span>e</span>
+            {secondComponent}
           </motion.div>
         ) : null}
       </AnimatePresence>

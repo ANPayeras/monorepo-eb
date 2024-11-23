@@ -7,6 +7,9 @@ import { SheetPayment } from '../sheet-payment'
 import { PreApprovalPlans, PreApprovalPlansItem } from '../../../convex/payment'
 import LoaderSpinner from '../loader-spinner'
 import MpBrick from '../mp-brick'
+import SelectPaymentMethod from './select-payment-method'
+import { Tab } from '../ui/tabs'
+import TransferencePm from './transference-pm'
 
 const Plans = () => {
     const user = useQuery(api.users.getCurrentUser)
@@ -16,6 +19,7 @@ const Plans = () => {
     const [openSheet, setOpenSheet] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
     const [ready, setReady] = useState<boolean>(false)
+    const [pm, setSelectPM] = useState<Tab>()
     const [selectedPlan, setSelectedPlan] = useState<PreApprovalPlansItem>()
 
     useEffect(() => {
@@ -32,6 +36,10 @@ const Plans = () => {
 
     const onUnmount = useCallback(() => {
         setReady(false)
+    }, [])
+
+    const onSelectPM = useCallback((e: Tab) => {
+        setSelectPM(e)
     }, [])
 
     if (!plans || !user) return
@@ -58,6 +66,18 @@ const Plans = () => {
             console.log(error)
         }
         setLoading(false)
+    }
+
+    const PaymnetMethodComponent: { [index: string]: JSX.Element } = {
+        card:
+            <MpBrick
+                email={user.email}
+                amount={selectedPlan?.auto_recurring?.transaction_amount!}
+                description={selectedPlan?.description!}
+                onReady={onReady}
+                onUnmount={onUnmount}
+            />,
+        transference: <TransferencePm userId={user._id} />
     }
 
     return (
@@ -100,28 +120,25 @@ const Plans = () => {
                 open={openSheet}
                 handleChange={setOpenSheet}
                 title={selectedPlan?.reason!}
-                description={selectedPlan?.description!}
             >
-                <MpBrick
-                    email={user.email}
-                    amount={selectedPlan?.auto_recurring?.transaction_amount!}
-                    onReady={onReady}
-                    onUnmount={onUnmount}
-                />
-                {
-                    ready &&
-                    <div className='w-full flex justify-center items-center'>
-                        {
-                            loading ?
-                                <LoaderSpinner /> :
-                                <Button
-                                    onClick={suscribe}
-                                >
-                                    Suscribirse
-                                </Button>
-                        }
-                    </div>
-                }
+                <div className='flex flex-col'>
+                    <SelectPaymentMethod tab={Number(pm?.value)} onSelectPM={onSelectPM} />
+                    {PaymnetMethodComponent[pm?.reference || 'transference']}
+                    {
+                        ready &&
+                        <div className='w-full flex justify-center items-center'>
+                            {
+                                loading ?
+                                    <LoaderSpinner /> :
+                                    <Button
+                                        onClick={suscribe}
+                                    >
+                                        Suscribirse
+                                    </Button>
+                            }
+                        </div>
+                    }
+                </div>
             </SheetPayment>
         </div>
     )

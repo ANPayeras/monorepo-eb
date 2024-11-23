@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-type Tab = {
+export type Tab = {
   title: string;
   value: string;
   content?: string | React.ReactNode | any;
+  reference?: string | number;
 };
 
 export const Tabs = ({
@@ -70,7 +71,7 @@ export const Tabs = ({
           >
             {active.value === tab.value && (
               <motion.div
-                layoutId="clickedbutton"
+                layoutId={`clickedbutton-${tab.title}-${tab.value}`}
                 transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
                 className={cn(
                   "absolute inset-0 bg-gray-200 dark:bg-zinc-800 rounded-full",
