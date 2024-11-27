@@ -1,7 +1,7 @@
 import React from 'react'
 import Dashboard from '@/components/dashboard'
 
-const DashboardPage = async () => {
+const DashboardPage = () => {
   return (
     <Dashboard />
   )

@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalQuery, mutation, query } from "./_generated/server";
 import schema from "./schema";
 
 export const createTemplate = mutation({
@@ -259,6 +259,29 @@ export const getActiveTemplate = query({
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("email"), identity.email))
+      .collect();
+
+    if (user.length === 0) {
+      throw new ConvexError("User not found");
+    }
+
+    return await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(q.eq(q.field("user"), user[0]._id), q.eq(q.field("active"), true))
+      )
+      .collect();
+  },
+});
+
+export const getActiveTemplateByClerkId = internalQuery({
+  args: {
+    clerkId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .collect();
 
     if (user.length === 0) {

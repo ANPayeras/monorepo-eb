@@ -1,6 +1,7 @@
 import React from 'react'
 import UserDetails from './dashboard/user-details'
 import ActiveTemplate from './dashboard/active-template'
+import Link from 'next/link'
 
 const Dashboard = () => {
     return (
@@ -11,11 +12,13 @@ const Dashboard = () => {
                     <ActiveTemplate />
                     <div className='bg-slate-50 border rounded-sm p-2 flex-1'>
                         <div className='opacity-50 w-full h-full grid grid-cols-[repeat(2,_minmax(0,_200px))] grid-rows-[repeat(2,_minmax(0,_200px))] gap-4 p-2 items-start'>
-                            <div className='hover:scale-105 transition-all flex h-[200px] w-[200px] gap-2 justify-center items-center rounded-sm border p-2 relative shadow-lg'>
+                            <Link
+                                href={'/metrics'}
+                                className='hover:scale-105 transition-all flex h-[200px] w-[200px] gap-2 justify-center items-center rounded-sm border p-2 relative shadow-lg'>
                                 <span>Métricas</span>
                                 {/* <span className='bg-green-300 flex justify-center items-center rounded-sm text-[10px] h-5 w-5'>Pro</span> <br /> */}
                                 <div className='absolute left-[5px] top-0'>Próximamente...</div>
-                            </div>
+                            </Link>
                             <div className='hover:scale-105 transition-all flex h-[200px] w-[200px] gap-2 justify-center items-center rounded-sm border p-2 relative shadow-lg'>
                                 <span>I.A</span>
                                 {/* <span className='bg-green-300 flex justify-center items-center rounded-sm text-[10px] h-5 w-5'>Pro</span> <br /> */}

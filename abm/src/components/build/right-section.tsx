@@ -47,7 +47,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     const saveChanges = useCallback(async ({ feedback, data }: { feedback: boolean, data?: Doc<"templates"> }) => {
         let payload = data || template
         try {
-            await updateTemplate({ ...payload })
+            await updateTemplate({ ...payload, sections })
             feedback &&
                 toast({
                     title: "Cambios guardados",

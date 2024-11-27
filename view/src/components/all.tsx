@@ -9,9 +9,22 @@ import { DataTable } from './custom-table'
 import { useDataStore } from '@/providers/data-store-providers'
 import { Doc } from '../../convex/_generated/dataModel'
 import { BlurImage } from './blur-image'
+import useSentEvent from '@/hooks/use-sent-events'
 
 const All = ({ template }: { template: Doc<"templates"> }) => {
     const { cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
+    const { sentEvent } = useSentEvent()
+
+    const handleBuyItem = ({ price, label, quantity, category }: { price: number, label: string, quantity: number, category: string }) => {
+        handleOnChangeCart({ price, label, quantity, category })
+        sentEvent('section_cart_item_added', {
+            type: 'section_item',
+            label,
+            price,
+            category,
+        })
+    }
+
     const renderSubComponent = ({ row }: { row: Row<Sections> }) => {
         const columns = row.getVisibleCells().map(e => e.column.columnDef.size)
         const style = {
@@ -62,7 +75,7 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
                                         <IconShoppingCartPlus
                                             size={18}
                                             className='cursor-pointer hover:scale-110'
-                                            onClick={() => handleOnChangeCart({ price: Number(it.price), label: it.name || `Item ${i + 1}`, quantity: 1, category: row.original.name })}
+                                            onClick={() => handleBuyItem({ price: Number(it.price), label: it.name || `Item ${i + 1}`, quantity: 1, category: row.original.name })}
                                         />
                                 }
                             </div>
@@ -72,17 +85,24 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
             })
         )
     }
+
     return (
         <div className='flex flex-col w-full h-full justify-start gap-4 py-5'>
             <div className='h-20 flex justify-center items-center rounded-lg relative overflow-hidden'>
                 <div className="h-full w-full relative bg-gray-900">
-                    <BlurImage
-                        alt='header-img'
-                        width='100'
-                        height='100'
-                        className='h-full w-full object-cover hover:scale-110 transition-all'
-                        src={template.header.imgUrl}
-                    />
+                    {
+                        template.header.imgUrl ?
+                            <BlurImage
+                                alt='header-img'
+                                width='100'
+                                height='100'
+                                className='h-full w-full object-cover hover:scale-110 transition-all'
+                                src={template.header.imgUrl}
+                            /> :
+                            <div className='w-full h-full flex items-center justify-center'>
+                                <IconPhotoScan size={40} className='text-slate-200' />
+                            </div>
+                    }
                     <p className="font-bold text-xl text-white absolute bottom-4 left-4 z-40">{template.header.title}</p>
                 </div>
             </div>
