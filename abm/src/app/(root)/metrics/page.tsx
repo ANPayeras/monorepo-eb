@@ -1,21 +1,19 @@
-import { fetchAction } from 'convex/nextjs'
 import React from 'react'
-import { api } from '../../../../convex/_generated/api'
 import { currentUser } from '@clerk/nextjs/server'
+import BaseCard from '@/components/base-card'
+import DesktopUsers from '@/components/metrics/desktop-users'
+import MobileUsers from '@/components/metrics/mobile-users'
 
 const MetricsPage = async () => {
-    const a = await currentUser()
-    const metrics = await fetchAction(api.metrics.getMetrics,
-        {
-            query: "SELECT count() from events WHERE events.event = '$pageview' AND events.distinct_id = 'templateID' AND events.properties.$device_type = 'Desktop' AND events.properties.$prev_pageview_pathname is null",
-            clerkId: a?.id!
-        })
-    console.log(metrics[0][0])
+    const user = await currentUser()
     return (
-        <section className='size-full max-w-[1000px] m-auto'>
-            <div>
-                aa
-            </div>
+        <section className='size-full max-w-[1000px] m-auto bg-slate-50 flex gap-2 p-1 rounded-sm'>
+            <BaseCard>
+                <DesktopUsers clerkId={user?.id!} />
+            </BaseCard>
+            <BaseCard>
+                <MobileUsers clerkId={user?.id!} />
+            </BaseCard>
         </section>
     )
 }
