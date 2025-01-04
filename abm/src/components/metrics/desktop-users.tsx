@@ -10,6 +10,8 @@ const DesktopUsers = async ({ clerkId }: { clerkId: string }) => {
             clerkId
         })
 
+    if (!metrics) return
+
     return (
         <div className='flex flex-col'>
             <span className='text-center'>Usuarios que ingresaron desde una PC</span>

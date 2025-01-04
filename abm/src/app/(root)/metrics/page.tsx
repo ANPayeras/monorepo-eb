@@ -7,32 +7,36 @@ import MostVisitedPathNames from '@/components/metrics/most-visited-pathnames'
 import UsersLocation from '@/components/metrics/users-locations'
 import TimeVisitedDay from '@/components/metrics/time-visited-day'
 import TimeVisitedHour from '@/components/metrics/time-visited-hour'
+import WidgetsMetrics from '@/components/metrics/widgets-metrics'
+import DesktopMobileUsers from '@/components/metrics/desktop-mobile-users'
 
 const MetricsPage = async () => {
     const user = await currentUser()
     return (
-        <section className='size-full max-w-[1000px] m-auto bg-slate-50 flex p-1 rounded-sm'>
+        <section className='size-full max-w-[2000px] m-auto flex p-1 rounded-sm overflow-y-scroll'>
             <div className='flex flex-col w-full h-fit gap-1'>
-                <div className='flex w-full gap-1'>
-                    <BaseCard>
-                        <DesktopUsers clerkId={user?.id!} />
+                <BaseCard containerClassName='w-full'>
+                    <DesktopMobileUsers clerkId={user?.id!} />
+                </BaseCard>
+                <div className='flex flex-col md:flex-row w-full gap-1'>
+                    <BaseCard containerClassName='w-full'>
+                        <MostVisitedPathNames clerkId={user?.id!} />
                     </BaseCard>
-                    <BaseCard>
-                        <MobileUsers clerkId={user?.id!} />
+                    <BaseCard containerClassName='w-full'>
+                        <UsersLocation clerkId={user?.id!} />
+                    </BaseCard>
+                    <BaseCard containerClassName='w-full'>
+                        <WidgetsMetrics clerkId={user?.id!} />
                     </BaseCard>
                 </div>
-                <BaseCard containerClassName='w-full'>
-                    <MostVisitedPathNames clerkId={user?.id!} />
-                </BaseCard>
-                <BaseCard containerClassName='w-full'>
-                    <UsersLocation clerkId={user?.id!} />
-                </BaseCard>
-                <BaseCard containerClassName='w-full'>
-                    <TimeVisitedDay clerkId={user?.id!} />
-                </BaseCard>
-                <BaseCard containerClassName='w-full'>
-                    <TimeVisitedHour clerkId={user?.id!} />
-                </BaseCard>
+                <div className='flex flex-col md:flex-row w-full gap-1 md:h-[400px]'>
+                    <BaseCard containerClassName='w-full md:h-full'>
+                        <TimeVisitedDay clerkId={user?.id!} />
+                    </BaseCard>
+                    <BaseCard containerClassName='w-full md:h-full'>
+                        <TimeVisitedHour clerkId={user?.id!} />
+                    </BaseCard>
+                </div>
             </div>
         </section>
     )

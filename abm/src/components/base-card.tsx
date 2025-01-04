@@ -1,11 +1,12 @@
 import React, { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { Card } from './ui/card'
 
 const BaseCard = ({ containerClassName, children }: { containerClassName?: string, children: ReactNode }) => {
     return (
-        <div className={cn('bg-slate-500 w-fit h-fit flex-grow transition-all rounded-sm p-1', containerClassName)}>
+        <Card className={cn('w-fit h-fit flex-grow transition-all rounded-sm p-1', containerClassName)}>
             {children}
-        </div>
+        </Card>
     )
 }
 

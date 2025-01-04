@@ -1,7 +1,8 @@
 "use client"
+
 import React, { useState } from 'react'
 import { SidebarBody, SidebarLink, Sidebar } from './ui/sidebar'
-import { IconArrowLeft, IconBrandTabler, IconLayout, IconTemplate, IconTool, IconUserCircle } from '@tabler/icons-react';
+import { IconArrowLeft, IconBrandTabler, IconChartBarPopular, IconLayout, IconTemplate, IconTool, IconUserCircle } from '@tabler/icons-react';
 import { useClerk } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
@@ -12,6 +13,13 @@ const links = [
         href: "/dashboard",
         icon: (
             <IconBrandTabler className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        ),
+    },
+    {
+        label: "Métricas",
+        href: "/metrics",
+        icon: (
+            <IconChartBarPopular className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
         ),
     },
     {
@@ -76,19 +84,20 @@ const LeftSidebar = () => {
                                 return (
                                     link.id === 'logout' ?
                                         <span key={idx} onClick={() => signOut()}>
-                                            <SidebarLink className='hover:bg-slate-200 rounded-sm' link={link} />
+                                            <SidebarLink {...{ onClick: () => setOpen(false) }} className='hover:bg-slate-200 rounded-sm' link={link} />
                                         </span> :
                                         link.id === 'build' ?
                                             <span key={idx}>
-                                                <SidebarLink className='hover:bg-slate-200 rounded-sm' link={{ ...link, href: checkUrlBuild() }} />
+                                                <SidebarLink {...{ onClick: () => setOpen(false) }} className='hover:bg-slate-200 rounded-sm' link={{ ...link, href: checkUrlBuild() }} />
                                             </span> :
-                                            < SidebarLink className={`${isActive && 'bg-slate-200'} hover:bg-slate-200 rounded-sm`} key={idx} link={link} />
+                                            < SidebarLink {...{ onClick: () => setOpen(false) }} className={`${isActive && 'bg-slate-200'} hover:bg-slate-200 rounded-sm`} key={idx} link={link} />
                                 )
                             })}
                         </div>
                     </div>
                     <div className='overflow-y-auto overflow-x-hidden'>
                         <SidebarLink
+                            {...{ onClick: () => setOpen(false) }}
                             className='hover:bg-slate-200 rounded-sm'
                             link={{
                                 label: "Perfil",

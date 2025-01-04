@@ -56,6 +56,8 @@ export const getMetrics = action({
 
     const data = await response.json();
 
+    // console.log('data', data)
+
     return data.results;
   },
 });
