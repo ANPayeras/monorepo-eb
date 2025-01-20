@@ -19,18 +19,18 @@ const MetricsPage = async () => {
                     <DesktopMobileUsers clerkId={user?.id!} />
                 </BaseCard>
                 <div className='flex flex-col md:flex-row w-full gap-1'>
-                    <BaseCard containerClassName='w-full'>
+                    <BaseCard containerClassName='w-full h-auto'>
                         <MostVisitedPathNames clerkId={user?.id!} />
                     </BaseCard>
-                    <BaseCard containerClassName='w-full'>
+                    <BaseCard containerClassName='w-full h-auto'>
                         <UsersLocation clerkId={user?.id!} />
                     </BaseCard>
-                    <BaseCard containerClassName='w-full'>
+                    <BaseCard containerClassName='w-full h-auto'>
                         <WidgetsMetrics clerkId={user?.id!} />
                     </BaseCard>
                 </div>
                 <div className='flex flex-col md:flex-row w-full gap-1 md:h-[400px]'>
-                    <BaseCard containerClassName='w-full md:h-full'>
+                    <BaseCard containerClassName='w-full md:h-full flex flex-col justify-between'>
                         <TimeVisitedDay clerkId={user?.id!} />
                     </BaseCard>
                     <BaseCard containerClassName='w-full md:h-full'>

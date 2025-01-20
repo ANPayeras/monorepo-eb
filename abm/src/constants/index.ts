@@ -74,3 +74,6 @@ export const days: { [key: number]: string } = {
   5: "Viernes",
   6: "Sábado",
 };
+
+export const validWidgetsTypes = ["header", "combo", "social", "link"];
+export const validCombos = ["combo 1", "combo 2", "combo 3", "combo 4"];

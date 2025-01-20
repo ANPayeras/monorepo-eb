@@ -34,7 +34,7 @@ const ActiveTemplate = () => {
                             {
                                 template?.length ?
                                     <div className='flex items-center justify-between'>
-                                        <Link href={viewUrl} target='_blank' className='hover:underline'>
+                                        <Link href={viewUrl} target='_blank' className='overflow-hidden text-ellipsis text-nowrap hover:underline'>
                                             <span>{viewUrl}</span>
                                         </Link>
                                         <CopyLink url={viewUrl} />

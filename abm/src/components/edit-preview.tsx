@@ -24,7 +24,7 @@ const EditPreview = () => {
             row.original.items.map((it, i) => {
                 const cartItem = cart.find(i => i.label === it.name && i.category === row.original.name)
                 return (
-                    <TableRow key={i} className=''>
+                    <TableRow key={i}>
                         <TableCell {...{ style: { minWidth: columns[0], maxWidth: columns[0], ...style } }}>
                             <div className='flex items-center justify-start gap-1'>
                                 {

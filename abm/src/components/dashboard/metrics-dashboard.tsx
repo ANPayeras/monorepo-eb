@@ -1,14 +1,11 @@
 import React from 'react'
 import Link from 'next/link'
 import BaseCard from '../base-card'
-import DesktopUsers from '../metrics/desktop-users'
-import { currentUser } from '@clerk/nextjs/server'
-import MobileUsers from '../metrics/mobile-users'
 import { IconChevronRight } from '@tabler/icons-react'
+import DesktopUsersClient from '../metrics/desktop-users-client'
+import MobileUsersClient from '../metrics/mobile-users-client'
 
-const MetricsDashboard = async () => {
-    const user = await currentUser()
-
+const MetricsDashboard = ({ clerkId }: { clerkId: string }) => {
     return (
         <div
             className='flex bg-slate-50 w-full gap-2 rounded-sm border p-2 shadow-lg flex-col'
@@ -22,11 +19,11 @@ const MetricsDashboard = async () => {
                 </Link>
             </div>
             <div className='flex gap-2'>
-                <BaseCard containerClassName='hover:scale-[1.01] transition-all'>
-                    <DesktopUsers clerkId={user?.id!} />
+                <BaseCard containerClassName='hover:scale-[1.01] transition-all flex-1 h-auto'>
+                    <DesktopUsersClient clerkId={clerkId} />
                 </BaseCard>
-                <BaseCard containerClassName='hover:scale-[1.01] transition-all'>
-                    <MobileUsers clerkId={user?.id!} />
+                <BaseCard containerClassName='hover:scale-[1.01] transition-all flex-1 h-auto'>
+                    <MobileUsersClient clerkId={clerkId} />
                 </BaseCard>
             </div>
         </div>
