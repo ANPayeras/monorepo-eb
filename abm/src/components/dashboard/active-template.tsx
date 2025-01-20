@@ -12,7 +12,7 @@ const ActiveTemplate = () => {
     const { user } = useUser()
     const template = useQuery(api.templates.getActiveTemplate, !user ? 'skip' : undefined)
 
-    const viewUrl = `${process.env.NEXT_PUBLIC_VIEW_URL}${user?.username}`
+    const viewUrl = `${process.env.NEXT_PUBLIC_VIEW_URL}/${user?.username}`
 
     return (
         <div className='h-full w-full max-w-[400px] flex flex-col gap-2 flex-1'>
@@ -34,7 +34,7 @@ const ActiveTemplate = () => {
                             {
                                 template?.length ?
                                     <div className='flex items-center justify-between'>
-                                        <Link href={viewUrl} target='_blank' className='hover:underline'>
+                                        <Link href={viewUrl} target='_blank' className='overflow-hidden text-ellipsis text-nowrap hover:underline'>
                                             <span>{viewUrl}</span>
                                         </Link>
                                         <CopyLink url={viewUrl} />

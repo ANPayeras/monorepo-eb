@@ -87,5 +87,6 @@ export default defineSchema({
     name: v.string(),
     phone: v.optional(v.string()),
     username: v.optional(v.string()),
+    isPremium: v.optional(v.boolean()),
   }),
 });

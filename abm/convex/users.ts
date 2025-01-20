@@ -103,3 +103,21 @@ export const getCurrentUser = query({
     return user;
   },
 });
+
+export const getCurrentUserByClerkId = query({
+  args: {
+    clerkId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .first();
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    return user;
+  },
+});

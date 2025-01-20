@@ -3,6 +3,12 @@ import localFont from "next/font/local";
 import { ConvexClientProvider } from "../providers/convex-client-provider";
 import { DataStoreProvider } from "@/providers/data-store-providers";
 import "./globals.css";
+import { CSPostHogProvider } from "@/providers/ph-client-provider";
+import dynamic from "next/dynamic";
+
+const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
+  ssr: false,
+})
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,9 +37,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ConvexClientProvider>
-          <DataStoreProvider>
-            {children}
-          </DataStoreProvider>
+          <CSPostHogProvider>
+            <PostHogPageView />
+            <DataStoreProvider>
+              {children}
+            </DataStoreProvider>
+          </CSPostHogProvider>
         </ConvexClientProvider>
       </body>
     </html>

@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { IconBrandFacebook, IconBrandInstagram, IconBrandSnapchat, IconBrandTiktok, IconBrandX, IconMail } from '@tabler/icons-react'
 import Link from 'next/link'
 import { Doc } from '../../convex/_generated/dataModel'
+import useSentEvent from '@/hooks/use-sent-events'
 
 export const icons = [
     {
@@ -31,6 +32,7 @@ export const icons = [
 ]
 
 const ContactInfo: FC<{ template: Doc<"templates"> }> = ({ template }) => {
+    const { sentEvent } = useSentEvent()
     const { contact, layout } = template
     return (
         <>
@@ -48,6 +50,10 @@ const ContactInfo: FC<{ template: Doc<"templates"> }> = ({ template }) => {
                                         target='_blank'
                                         style={{ borderColor: layout.textsColor }}
                                         className="shadow-md flex justify-center items-center w-[40px] h-[40px] rounded-full font-bold border-[1px] hover:scale-105 transition-all"
+                                        onClick={() => sentEvent('widget_click', {
+                                            type: 'social',
+                                            name: c.title,
+                                        })}
                                     >
                                         <Icon size={16} />
                                     </Link>
