@@ -11,7 +11,7 @@ import { columns } from './table/columns'
 import Image from 'next/image'
 
 const EditPreview = () => {
-    const { layout, sections, header, cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
+    const { sections, header, cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
 
     const renderSubComponent = ({ row }: { row: Row<Sections> }) => {
         const columns = row.getVisibleCells().map(e => e.column.columnDef.size)
@@ -23,16 +23,17 @@ const EditPreview = () => {
         return (
             row.original.items.map((it, i) => {
                 const cartItem = cart.find(i => i.label === it.name && i.category === row.original.name)
+                const img = it.itemImage?.localImg || it.itemImage?.uploadImgUrl
                 return (
                     <TableRow key={i}>
                         <TableCell {...{ style: { minWidth: columns[0], maxWidth: columns[0], ...style } }}>
                             <div className='flex items-center justify-start gap-1'>
                                 {
-                                    it.itemImage ?
+                                    img ?
                                         <Image
                                             className='h-[25px] w-[25px] object-contain'
-                                            src={it.itemImage}
-                                            alt={''}
+                                            src={img}
+                                            alt={'item-image'}
                                             width={100}
                                             height={100}
                                         /> : <span><IconPhotoScan size={18} /></span>
@@ -74,7 +75,7 @@ const EditPreview = () => {
     return (
         <div className='flex flex-col w-full h-full justify-start p-4 gap-4'        >
             <div className='h-20 flex justify-center items-center rounded-sm relative'>
-                <DirectionAwareHover imageUrl={header.imgUrl}>
+                <DirectionAwareHover imageUrl={header.imgUrl?.localImg || header.imgUrl.uploadImgUrl}>
                     <p className="font-bold text-xl">{header.title}</p>
                 </DirectionAwareHover>
             </div>

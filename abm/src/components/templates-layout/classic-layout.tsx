@@ -10,13 +10,14 @@ import { SelectSection } from '@/interfaces'
 
 const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: string, combo?: number) => void, editSection: SelectSection }) => {
     const { layout, header, combos, paymentMethods, contact, deliverMethods } = useDataStore(state => state)
+    const isheaderImg = header.imgUrl?.localImg || header.imgUrl.uploadImgUrl
     return (
         <div className="w-[90%] flex flex-col gap-10 items-center">
             <div
                 className='w-full min-h-20 max-h-20 flex justify-center items-center rounded-lg relative cursor-pointer overflow-hidden'
                 onClick={() => selectSection('menu')}>
                 {
-                    header.title || header.imgUrl ?
+                    header.title || isheaderImg ?
                         <div className="h-full w-full relative bg-gray-900">
                             {
                                 header.imgUrl ?
@@ -25,7 +26,7 @@ const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: s
                                         className="h-full w-full object-cover scale-[2]"
                                         width="1000"
                                         height="1000"
-                                        src={header.imgUrl}
+                                        src={isheaderImg}
                                         priority
                                     /> : <></>
                             }

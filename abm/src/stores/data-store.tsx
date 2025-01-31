@@ -6,7 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 type Items = {
     name: string,
     price: string | null,
-    itemImage: string
+    itemImage: {
+        localImg: string;
+        uploadImgUrl: string;
+        storageId: Id<"_storage"> | string;
+    }
 }
 
 export type Sections = {
@@ -32,8 +36,12 @@ export type Contact = {
 }
 
 type Header = {
-    imgUrl: string,
-    title: string,
+    imgUrl: {
+        localImg: string;
+        uploadImgUrl: string;
+        storageId: Id<"_storage"> | string;
+    },
+    title: string;
 }
 
 export type PaymentMethods = {
@@ -52,6 +60,11 @@ export type Layout = {
     bgColor: string;
     textsColor: string;
     templateLayout: string;
+    backgroundImg: {
+        localImg?: string;
+        uploadImgUrl: string;
+        storageId: Id<"_storage"> | string;
+    };
 }
 
 export type ItemCart = {
@@ -70,9 +83,21 @@ export type Widget = {
     data?: WidgetData;
 }
 
+type resizableItem = {
+    size: number;
+    backgroundImg?: {
+        localImg?: string;
+        uploadImgUrl: string;
+        storageId: Id<"_storage"> | string;
+    };
+    text?: string;
+    url?: string;
+}
+
 type WidgetData = {
     value?: string;
     url?: string;
+    resizables?: resizableItem[];
 }
 
 export type DataState = {
@@ -95,8 +120,8 @@ export type DataActions = {
     addSection: () => void
     addItem: (section: string) => void,
     handleOnChangeSections: (event: ChangeEvent<HTMLInputElement>) => void,
-    handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, itemImage?: string) => void,
-    handleOnChangeHeader: (event: ChangeEvent<HTMLInputElement>, imgUrl?: string) => void,
+    handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => void,
+    handleOnChangeHeader: (event: ChangeEvent<HTMLInputElement>, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => void,
     handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number, imgUrl?: string, imgUrlPos?: number, storageId?: Id<"_storage"> | string) => void,
     handleOnChangeContact: (event: ChangeEvent<HTMLInputElement>, iCName: string) => void,
     handleOnChangeContactSwitch: (enabled: boolean, iCName: string) => void,
@@ -120,13 +145,20 @@ export type DataActions = {
     deleteWidget: (widget: Widget) => void;
     updateWidgetOrder: (widgets: Widget[]) => void;
     addTemplateBuild: (id: Id<"templates">) => void;
+    //
+    handleOnChangeBgLayoutImg: (localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => void;
+    deleteBgLayoutImg: () => void;
 }
 
 export type DataStore = DataState & DataActions
 
 export const defaultInitialState: DataState = {
     header: {
-        imgUrl: '',
+        imgUrl: {
+            localImg: '',
+            uploadImgUrl: '',
+            storageId: '',
+        },
         title: '',
     },
     sections: [],
@@ -136,6 +168,11 @@ export const defaultInitialState: DataState = {
         bgColor: '#ffffff',
         textsColor: '#000000',
         templateLayout: '',
+        backgroundImg: {
+            localImg: '',
+            uploadImgUrl: '',
+            storageId: '',
+        },
     },
     paymentMethods: [],
     deliverMethods: [],
@@ -148,7 +185,11 @@ export const defaultInitialState: DataState = {
 
 const iState: DataState = {
     header: {
-        imgUrl: '',
+        imgUrl: {
+            localImg: '',
+            uploadImgUrl: '',
+            storageId: '',
+        },
         title: '',
     },
     sections: [],
@@ -158,6 +199,11 @@ const iState: DataState = {
         bgColor: '#ffffff',
         textsColor: '#000000',
         templateLayout: '',
+        backgroundImg: {
+            localImg: '',
+            uploadImgUrl: '',
+            storageId: '',
+        },
     },
     paymentMethods: [],
     deliverMethods: [],
@@ -167,6 +213,9 @@ const iState: DataState = {
     orderWidgets: [],
     templateBuildId: undefined,
 }
+
+type PickOnly<T, K extends keyof T> =
+    Pick<T, K> & { [P in Exclude<keyof T, K>]?: never };
 
 export const createDataStore = (
     initState: DataState,
@@ -178,7 +227,11 @@ export const createDataStore = (
                 name: `section ${state.sections.length + 1}`, label: '', items: [{
                     name: 'Item 1',
                     price: null,
-                    itemImage: '',
+                    itemImage: {
+                        localImg: '',
+                        uploadImgUrl: '',
+                        storageId: '',
+                    },
                 }]
             }]
         })),
@@ -187,7 +240,11 @@ export const createDataStore = (
             state.sections[pos].items.push({
                 name: `Item ${state.sections[pos].items.length + 1}`,
                 price: null,
-                itemImage: '',
+                itemImage: {
+                    localImg: '',
+                    uploadImgUrl: '',
+                    storageId: '',
+                },
             })
             return { ...state }
         }),
@@ -197,19 +254,33 @@ export const createDataStore = (
             state.sections[pos].label = value
             return { ...state }
         }),
-        handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, itemImage?: string) => set((state) => {
+        handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => set((state) => {
             let { value, name } = event.target
             let pos = state.sections.map(e => e.name).indexOf(section)
-            if (itemImage) value = itemImage
-            state.sections[pos].items[item][name as keyof Items] = value
+            if (name === 'itemImage') {
+                if (localImg) state.sections[pos].items[item].itemImage.localImg = localImg
+                if (uploadImgUrl && storageId) {
+                    state.sections[pos].items[item].itemImage.uploadImgUrl = uploadImgUrl
+                    state.sections[pos].items[item].itemImage.storageId = storageId
+                }
+            } else {
+                state.sections[pos].items[item][name as keyof Omit<Items, "itemImage">] = value
+            }
             return { ...state }
         }),
-        handleOnChangeHeader: (event: ChangeEvent<HTMLInputElement>, imgUrl?: string) => set((state) => {
+        handleOnChangeHeader: (event: ChangeEvent<HTMLInputElement>, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => set((state) => {
             let { value, name } = event.target
-            if (imgUrl) value = imgUrl as string
-            // return { ...state, header: { ...state.header, [name]: value } } No modifica template
-            state.header[name as keyof Header] = value
+            if (name === 'imgUrl') {
+                if (localImg) state.header.imgUrl.localImg = localImg
+                if (uploadImgUrl && storageId) {
+                    state.header.imgUrl.uploadImgUrl = uploadImgUrl
+                    state.header.imgUrl.storageId = storageId
+                }
+            } else {
+                state.header.title = value
+            }
             return { ...state }
+            // return { ...state, header: { ...state.header, [name]: value } } No modifica template
         }),
         handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number, imgUrl?: string, imgUrlPos?: number, storageId?: Id<"_storage"> | string) => set((state) => {
             let { value, name } = event.target
@@ -267,8 +338,8 @@ export const createDataStore = (
             else if (textsColor === 'white') textsColor = 'black'
             return { ...state, layout: { ...state.layout, textsColor } }
         }),
-        handleOnChangeLayout: (color: string, type: string) => set((state) => {
-            state.layout[type as keyof Layout] = color
+        handleOnChangeLayout: (color: string, type: Layout['textsColor'] | Layout['bgColor']) => set((state) => {
+            state.layout[type as keyof Omit<Layout, "backgroundImg">] = color
             return { ...state }
         }),
         handleOnChangePM: (event: ChangeEvent<HTMLInputElement>, label: string) => set((state) => {
@@ -371,7 +442,7 @@ export const createDataStore = (
             return { ...state }
         }),
         deleteImgHeader: () => set((state) => {
-            return { ...state, header: { ...state.header, imgUrl: '' } }
+            return { ...state, header: { ...state.header, imgUrl: { localImg: '', uploadImgUrl: '', storageId: '' } } }
         }),
         deleteImgCombo: (combo: number, imgPos: number) => set((state) => {
             state.combos[combo].imgUrl.splice(imgPos, 1)
@@ -421,11 +492,25 @@ export const createDataStore = (
             return { ...state }
         }),
         updateWidgetOrder: (widgets: Widget[]) => set((state) => {
-            return { ...state, orderWidgets: widgets }
+            return { ...state, widgets: widgets }
         }),
         addTemplateBuild: (id: Id<"templates">) => set((state) => {
             return { ...state, templateBuildId: id }
-        })
+        }),
+        handleOnChangeBgLayoutImg: (localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => set((state) => {
+            if (localImg) state.layout.backgroundImg.localImg = localImg
+            if (uploadImgUrl && storageId) {
+                state.layout.backgroundImg.uploadImgUrl = uploadImgUrl
+                state.layout.backgroundImg.storageId = storageId
+            }
+            return { ...state }
+        }),
+        deleteBgLayoutImg: () => set((state) => {
+            state.layout.backgroundImg.localImg = ''
+            state.layout.backgroundImg.uploadImgUrl = ''
+            state.layout.backgroundImg.storageId = ''
+            return { ...state }
+        }),
     }))
 }
 

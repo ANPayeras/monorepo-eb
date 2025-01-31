@@ -5,7 +5,11 @@ export default defineSchema({
   templates: defineTable({
     user: v.id("users"),
     header: v.object({
-      imgUrl: v.string(),
+      imgUrl: v.object({
+        localImg: v.optional(v.string()),
+        uploadImgUrl: v.string(),
+        storageId: v.union(v.id("_storage"), v.string()),
+      }),
       title: v.string(),
     }),
     sections: v.array(
@@ -16,7 +20,11 @@ export default defineSchema({
           v.object({
             name: v.string(),
             price: v.union(v.string(), v.null()),
-            itemImage: v.string(),
+            itemImage: v.object({
+              localImg: v.optional(v.string()),
+              uploadImgUrl: v.string(),
+              storageId: v.union(v.id("_storage"), v.string()),
+            }),
           })
         ),
       })
@@ -46,6 +54,11 @@ export default defineSchema({
       bgColor: v.string(),
       textsColor: v.string(),
       templateLayout: v.string(),
+      backgroundImg: v.object({
+        localImg: v.optional(v.string()),
+        uploadImgUrl: v.string(),
+        storageId: v.union(v.id("_storage"), v.string()),
+      }),
     }),
     paymentMethods: v.array(
       v.object({

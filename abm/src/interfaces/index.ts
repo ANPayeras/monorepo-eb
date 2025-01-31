@@ -74,7 +74,37 @@ export type RightSectionInterface = {
 
 export type ChangeColorFeatureInterface = {
   title: string;
-  type: keyof Layout;
+  type: keyof Omit<Layout, "backgroundImg">;
   color: IColor;
   onChange: (color: IColor, type: string) => void;
+};
+
+// Widgets
+
+export type LinkWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
+};
+
+export type TextWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
+};
+
+export type ImgWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
+};
+
+export type ResizableWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
 };

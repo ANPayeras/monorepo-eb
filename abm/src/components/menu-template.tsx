@@ -3,22 +3,18 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './
 import { Input } from "@/components/ui/input"
 import { IconCurrencyDollar, IconEdit, IconTrash, IconUpload } from '@tabler/icons-react'
 import { useDataStore } from '@/providers/data-store-providers'
-import { useMutation } from 'convex/react'
-import { useUploadFiles } from '@xixixao/uploadstuff/react'
-import { api } from '../../convex/_generated/api'
+import useUploadFile from '@/hooks/use-upload-file'
+import { Id } from '../../convex/_generated/dataModel'
 
 const MenuTemplate = () => {
     const { sections, header, addItem, addSection, deleteItem, deleteSection, handleOnChangeItems, handleOnChangeSections, handleOnChangeHeader, deleteImgHeader } = useDataStore(state => state)
     const imageRefHeader = useRef<HTMLInputElement>(null);
     const refContainer = useRef<HTMLInputElement>(null);
-    const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-    const deleteUrl = useMutation(api.templates.deleteUrl);
-    const { startUpload } = useUploadFiles(generateUploadUrl)
-    const getImageUrl = useMutation(api.templates.getUrl);
+    const { uploadFile, deleteFile } = useUploadFile()
 
     const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>, section?: string, item?: number) => {
         e.preventDefault();
-        const { files, name, value } = e.target
+        const { files, name } = e.target
         if (!files || !files?.length) return;
 
         try {
@@ -28,16 +24,13 @@ const MenuTemplate = () => {
             reader.addEventListener("load", async () => {
                 if (name === 'imgUrl') handleOnChangeHeader(e, reader.result as string)
                 if (name === 'itemImage') handleOnChangeItems(e, section!, item!, reader.result as string)
-                const uploaded = await startUpload([file]);
-                const storageId = (uploaded[0].response as any).storageId;
-                const imageUrl = await getImageUrl({ storageId });
-                if (name === 'imgUrl') handleOnChangeHeader(e, imageUrl!)
-                if (name === 'itemImage') handleOnChangeItems(e, section!, item!, imageUrl!)
+                const { url, storageId } = await uploadFile(file)
+                if (name === 'imgUrl') handleOnChangeHeader(e, '', url!, storageId)
+                if (name === 'itemImage') handleOnChangeItems(e, section!, item!, '', url!, storageId)
             });
             reader.readAsDataURL(file);
         } catch (error) {
             console.log(error)
-            //   toast({ title: 'Error uploading image', variant: 'destructive'})
         }
     }
 
@@ -53,11 +46,19 @@ const MenuTemplate = () => {
     //     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
     // }
 
-    // const deleteImg = (type: string, pos: number) => {
-    //     if (type === 'header') deleteImgHeader()
-    //     if (type === 'item') deleteImgHeader()
-    //     deleteUrl({ storageId: imgUrl[pos].storageId as Id<"_storage"> })
-    // }
+    const deleteImg = (type: string, storageId?: Id<"_storage">) => {
+        if (type === 'header') deleteImgHeader()
+        storageId && deleteFile(storageId)
+    }
+
+    const _deleteSection = (section: string) => {
+        const ids = sections.find(s => s.name === section)?.items.filter(it => it.itemImage.storageId).map(it => it.itemImage.storageId)
+        const promises = ids?.map(storageId => deleteFile(storageId as Id<"_storage">))
+        if (promises?.length) {
+            Promise.all(promises).then(() => console.log('ok')).catch(e => console.log(e))
+        }
+        deleteSection(section)
+    }
 
     return (
         <section className='flex flex-col w-full h-full justify-start p-4 gap-2'>
@@ -66,19 +67,19 @@ const MenuTemplate = () => {
                     <span>Imagen de cabecera: </span>
                     <div className='flex gap-1'>
                         {
-                            header.imgUrl ?
+                            header.imgUrl?.localImg || header.imgUrl.uploadImgUrl ?
                                 <>
-                                    <span
-                                        className='cursor-pointer hover:scale-110 flex justify-center items-center'
-                                        onClick={() => deleteImgHeader()}
-                                    >
-                                        <IconTrash size={18} className='text-red-500' />
-                                    </span>
                                     <span
                                         className='cursor-pointer hover:scale-110 flex justify-center items-center'
                                         onClick={() => imageRefHeader?.current?.click()}
                                     >
                                         <IconEdit size={18} className='text-gray-500' />
+                                    </span>
+                                    <span
+                                        className='cursor-pointer hover:scale-110 flex justify-center items-center'
+                                        onClick={() => deleteImg('header', header.imgUrl.storageId as Id<"_storage">)}
+                                    >
+                                        <IconTrash size={18} className='text-red-500' />
                                     </span>
                                 </>
                                 :
@@ -90,7 +91,7 @@ const MenuTemplate = () => {
                                 </span>
                         }
                         <Input
-                            className='h-6 hidden'
+                            className='hidden'
                             ref={imageRefHeader}
                             onChange={(e) => uploadImage(e)}
                             name='imgUrl'
@@ -128,7 +129,7 @@ const MenuTemplate = () => {
                                         placeholder='Categoria' />
                                     <div className='flex justify-center items-center gap-2'>
                                         <AccordionTrigger className='hover:text-gray-500' />
-                                        <span className='cursor-pointer hover:scale-110' onClick={() => deleteSection(s.name)}>
+                                        <span className='cursor-pointer hover:scale-110' onClick={() => _deleteSection(s.name)}>
                                             <IconTrash size={18} className='text-red-500' />
                                         </span>
                                         <div className='cursor-pointer hover:text-gray-500' onClick={() => addItem(s.name)}>
@@ -158,7 +159,7 @@ const MenuTemplate = () => {
                                                             type='number' />
                                                     </div>
                                                     <Input
-                                                        className='h-6 hidden'
+                                                        className='hidden'
                                                         onChange={(e) => uploadImage(e, s.name, i)}
                                                         name='itemImage'
                                                         type='file' />
@@ -171,14 +172,17 @@ const MenuTemplate = () => {
                                                             }}
                                                         >
                                                             {
-                                                                it.itemImage ?
+                                                                it.itemImage?.localImg || it.itemImage.uploadImgUrl ?
                                                                     <IconEdit size={18} className='text-gray-500' /> :
                                                                     <IconUpload size={18} className='text-gray-500' />
                                                             }
                                                         </span>
                                                         <span
                                                             className='cursor-pointer hover:scale-110 flex justify-center items-center'
-                                                            onClick={() => deleteItem(s.name, i)}
+                                                            onClick={() => {
+                                                                deleteImg('item', it.itemImage.storageId as Id<"_storage">)
+                                                                deleteItem(s.name, i)
+                                                            }}
                                                         >
                                                             <IconTrash size={18} className='text-red-500' />
                                                         </span>

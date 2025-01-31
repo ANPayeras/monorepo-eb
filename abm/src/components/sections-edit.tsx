@@ -6,6 +6,8 @@ import PaymentMethodsTemplate from './payment-methods-template'
 import DeliverMethodsTemplate from './deliver-template'
 import LinkWidgetEdit from './link-widget-edit'
 import { Widget } from '@/stores/data-store'
+import ResizableWidgetEdit from './resizable-widget-edit'
+import TextWidgetEdit from './text-widget-edit'
 
 const SectionsEdit: FC<{ section: string, combo: number, widget: Widget | {} }> = ({ section, combo, widget }) => {
 
@@ -18,6 +20,8 @@ const SectionsEdit: FC<{ section: string, combo: number, widget: Widget | {} }> 
     paymentMethods: <PaymentMethodsTemplate />,
     deliverMethods: <DeliverMethodsTemplate />,
     linkWidget: <LinkWidgetEdit {...{ widget: widget as Widget }} />,
+    textWidget: <TextWidgetEdit {...{ widget: widget as Widget }} />,
+    resizableWidget: <ResizableWidgetEdit {...{ widget: widget as Widget }} />,
   }
 
   return templates[section]
