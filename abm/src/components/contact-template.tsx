@@ -29,7 +29,7 @@ const ContactTemplate = () => {
                                 className='data-[state=checked]:bg-green-400'
                                 name='enabled'
                                 onClick={() => handleOnChangeContactSwitch(!!socialMedia?.enabled, ic.name)}
-                                checked={socialMedia?.enabled}
+                                aria-checked={socialMedia?.enabled}
                             />
                         </div>
                     )

@@ -59,7 +59,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
 
     useEffect(() => {
         if (template) {
-            setTemplateData({ ...template, cart: [], orderWidgets: [], templateBuildId: template._id })
+            setTemplateData({ ...template, cart: [], templateBuildId: template._id })
         } else if (lastBuildTemplate) {
             router.replace(`/build/${lastBuildTemplate._id}`)
         }

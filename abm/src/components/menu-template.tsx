@@ -48,6 +48,7 @@ const MenuTemplate = () => {
 
     const deleteImg = (type: string, storageId?: Id<"_storage">) => {
         if (type === 'header') deleteImgHeader()
+        imageRefHeader.current!.value = ''
         storageId && deleteFile(storageId)
     }
 
@@ -164,7 +165,7 @@ const MenuTemplate = () => {
                                                         <span
                                                             className='cursor-pointer hover:scale-110 flex justify-center items-center'
                                                             onClick={() => {
-                                                                const el = refContainer.current?.childNodes[i].childNodes[2] as HTMLElement
+                                                                const el = refContainer.current?.childNodes[i].childNodes[2] as HTMLInputElement
                                                                 el.click()
                                                             }}
                                                         >
@@ -177,6 +178,8 @@ const MenuTemplate = () => {
                                                         <span
                                                             className='cursor-pointer hover:scale-110 flex justify-center items-center'
                                                             onClick={() => {
+                                                                const el = refContainer.current?.childNodes[i].childNodes[2] as HTMLInputElement
+                                                                el.value = ''
                                                                 deleteImg('item', it.itemImage.storageId as Id<"_storage">)
                                                                 deleteItem(s.name, i)
                                                             }}

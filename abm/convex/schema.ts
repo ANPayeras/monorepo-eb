@@ -87,6 +87,32 @@ export default defineSchema({
           v.object({
             value: v.optional(v.string()),
             url: v.optional(v.string()),
+            resizables: v.optional(
+              v.array(
+                v.object({
+                  id: v.number(),
+                  size: v.number(),
+                  img: v.optional(
+                    v.object({
+                      localImg: v.optional(v.string()),
+                      uploadImgUrl: v.string(),
+                      storageId: v.union(v.id("_storage"), v.string()),
+                    })
+                  ),
+                  value: v.optional(v.string()),
+                  textColor: v.optional(v.string()),
+                  url: v.optional(v.string()),
+                })
+              )
+            ),
+            textColor: v.optional(v.string()),
+            img: v.optional(
+              v.object({
+                localImg: v.optional(v.string()),
+                uploadImgUrl: v.string(),
+                storageId: v.union(v.id("_storage"), v.string()),
+              })
+            ),
           })
         ),
       })

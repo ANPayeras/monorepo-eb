@@ -62,9 +62,15 @@ const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: s
                     ))
                 }
             </div>
-            <PaymentMethodsPreview {...{ selectSection, editSection, paymentMethods }} />
-            <DeliverPreview {...{ selectSection, editSection, deliverMethods }} />
-            <ContactInfo {...{ selectSection, editSection, contact, layout }} />
+            <div className='group relative w-full'>
+                <PaymentMethodsPreview {...{ selectSection, editSection, paymentMethods }} />
+            </div>
+            <div className='group relative w-full'>
+                <DeliverPreview {...{ selectSection, editSection, deliverMethods }} />
+            </div>
+            <div className='group relative w-full'>
+                <ContactInfo {...{ selectSection, editSection, contact, layout }} />
+            </div>
         </div>
     )
 }

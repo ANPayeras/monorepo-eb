@@ -46,8 +46,8 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
                     handleWidgetChanges(widget, { img: { localImg: reader.result as string } })
                 const data = await uploadFile(file)
                 handleNestedWidgetChanges ?
-                    handleNestedWidgetChanges({ img: { localImg: reader.result as string, uploadImgUrl: data.url!, storageId: data.storageId } }) :
-                    handleWidgetChanges(widget, { img: { localImg: reader.result as string, uploadImgUrl: data.url!, storageId: data.storageId } })
+                    handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: data.url!, storageId: data.storageId } }) :
+                    handleWidgetChanges(widget, { img: { localImg: '', uploadImgUrl: data.url!, storageId: data.storageId } })
             });
             reader.readAsDataURL(file);
         } catch (error) {

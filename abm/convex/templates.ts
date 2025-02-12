@@ -33,7 +33,10 @@ export const createTemplate = mutation({
 
     return await ctx.db.insert("templates", {
       user: user[0]._id,
-      header: { imgUrl: { uploadImgUrl: "", storageId: "" }, title: "" },
+      header: {
+        imgUrl: { localImg: "", uploadImgUrl: "", storageId: "" },
+        title: "",
+      },
       sections: [],
       combos: Array.from({ length: 4 }, (_, i) => ({
         description: "",
@@ -48,6 +51,7 @@ export const createTemplate = mutation({
         textsColor: "#000000",
         templateLayout: args.layout,
         backgroundImg: {
+          localImg: "",
           uploadImgUrl: "",
           storageId: "",
         },

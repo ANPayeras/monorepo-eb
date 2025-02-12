@@ -31,6 +31,7 @@ const ChangeBgImgFeature = () => {
 
     const deleteImg = () => {
         deleteFile(backgroundImg.storageId as Id<"_storage">)
+        imageRef.current!.value = ''
         deleteBgLayoutImg()
     }
 

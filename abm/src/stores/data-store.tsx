@@ -7,7 +7,7 @@ type Items = {
     name: string,
     price: string | null,
     itemImage: {
-        localImg: string;
+        localImg?: string;
         uploadImgUrl: string;
         storageId: Id<"_storage"> | string;
     }
@@ -37,7 +37,7 @@ export type Contact = {
 
 type Header = {
     imgUrl: {
-        localImg: string;
+        localImg?: string;
         uploadImgUrl: string;
         storageId: Id<"_storage"> | string;
     },
@@ -118,9 +118,7 @@ export type DataState = {
     deliverMethods: DeliverMethods[];
     cart: ItemCart[];
     templateTestId?: string;
-    //
     widgets: Widget[];
-    orderWidgets: Widget[];
     templateBuildId: Id<'templates'> | undefined;
 }
 
@@ -185,9 +183,7 @@ export const defaultInitialState: DataState = {
     paymentMethods: [],
     deliverMethods: [],
     cart: [],
-    //
     widgets: [],
-    orderWidgets: [],
     templateBuildId: undefined,
 }
 
@@ -216,14 +212,9 @@ const iState: DataState = {
     paymentMethods: [],
     deliverMethods: [],
     cart: [],
-    //
     widgets: [],
-    orderWidgets: [],
     templateBuildId: undefined,
 }
-
-type PickOnly<T, K extends keyof T> =
-    Pick<T, K> & { [P in Exclude<keyof T, K>]?: never };
 
 export const createDataStore = (
     initState: DataState,
@@ -268,6 +259,7 @@ export const createDataStore = (
             if (name === 'itemImage') {
                 if (localImg) state.sections[pos].items[item].itemImage.localImg = localImg
                 if (uploadImgUrl && storageId) {
+                    state.sections[pos].items[item].itemImage.localImg = ''
                     state.sections[pos].items[item].itemImage.uploadImgUrl = uploadImgUrl
                     state.sections[pos].items[item].itemImage.storageId = storageId
                 }
@@ -281,6 +273,7 @@ export const createDataStore = (
             if (name === 'imgUrl') {
                 if (localImg) state.header.imgUrl.localImg = localImg
                 if (uploadImgUrl && storageId) {
+                    state.header.imgUrl.localImg = ''
                     state.header.imgUrl.uploadImgUrl = uploadImgUrl
                     state.header.imgUrl.storageId = storageId
                 }

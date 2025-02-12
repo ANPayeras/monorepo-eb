@@ -1,5 +1,4 @@
 "use client"
-
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import SectionsEdit from '../sections-edit'
 import { SheetQR } from '../sheet-qr'
@@ -15,11 +14,10 @@ import { useToast } from '@/hooks/use-toast'
 import { RightSectionInterface } from '@/interfaces'
 import { Doc } from '../../../convex/_generated/dataModel'
 import ChangeBgImgFeature from '../change-bg-img-feature'
-import LoaderSpinner from '../loader-spinner'
 import AllPageLoader from '../all-page-loader'
 
-const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, swiperRef, template, userConvex }) => {
-    const { header, sections, combos, contact, layout, paymentMethods, deliverMethods, orderWidgets, widgets } = useDataStore(state => state)
+const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, swiperRef, template }) => {
+    const { header, sections, combos, contact, layout, paymentMethods, deliverMethods, widgets } = useDataStore(state => state)
     const handleOnChangeLayout = useDataStore(state => state.handleOnChangeLayout)
     const createTemplateTest = useMutation(api.templates.createTemplateTest)
     const updateTemplate = useMutation(api.templates.updateTemplate)
