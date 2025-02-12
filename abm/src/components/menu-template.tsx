@@ -10,7 +10,7 @@ const MenuTemplate = () => {
     const { sections, header, addItem, addSection, deleteItem, deleteSection, handleOnChangeItems, handleOnChangeSections, handleOnChangeHeader, deleteImgHeader } = useDataStore(state => state)
     const imageRefHeader = useRef<HTMLInputElement>(null);
     const refContainer = useRef<HTMLInputElement>(null);
-    const { uploadFile, deleteFile } = useUploadFile()
+    const { uploadFile, deleteFile, bulkDeleteFiles } = useUploadFile()
 
     const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>, section?: string, item?: number) => {
         e.preventDefault();
@@ -52,11 +52,8 @@ const MenuTemplate = () => {
     }
 
     const _deleteSection = (section: string) => {
-        const ids = sections.find(s => s.name === section)?.items.filter(it => it.itemImage.storageId).map(it => it.itemImage.storageId)
-        const promises = ids?.map(storageId => deleteFile(storageId as Id<"_storage">))
-        if (promises?.length) {
-            Promise.all(promises).then(() => console.log('ok')).catch(e => console.log(e))
-        }
+        const storageIds = sections.find(s => s.name === section)?.items.filter(it => it.itemImage.storageId).map(it => it.itemImage.storageId)
+        if (storageIds?.length) bulkDeleteFiles(storageIds as Id<"_storage">[])
         deleteSection(section)
     }
 

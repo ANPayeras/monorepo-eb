@@ -83,21 +83,29 @@ export type Widget = {
     data?: WidgetData;
 }
 
-type resizableItem = {
+export type resizableItem = {
+    id: number;
     size: number;
-    backgroundImg?: {
+    img?: {
         localImg?: string;
         uploadImgUrl: string;
         storageId: Id<"_storage"> | string;
     };
-    text?: string;
+    value?: string;
+    textColor?: string;
     url?: string;
 }
 
-type WidgetData = {
+export type WidgetData = {
     value?: string;
     url?: string;
     resizables?: resizableItem[];
+    textColor?: string;
+    img?: {
+        localImg?: string;
+        uploadImgUrl?: string;
+        storageId?: Id<"_storage"> | string;
+    }
 }
 
 export type DataState = {

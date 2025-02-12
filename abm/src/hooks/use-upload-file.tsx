@@ -23,9 +23,15 @@ const useUploadFile = () => {
         await _deleteFile({ storageId })
     }
 
+    const bulkDeleteFiles = (storageIds: Id<"_storage">[]) => {
+        const promises = storageIds.map(storageId => deleteFile(storageId))
+        Promise.all(promises).then(() => console.log('ok')).catch(e => console.log(e))
+    }
+
     return {
         uploadFile,
         deleteFile,
+        bulkDeleteFiles,
     }
 }
 

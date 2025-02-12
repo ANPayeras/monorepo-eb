@@ -14,7 +14,10 @@ const LinkWidget = ({ widget, selectSection, editWidget, props }: LinkWidgetInte
         <>
             <div className='flex w-full h-full p-2 relative' {...props}>
                 <div className='relative flex-1'>
-                    <div className='min-h-[100px] max-h-[100px] text-center overflow-hidden break-words'>
+                    <div
+                        className='min-h-[100px] max-h-[100px] text-center overflow-hidden break-words'
+                        style={{ color: widget.data?.textColor }}
+                    >
                         {widget.data?.value}
                     </div>
                 </div>

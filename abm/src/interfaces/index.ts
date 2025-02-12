@@ -3,7 +3,9 @@ import {
   DeliverMethods,
   Layout,
   PaymentMethods,
+  resizableItem,
   Widget,
+  WidgetData,
 } from "@/stores/data-store";
 import { Doc } from "../../convex/_generated/dataModel";
 import { MutableRefObject } from "react";
@@ -79,6 +81,15 @@ export type ChangeColorFeatureInterface = {
   onChange: (color: IColor, type: string) => void;
 };
 
+export type UpdateImgToolProps = {
+  imageRef: any;
+  isImage: string;
+  deleteImg: () => void;
+  uploadImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  widget: Widget;
+  panel?: resizableItem;
+};
+
 // Widgets
 
 export type LinkWidgetInterface = {
@@ -107,4 +118,13 @@ export type ResizableWidgetInterface = {
   editWidget: Widget;
   selectSection: (type: string, combo: number, widget: Widget | {}) => void;
   props?: any;
+};
+
+export type ImageWidgetInterface = {
+  widget: Widget;
+  title?: string;
+  isNestedWidget?: boolean;
+  handleNestedWidgetChanges?: (data: WidgetData) => void;
+  panel?: resizableItem;
+  className?: string;
 };

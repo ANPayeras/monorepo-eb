@@ -24,6 +24,7 @@ export const estaticTemplates = [
   "linkWidget",
   "resizableWidget",
   "textWidget",
+  "imgWidget",
 ];
 
 export const helperTexts: { [key: string]: string } = {

@@ -18,12 +18,12 @@ const EmptyLayout: FC<EmptyLayoutProps> = ({ selectSection, editSection, data: {
     const renderWidget = (widget: Widget, props: any) => {
         const widgetsComponents: { [key: string]: JSX.Element } = {
             text: <TextWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
-            // link: <LinkWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
+            link: <LinkWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
             pm: <PaymentMethodsPreview {...{ selectSection, editSection, paymentMethods, containerClassName: 'border-0', props }} />,
             dm: <DeliverPreview {...{ selectSection, editSection, deliverMethods, containerClassName: 'border-0', props }} />,
             socials: <ContactInfo {...{ selectSection, editSection, contact, layout, props }} />,
-            // resizable: <ResizableWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
-            link: <ImgWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
+            resizable: <ResizableWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
+            img: <ImgWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
         }
 
         return widget ? widgetsComponents[widget.type] : <></>
