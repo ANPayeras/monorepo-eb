@@ -4,13 +4,14 @@ import { Id } from '../../convex/_generated/dataModel'
 import { v4 as uuidv4 } from 'uuid';
 
 type Items = {
-    name: string,
-    price: string | null,
+    name: string;
+    price: string | null;
+    id: string;
     itemImage: {
         localImg?: string;
         uploadImgUrl: string;
         storageId: Id<"_storage"> | string;
-    }
+    };
 }
 
 export type Sections = {
@@ -72,6 +73,7 @@ export type ItemCart = {
     price: number;
     quantity: number;
     category: string;
+    id: string;
 }
 
 export type Widget = {
@@ -239,6 +241,7 @@ export const createDataStore = (
                 name: `section ${state.sections.length + 1}`, label: '', items: [{
                     name: 'Item 1',
                     price: null,
+                    id: uuidv4(),
                     itemImage: {
                         localImg: '',
                         uploadImgUrl: '',
@@ -253,6 +256,7 @@ export const createDataStore = (
             state.sections[pos].items.push({
                 name: `Item ${state.sections[pos].items.length + 1}`,
                 price: null,
+                id: uuidv4(),
                 itemImage: {
                     localImg: '',
                     uploadImgUrl: '',

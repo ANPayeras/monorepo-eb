@@ -107,7 +107,7 @@ const MenuTemplate = () => {
                     />
                 </div>
             </div>
-            <div className="w-full h-full overflow-scroll p-4">
+            <div className="w-full h-full overflow-scroll sm:p-4">
                 <button
                     className='bg-slate-400 p-2 rounded-sm text-slate-100 hover:text-black w-40'
                     onClick={addSection}
@@ -116,11 +116,13 @@ const MenuTemplate = () => {
                 </button>
                 <div className='flex flex-col gap-1 mt-5'>
                     {sections.map((s, i) => (
-                        <Accordion key={s.name} type="multiple" className='hover:bg-slate-200 rounded-sm p-1'>
+                        <Accordion key={s.name} type="multiple"
+                            className='hover:bg-slate-200 rounded-sm p-1'
+                        >
                             <AccordionItem value={`item-${i}`}>
                                 <div className='flex justify-between items-center h-8 py-2 box-content'>
                                     <Input
-                                        className='w-[40%] h-full'
+                                        className='w-[40%] h-full text-sm sm:text-medium'
                                         name={`section ${i + 1}`}
                                         value={s.label}
                                         onChange={handleOnChangeSections}
@@ -128,9 +130,9 @@ const MenuTemplate = () => {
                                     <div className='flex justify-center items-center gap-2'>
                                         <AccordionTrigger className='hover:text-gray-500' />
                                         <span className='cursor-pointer hover:scale-110' onClick={() => _deleteSection(s.name)}>
-                                            <IconTrash size={18} className='text-red-500' />
+                                            <IconTrash className='text-red-500 size-4 sm:size-5' />
                                         </span>
-                                        <div className='cursor-pointer hover:text-gray-500' onClick={() => addItem(s.name)}>
+                                        <div className='cursor-pointer hover:text-gray-500 text-sm sm:text-medium' onClick={() => addItem(s.name)}>
                                             Añadir item
                                         </div>
                                     </div>
@@ -139,9 +141,9 @@ const MenuTemplate = () => {
                                     <div ref={refContainer}>
                                         {s?.items &&
                                             s?.items?.map((it, i) => (
-                                                <div key={`${s.name}${i}`} className='h-8 justify-center items-center grid grid-cols-[1fr,1fr,1fr,0fr] ml-1 gap-1'>
+                                                <div key={`${s.name}${i}`} className='h-8 justify-center items-center grid grid-cols-[2fr,2fr,1fr] ml-1 gap-1'>
                                                     <Input
-                                                        className='h-6'
+                                                        className='h-6 text-sm'
                                                         name={`name`}
                                                         value={it.name}
                                                         onChange={(e) => handleOnChangeItems(e, s.name, i)}
@@ -149,7 +151,7 @@ const MenuTemplate = () => {
                                                     <div className='flex justify-center items-center'>
                                                         <IconCurrencyDollar />
                                                         <Input
-                                                            className='h-6'
+                                                            className='h-6 text-sm'
                                                             name={`price`}
                                                             value={it.price || ''}
                                                             onChange={(e) => handleOnChangeItems(e, s.name, i)}
@@ -171,8 +173,8 @@ const MenuTemplate = () => {
                                                         >
                                                             {
                                                                 it.itemImage?.localImg || it.itemImage.uploadImgUrl ?
-                                                                    <IconEdit size={18} className='text-gray-500' /> :
-                                                                    <IconUpload size={18} className='text-gray-500' />
+                                                                    <IconEdit className='text-gray-500 size-4 sm:size-5' /> :
+                                                                    <IconUpload className='text-gray-500 size-4 sm:size-5' />
                                                             }
                                                         </span>
                                                         <span
@@ -184,7 +186,7 @@ const MenuTemplate = () => {
                                                                 deleteItem(s.name, i)
                                                             }}
                                                         >
-                                                            <IconTrash size={18} className='text-red-500' />
+                                                            <IconTrash className='text-red-500 size-4 sm:size-5' />
                                                         </span>
                                                     </div>
                                                 </div>
