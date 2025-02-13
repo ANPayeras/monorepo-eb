@@ -221,8 +221,21 @@ export const createDataStore = (
 ) => {
     return createStore<DataStore>()((set) => ({
         ...initState,
-        addSection: () => set((state) => ({
-            sections: [...state.sections, {
+        // addSection: () => set((state) => ({
+        //     sections: [...state.sections, {
+        //         name: `section ${state.sections.length + 1}`, label: '', items: [{
+        //             name: 'Item 1',
+        //             price: null,
+        //             itemImage: {
+        //                 localImg: '',
+        //                 uploadImgUrl: '',
+        //                 storageId: '',
+        //             },
+        //         }]
+        //     }]
+        // })),
+        addSection: () => set((state) => {
+            state.sections.push({
                 name: `section ${state.sections.length + 1}`, label: '', items: [{
                     name: 'Item 1',
                     price: null,
@@ -232,8 +245,9 @@ export const createDataStore = (
                         storageId: '',
                     },
                 }]
-            }]
-        })),
+            })
+            return { ...state }
+        }),
         addItem: (section: string) => set((state) => {
             let pos = state.sections.map(e => e.name).indexOf(section)
             state.sections[pos].items.push({

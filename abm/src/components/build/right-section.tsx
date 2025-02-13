@@ -17,7 +17,6 @@ import ChangeBgImgFeature from '../change-bg-img-feature'
 import AllPageLoader from '../all-page-loader'
 
 const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, swiperRef, template }) => {
-    const { header, sections, combos, contact, layout, paymentMethods, deliverMethods, widgets } = useDataStore(state => state)
     const handleOnChangeLayout = useDataStore(state => state.handleOnChangeLayout)
     const createTemplateTest = useMutation(api.templates.createTemplateTest)
     const updateTemplate = useMutation(api.templates.updateTemplate)
@@ -51,7 +50,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
         let payload = data || template
         try {
             setIsLoading(true)
-            await updateTemplate({ ...payload, sections })
+            await updateTemplate({ ...payload })
             feedback &&
                 toast({
                     title: "Cambios guardados",
@@ -62,11 +61,12 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
             toast({
                 title: "Error al guardar",
                 description: "Por favor intente de nuevo",
-                variant: 'destructive'
+                variant: 'destructive',
+                duration: 1000,
             })
         }
         setIsLoading(false)
-    }, [sections, template, toast, updateTemplate])
+    }, [template, toast, updateTemplate])
 
     useEffect(() => {
         const saveData = () => saveChanges({ feedback: false })
