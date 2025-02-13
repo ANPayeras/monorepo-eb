@@ -11,6 +11,7 @@ import { ItemCart, Layout } from '@/stores/data-store';
 import LoaderSpinner from './loader-spinner';
 import Link from 'next/link';
 import { Doc } from '../../convex/_generated/dataModel';
+import CopyLink from './copy-link';
 
 type SwiperTemplatesPreviewProps = {
     swiperRef: MutableRefObject<SwiperType | undefined>;
@@ -61,12 +62,12 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
     if (layout.templateLayout === 'empty') {
         return (
             <div className='w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden'>
-                    <div
-                        className='flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm border-gray-500 border'
-                        style={style}
-                    >
-                        {renderLayout()}
-                    </div>
+                <div
+                    className='flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm border-gray-500 border'
+                    style={style}
+                >
+                    {renderLayout()}
+                </div>
             </div>
         )
     } else {
@@ -96,7 +97,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                     >
                         {renderLayout()}
                     </SwiperSlide>
-                    <SwiperSlide className='flex justify-center p-4 rounded-sm' style={{ backgroundColor: layout.bgColor, color: layout.textsColor }}>
+                    <SwiperSlide className='flex justify-center p-4 rounded-sm' style={style}>
                         <div className='flex flex-col justify-start items-center w-full gap-4'>
                             <div className='w-full h-10 border-b-2 flex items-center justify-end'>
                                 <span>Detalle del pedido:</span>
@@ -146,12 +147,12 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                                                         <>
                                                             <span>Agrege un numero para reicibr el detalle por Whatsapp:</span>
                                                             <Link href={'/profile'}>
-                                                                <IconPhonePlus className='cursor-pointer hover:scale-110' />
+                                                                <IconPhonePlus className='cursor-pointer transition-all hover:scale-105' />
                                                             </Link>
                                                         </> : <>
                                                             <span>Enviale el detalle al comercio por Whatsapp:</span>
                                                             <button onClick={() => handleSendOrder('whatsapp')}>
-                                                                <IconBrandWhatsapp className='cursor-pointer hover:scale-110' />
+                                                                <IconBrandWhatsapp className='cursor-pointer transition-all hover:scale-105' />
                                                             </button>
                                                         </>
                                                 }
@@ -159,10 +160,8 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                                     }
                                 </div>
                                 <div className='flex w-full justify-between'>
-                                    <span>O copia el detalle y enviaselo por otro medio</span>
-                                    <button onClick={() => handleSendOrder('copy')}>
-                                        <IconCopy className='cursor-pointer hover:scale-110' />
-                                    </button>
+                                    <span>Copia el detalle y enviaselo al vendedor</span>
+                                    <CopyLink iconSize={24} onClick={() => handleSendOrder('copy')} />
                                 </div>
                             </div>
                         </div>
