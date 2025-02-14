@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
 import { useDataStore } from '@/providers/data-store-providers'
-import PaymentMethodsPreview from '../payment-methods-preview'
-import DeliverPreview from '../deliver-preview'
-import ContactInfo from '../contact-info'
+import PaymentMethodsWidget from '../payment-methods-widget'
+import DeliverMethodsWidget from '../deliver-methods-widget'
+import ContactInfoWidget from '../contact-info-widget'
 import { EmptyLayoutProps } from '@/interfaces'
 import TextWidget from '../text-widget'
 import { Widget } from '@/stores/data-store'
@@ -17,13 +17,13 @@ const EmptyLayout: FC<EmptyLayoutProps> = ({ selectSection, editSection, data: {
 
     const renderWidget = (widget: Widget, props: any) => {
         const widgetsComponents: { [key: string]: JSX.Element } = {
-            text: <TextWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
-            link: <LinkWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
-            pm: <PaymentMethodsPreview {...{ selectSection, editSection, paymentMethods, containerClassName: 'border-0', props }} />,
-            dm: <DeliverPreview {...{ selectSection, editSection, deliverMethods, containerClassName: 'border-0', props }} />,
-            socials: <ContactInfo {...{ selectSection, editSection, contact, layout, props }} />,
-            resizable: <ResizableWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
-            img: <ImgWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, props }} />,
+            text: <TextWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
+            link: <LinkWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
+            pm: <PaymentMethodsWidget {...{ selectSection, editSection, paymentMethods, layout, props }} />,
+            dm: <DeliverMethodsWidget {...{ selectSection, editSection, deliverMethods, layout, props }} />,
+            socials: <ContactInfoWidget {...{ selectSection, editSection, contact, layout, props }} />,
+            resizable: <ResizableWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
+            img: <ImgWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
         }
 
         return widget ? widgetsComponents[widget.type] : <></>

@@ -1,10 +1,10 @@
 import React, { FC } from 'react'
-import { IconPointFilled } from '@tabler/icons-react'
 import { deliverMethodsLabel } from '@/constants'
-import { DeliverMethods } from '@/stores/data-store'
+import { DeliverMethods, Layout } from '@/stores/data-store'
 import { cn } from '@/lib/utils'
 import ToolsWidget from './tools-widget'
 import { SelectSection } from '@/interfaces'
+import WidgetBaseCard from './widget-base-card'
 
 type DeliverPreviewProps = {
     selectSection?: (type: string) => void;
@@ -12,17 +12,18 @@ type DeliverPreviewProps = {
     containerClassName?: string;
     editSection?: SelectSection;
     props?: any
+    layout?: Layout;
 }
 
-const DeliverPreview: FC<DeliverPreviewProps> = ({ selectSection, editSection, deliverMethods, containerClassName, props }) => {
+const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSection, deliverMethods, containerClassName, layout, props }) => {
     return (
-        <>
-            <div 
-            className={cn('w-full flex flex-col space-y-1 border p-2 rounded-sm border-slate-900', containerClassName)}
-            {...props}>
+        <WidgetBaseCard containerClassName={`${!props ? 'active:bg-inherit' : ''}`}>
+            <div
+                className={cn('w-full flex flex-col space-y-1 p-2 active:bg-slate-400', containerClassName)}
+                style={{ color: layout?.textsColor }}
+                {...props}>
                 <div className='flex justify-between items-center gap-4'>
                     <span>Medios de entrega</span>
-
                 </div>
                 <div className='flex flex-col'>
                     {
@@ -36,11 +37,6 @@ const DeliverPreview: FC<DeliverPreviewProps> = ({ selectSection, editSection, d
                                     <span className='mr-1'>{deliverMethod && <deliverMethod.icon />}</span>
                                     <span className='mr-2'>{dm.label}</span>
                                     <span className='w-[60%] ml-auto text-right mr-1 overflow-hidden text-ellipsis'>{dm.comments}</span>
-                                    {
-                                        selectSection ?
-                                            <span><IconPointFilled size={18} className={`${!dm.active ? 'text-red-500' : 'text-green-500'}`} /></span> :
-                                            <></>
-                                    }
                                 </div>
                             )
                         })
@@ -54,8 +50,8 @@ const DeliverPreview: FC<DeliverPreviewProps> = ({ selectSection, editSection, d
                         isEditing={editSection?.section === 'deliverMethods'} />
                     : <></>
             }
-        </>
+        </WidgetBaseCard>
     )
 }
 
-export default DeliverPreview
+export default DeliverMethodsWidget

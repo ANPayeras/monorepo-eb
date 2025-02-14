@@ -53,12 +53,12 @@ export const Page = forwardRef<HTMLLIElement, PageProps>(function Page(
                 dndStyles.Wrapper,
                 active && dndStyles.active,
                 clone && dndStyles.clone,
-                dndStyles.vertical
+                dndStyles.vertical,
             )}
             style={style}
             ref={ref}
         >
-            <div className={`${dndStyles.Page} rounded-md relative group`}>
+            <div className={`${dndStyles.Page} rounded-md`}>
                 {onRender(item, props)}
             </div>
         </li>

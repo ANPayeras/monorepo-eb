@@ -31,7 +31,7 @@ export const icons = [
     },
 ]
 
-const ContactInfo: FC<{ template: Doc<"templates"> }> = ({ template }) => {
+const ContactInfoWidget: FC<{ template: Doc<"templates"> }> = ({ template }) => {
     const { sentEvent } = useSentEvent()
     const { contact, layout } = template
     return (
@@ -66,4 +66,4 @@ const ContactInfo: FC<{ template: Doc<"templates"> }> = ({ template }) => {
     )
 }
 
-export default ContactInfo
+export default ContactInfoWidget

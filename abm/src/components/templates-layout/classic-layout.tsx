@@ -2,9 +2,9 @@ import React from 'react'
 import EmptyInfo from '../empty-info'
 import { useDataStore } from '@/providers/data-store-providers'
 import Image from 'next/image'
-import PaymentMethodsPreview from '../payment-methods-preview'
-import DeliverPreview from '../deliver-preview'
-import ContactInfo from '../contact-info'
+import PaymentMethodsWidget from '../payment-methods-widget'
+import DeliverMethodsWidget from '../deliver-methods-widget'
+import ContactInfoWidget from '../contact-info-widget'
 import { combosArr } from '@/constants'
 import { SelectSection } from '@/interfaces'
 
@@ -62,15 +62,9 @@ const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: s
                     ))
                 }
             </div>
-            <div className='group relative w-full'>
-                <PaymentMethodsPreview {...{ selectSection, editSection, paymentMethods }} />
-            </div>
-            <div className='group relative w-full'>
-                <DeliverPreview {...{ selectSection, editSection, deliverMethods }} />
-            </div>
-            <div className='group relative w-full'>
-                <ContactInfo {...{ selectSection, editSection, contact, layout }} />
-            </div>
+            <PaymentMethodsWidget {...{ selectSection, editSection, paymentMethods, layout }} />
+            <DeliverMethodsWidget {...{ selectSection, editSection, deliverMethods, layout }} />
+            <ContactInfoWidget {...{ selectSection, editSection, contact, layout }} />
         </div>
     )
 }

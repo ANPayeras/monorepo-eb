@@ -97,6 +97,7 @@ export type LinkWidgetInterface = {
   editWidget: Widget;
   selectSection: (type: string, combo: number, widget: Widget | {}) => void;
   props?: any;
+  layout?: Layout;
 };
 
 export type TextWidgetInterface = {
@@ -104,6 +105,7 @@ export type TextWidgetInterface = {
   editWidget: Widget;
   selectSection: (type: string, combo: number, widget: Widget | {}) => void;
   props?: any;
+  layout?: Layout;
 };
 
 export type ImgWidgetInterface = {
@@ -111,6 +113,7 @@ export type ImgWidgetInterface = {
   editWidget: Widget;
   selectSection: (type: string, combo: number, widget: Widget | {}) => void;
   props?: any;
+  layout?: Layout;
 };
 
 export type ResizableWidgetInterface = {
@@ -118,6 +121,7 @@ export type ResizableWidgetInterface = {
   editWidget: Widget;
   selectSection: (type: string, combo: number, widget: Widget | {}) => void;
   props?: any;
+  layout?: Layout;
 };
 
 export type ImageWidgetInterface = {
@@ -127,4 +131,5 @@ export type ImageWidgetInterface = {
   handleNestedWidgetChanges?: (data: WidgetData) => void;
   panel?: resizableItem;
   className?: string;
+  layout?: Layout;
 };

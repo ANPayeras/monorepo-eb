@@ -1,5 +1,5 @@
 import React from 'react'
-import { icons } from './contact-info'
+import { icons } from './contact-info-widget'
 import { Input } from './ui/input'
 import { Switch } from './ui/switch'
 import { useDataStore } from '@/providers/data-store-providers'

@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
-import { IconPointFilled } from '@tabler/icons-react'
-import { PaymentMethods } from '@/stores/data-store'
+import { Layout, PaymentMethods } from '@/stores/data-store'
 import { cn } from '@/lib/utils'
 import ToolsWidget from './tools-widget'
 import { SelectSection } from '@/interfaces'
+import WidgetBaseCard from './widget-base-card'
 
 type PaymentMethodsProps = {
     selectSection?: (type: string) => void;
@@ -11,12 +11,16 @@ type PaymentMethodsProps = {
     containerClassName?: string;
     editSection?: SelectSection;
     props?: any;
+    layout?: Layout;
 }
 
-const PaymentMethodsPreview: FC<PaymentMethodsProps> = ({ selectSection, editSection, paymentMethods, containerClassName, props }) => {
+const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSection, paymentMethods, containerClassName, layout, props }) => {
     return (
-        <>
-            <div className={cn('w-full flex flex-col space-y-1 border p-2 rounded-sm border-slate-900', containerClassName)} {...props}>
+        <WidgetBaseCard containerClassName={`${!props ? 'active:bg-inherit' : ''}`}>
+            <div
+                className={cn('w-full flex flex-col space-y-1 p-2 active:bg-slate-400', containerClassName)}
+                style={{ color: layout?.textsColor }}
+                {...props}>
                 <div className='flex justify-between items-center gap-4'>
                     <span>Metodos de Pago</span>
                 </div>
@@ -29,11 +33,6 @@ const PaymentMethodsPreview: FC<PaymentMethodsProps> = ({ selectSection, editSec
                             >
                                 <span>{pm.label}</span>
                                 <span className='w-[60%] ml-auto overflow-hidden text-ellipsis text-right mr-1'>{pm.comments}</span>
-                                {
-                                    selectSection ?
-                                        <span><IconPointFilled size={18} className={`${!pm.active ? 'text-red-500' : 'text-green-500'}`} /></span> :
-                                        <></>
-                                }
                             </div>
                         ))
                     }
@@ -46,8 +45,8 @@ const PaymentMethodsPreview: FC<PaymentMethodsProps> = ({ selectSection, editSec
                         isEditing={editSection?.section === 'paymentMethods'} />
                     : <></>
             }
-        </>
+        </WidgetBaseCard>
     )
 }
 
-export default PaymentMethodsPreview
+export default PaymentMethodsWidget

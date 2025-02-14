@@ -36,7 +36,7 @@ const LinkWidgetEdit = ({ widget, handleNestedWidgetChanges, panel, className }:
             <div className='flex flex-col gap-2 relative'>
                 <div className='flex w-full justify-between'>
                     <span className='text-center'>
-                        Titulo
+                        Texto
                     </span>
                     <PopoverChangeTextColor color={color} changeColor={changeColor} />
                 </div>

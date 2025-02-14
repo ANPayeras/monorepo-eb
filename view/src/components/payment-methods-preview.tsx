@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Doc } from '../../convex/_generated/dataModel'
 
-const PaymentMethodsPreview: FC<{ template: Doc<"templates"> }> = ({ template }) => {
+const PaymentMethodsWidget: FC<{ template: Doc<"templates"> }> = ({ template }) => {
     const { paymentMethods } = template
     return (
         <>
@@ -29,4 +29,4 @@ const PaymentMethodsPreview: FC<{ template: Doc<"templates"> }> = ({ template })
     )
 }
 
-export default PaymentMethodsPreview
+export default PaymentMethodsWidget

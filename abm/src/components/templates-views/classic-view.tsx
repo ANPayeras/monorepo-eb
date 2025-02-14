@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
 import { Doc } from '../../../convex/_generated/dataModel'
 import Image from 'next/image'
-import PaymentMethodsPreview from '../payment-methods-preview'
-import DeliverPreview from '../deliver-preview'
-import ContactInfo from '../contact-info'
+import PaymentMethodsWidget from '../payment-methods-widget'
+import DeliverMethodsWidget from '../deliver-methods-widget'
+import ContactInfoWidget from '../contact-info-widget'
 
 const ClassicView = ({ template: { layout, header, combos, paymentMethods, contact, deliverMethods } }: { template: Doc<"templates"> }) => {
     const isheaderImg = header.imgUrl?.localImg || header.imgUrl.uploadImgUrl
@@ -54,13 +54,13 @@ const ClassicView = ({ template: { layout, header, combos, paymentMethods, conta
                 }
             </div>
             {
-                paymentMethods.length ? <PaymentMethodsPreview {...{ paymentMethods }} /> : <></>
+                paymentMethods.length ? <PaymentMethodsWidget {...{ paymentMethods, layout }} /> : <></>
             }
             {
-                deliverMethods.length ? <DeliverPreview {...{ deliverMethods }} /> : <></>
+                deliverMethods.length ? <DeliverMethodsWidget {...{ deliverMethods, layout }} /> : <></>
             }
             {
-                contact.length ? <ContactInfo contact={contact} layout={layout} /> : <></>
+                contact.length ? <ContactInfoWidget contact={contact} layout={layout} /> : <></>
             }
         </div>
     )

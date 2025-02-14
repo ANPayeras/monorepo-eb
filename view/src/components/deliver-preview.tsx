@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { deliverMethodsLabel } from '@/constants'
 import { Doc } from '../../convex/_generated/dataModel'
 
-const DeliverPreview: FC<{ template: Doc<"templates"> }> = ({ template }) => {
+const DeliverMethodsWidget: FC<{ template: Doc<"templates"> }> = ({ template }) => {
     const { deliverMethods } = template
     return (
         <>
@@ -34,4 +34,4 @@ const DeliverPreview: FC<{ template: Doc<"templates"> }> = ({ template }) => {
     )
 }
 
-export default DeliverPreview
+export default DeliverMethodsWidget

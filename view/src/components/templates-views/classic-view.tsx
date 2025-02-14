@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import { Doc } from '../../../convex/_generated/dataModel'
-import PaymentMethodsPreview from '../payment-methods-preview'
-import DeliverPreview from '../deliver-preview'
-import ContactInfo from '../contact-info'
+import PaymentMethodsWidget from '../payment-methods-preview'
+import DeliverMethodsWidget from '../deliver-preview'
+import ContactInfoWidget from '../contact-info'
 import CartWidget from '../cart-widget'
 import Link from 'next/link'
 import { BlurImage } from '../blur-image'
@@ -78,13 +78,13 @@ const ClassicView = ({ template, user }: { template: Doc<"templates">, user: Doc
             </div>
             <CartWidget {...{ user: user.username! }} />
             {
-                paymentMethods.length ? <PaymentMethodsPreview {...{ template }} /> : <></>
+                paymentMethods.length ? <PaymentMethodsWidget {...{ template }} /> : <></>
             }
             {
-                deliverMethods.length ? <DeliverPreview {...{ template }} /> : <></>
+                deliverMethods.length ? <DeliverMethodsWidget {...{ template }} /> : <></>
             }
             {
-                contact.length ? <ContactInfo {...{ template }} /> : <></>
+                contact.length ? <ContactInfoWidget {...{ template }} /> : <></>
             }
         </>
     )

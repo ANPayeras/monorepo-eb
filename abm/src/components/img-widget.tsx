@@ -6,10 +6,11 @@ import { ImgWidgetInterface } from '@/interfaces'
 import { IconPhotoScan } from '@tabler/icons-react'
 import useUploadFile from '@/hooks/use-upload-file'
 import { Id } from '../../convex/_generated/dataModel'
+import WidgetBaseCard from './widget-base-card'
 
 const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterface) => {
     const deleteWidget = useDataStore(state => state.deleteWidget)
-    const isEditing = widget.id === editWidget.id
+    const isEditing = widget.id === editWidget?.id
     const { deleteFile } = useUploadFile()
 
     const _deleteWidget = async () => {
@@ -22,8 +23,8 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
     const image = widget.data?.img?.localImg || widget.data?.img?.uploadImgUrl
 
     return (
-        <>
-            <div className='flex w-full max-h-[200px] relative' {...props}>
+        <WidgetBaseCard>
+            <div className='flex w-full max-h-[200px] relative active:bg-slate-400' {...props}>
                 {
                     image ?
                         <>
@@ -47,7 +48,7 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
                 }
             </div>
             <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('imgWidget', 0, widget)} isEditing={isEditing} />
-        </>
+        </WidgetBaseCard>
     )
 }
 
