@@ -12,7 +12,7 @@ const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: s
     const { layout, header, combos, paymentMethods, contact, deliverMethods } = useDataStore(state => state)
     const isheaderImg = header.imgUrl?.localImg || header.imgUrl.uploadImgUrl
     return (
-        <div className="w-[90%] flex flex-col gap-10 items-center">
+        <div className="w-[90%] flex flex-col gap-4 items-center">
             <div
                 className='w-full min-h-20 max-h-20 flex justify-center items-center rounded-lg relative cursor-pointer overflow-hidden'
                 onClick={() => selectSection('menu')}>

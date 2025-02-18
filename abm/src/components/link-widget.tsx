@@ -13,7 +13,7 @@ const LinkWidget = ({ widget, selectSection, editWidget, layout, props }: LinkWi
     }
     return (
         <WidgetBaseCard>
-            <div className='flex w-full h-full p-2 relative flex-1 active:bg-slate-400' {...props}>
+            <div className={`flex w-full h-full p-2 relative flex-1 ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`} {...props}>
                 <div
                     className='w-full min-h-[100px] max-h-[100px] text-center overflow-hidden break-words'
                     style={{ color: widget.data?.textColor || layout?.textsColor }}
@@ -21,7 +21,10 @@ const LinkWidget = ({ widget, selectSection, editWidget, layout, props }: LinkWi
                     {widget.data?.value}
                 </div>
             </div>
-            <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('linkWidget', 0, widget)} isEditing={isEditing} />
+            {
+                selectSection &&
+                <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('linkWidget', 0, widget)} isEditing={isEditing} />
+            }
         </WidgetBaseCard>
     )
 }

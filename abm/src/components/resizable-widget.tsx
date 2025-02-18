@@ -30,7 +30,7 @@ export function ResizableWidget({ widget, selectSection, editWidget, layout, pro
 
     return (
         <WidgetBaseCard>
-            <div className='flex w-full h-full flex-1 rounded-md active:bg-slate-400' {...props}>
+            <div className={`flex w-full h-full flex-1 rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`} {...props}>
                 <div
                     className='overflow-hidden rounded-md'
                     style={{
@@ -98,7 +98,10 @@ export function ResizableWidget({ widget, selectSection, editWidget, layout, pro
                     </div>
                 </div>
             </div>
-            <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('resizableWidget', 0, widget)} isEditing={isEditing} />
+            {
+                selectSection &&
+                <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('resizableWidget', 0, widget)} isEditing={isEditing} />
+            }
         </WidgetBaseCard>
     )
 }

@@ -35,8 +35,8 @@ export const icons = [
 
 const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSection?: SelectSection, contact: Contact[], layout: Layout, props?: any }> = ({ selectSection, editSection, contact, layout, props }) => {
     return (
-        <WidgetBaseCard containerClassName={`${!props ? 'active:bg-inherit' : ''}`}>
-            <div className='flex justify-center items-center p-2 gap-1 w-full active:bg-slate-400' {...props}>
+        <WidgetBaseCard>
+            <div className={`flex justify-center items-center p-2 gap-1 w-full ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`} {...props}>
                 {
                     icons.map((ic, i) => {
                         const socialMedia = contact.find(c => c.title === ic.name)

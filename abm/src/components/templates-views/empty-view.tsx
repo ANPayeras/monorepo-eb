@@ -20,7 +20,7 @@ const EmptyView = ({ template: { layout, widgets, paymentMethods, deliverMethods
     }
 
     return (
-        <div className="w-[90%] flex flex-col gap-4 items-center overflow-x-clip overflow-y-visible grid-cols-4">
+        <div className="w-[90%] flex flex-col gap-4 items-center overflow-y-visible">
             {
                 widgets.map(w => {
                     if (Widget[w.type]) {

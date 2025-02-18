@@ -8,7 +8,7 @@ import ContactInfoWidget from '../contact-info-widget'
 const ClassicView = ({ template: { layout, header, combos, paymentMethods, contact, deliverMethods } }: { template: Doc<"templates"> }) => {
     const isheaderImg = header.imgUrl?.localImg || header.imgUrl.uploadImgUrl
     return (
-        <div className="w-[90%] flex flex-col gap-10 items-center overflow-y-scroll">
+        <div className="w-[90%] flex flex-col gap-4 items-center overflow-y-visible">
             {
                 header.title || isheaderImg ?
                     <div className='w-full min-h-20 max-h-20 flex justify-center items-center rounded-lg relative overflow-hidden'>

@@ -17,9 +17,9 @@ type DeliverPreviewProps = {
 
 const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSection, deliverMethods, containerClassName, layout, props }) => {
     return (
-        <WidgetBaseCard containerClassName={`${!props ? 'active:bg-inherit' : ''}`}>
+        <WidgetBaseCard>
             <div
-                className={cn('w-full flex flex-col space-y-1 p-2 active:bg-slate-400', containerClassName)}
+                className={cn(`w-full flex flex-col space-y-1 p-2 ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`, containerClassName)}
                 style={{ color: layout?.textsColor }}
                 {...props}>
                 <div className='flex justify-between items-center gap-4'>

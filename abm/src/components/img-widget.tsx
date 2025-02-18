@@ -24,7 +24,7 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
 
     return (
         <WidgetBaseCard>
-            <div className='flex w-full max-h-[200px] relative active:bg-slate-400' {...props}>
+            <div className={`flex w-full max-h-[200px] relative ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`} {...props}>
                 {
                     image ?
                         <>
@@ -47,7 +47,10 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
                         </div>
                 }
             </div>
-            <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('imgWidget', 0, widget)} isEditing={isEditing} />
+            {
+                selectSection &&
+                <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('imgWidget', 0, widget)} isEditing={isEditing} />
+            }
         </WidgetBaseCard>
     )
 }
