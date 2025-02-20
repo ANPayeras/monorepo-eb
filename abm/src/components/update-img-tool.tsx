@@ -12,7 +12,7 @@ const UpdateImgTool = ({ imageRef, isImage, deleteImg, uploadImage, widget, pane
 
     return (
         <>
-            <div className='flex gap-2'>
+            <div className='flex gap-1'>
                 <span
                     className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
                     onClick={uploadClick}
@@ -34,7 +34,7 @@ const UpdateImgTool = ({ imageRef, isImage, deleteImg, uploadImage, widget, pane
                 }
             </div>
             {
-                widget.data?.resizables?.length ? widget.data?.resizables?.map((_, i) => (
+                widget?.data?.resizables?.length ? widget?.data?.resizables?.map((_, i) => (
                     <Input
                         key={i}
                         className='hidden'

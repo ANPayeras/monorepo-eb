@@ -274,6 +274,7 @@ export const createDataStore = (
         handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => set((state) => {
             let { value, name } = event.target
             let pos = state.sections.map(e => e.name).indexOf(section)
+            if (name === 'price' && value.length === 9) return { ...state }
             if (name === 'itemImage') {
                 if (localImg) state.sections[pos].items[item].itemImage.localImg = localImg
                 if (uploadImgUrl && storageId) {
@@ -304,6 +305,7 @@ export const createDataStore = (
         handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number, imgUrl?: string, imgUrlPos?: number, storageId?: Id<"_storage"> | string) => set((state) => {
             let { value, name } = event.target
             const { imgUrl: _imgUrl } = state.combos[combo]
+            if (name === 'price' && value.length === 9) return { ...state }
             if (imgUrl) {
                 const existImg = _imgUrl[imgUrlPos!]?.url
                 // _imgUrl.splice(imgUrlPos!, 1, imgUrl)

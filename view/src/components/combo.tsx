@@ -8,11 +8,11 @@ import useSentEvent from '@/hooks/use-sent-events'
 const Combo = ({ template, combo }: { template: Doc<"templates">, combo: string }) => {
     const { cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
     const { sentEvent } = useSentEvent()
-    const { description, price, title, imgUrl } = template.combos.find((c => c.id === combo))!
+    const { description, price, title, imgUrl, id } = template.combos.find((c => c.id === combo))!
     const cartItem = cart.find(i => i.category === combo)
 
-    const handleBuyItem = ({ price, label, quantity, category }: { price: number, label: string, quantity: number, category: string }) => {
-        handleOnChangeCart({ price, label, quantity, category })
+    const handleBuyItem = ({ price, label, quantity, category, id }: { price: number, label: string, quantity: number, category: string, id: string }) => {
+        handleOnChangeCart({ price, label, quantity, category, id })
         sentEvent('combo_cart_item_added', {
             type: 'combo_item',
             label,
@@ -49,18 +49,18 @@ const Combo = ({ template, combo }: { template: Doc<"templates">, combo: string 
                         {
                             cartItem ?
                                 <>
-                                    <IconPlus size={18} className='cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'increase')} />
+                                    <IconMinus size={18} className='cursor-pointer transition-all hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'decrease')} />
                                     <span
                                         className='h-full px-1'
                                     >
                                         {cartItem.quantity}
                                     </span>
-                                    <IconMinus size={18} className='cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'decrease')} />
+                                    <IconPlus size={18} className='cursor-pointer transition-all hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'increase')} />
                                 </> :
                                 <IconShoppingCartPlus
                                     size={18}
                                     className='cursor-pointer hover:scale-110'
-                                    onClick={() => handleBuyItem({ price: Number(price), label: title, quantity: 1, category: combo })}
+                                    onClick={() => handleBuyItem({ price: Number(price), label: title, quantity: 1, category: combo, id })}
                                 />
                         }
                     </div>

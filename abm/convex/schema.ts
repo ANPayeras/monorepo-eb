@@ -18,6 +18,7 @@ export default defineSchema({
         label: v.string(),
         items: v.array(
           v.object({
+            id: v.string(),
             name: v.string(),
             price: v.union(v.string(), v.null()),
             itemImage: v.object({

@@ -86,7 +86,7 @@ export type UpdateImgToolProps = {
   isImage: string;
   deleteImg: () => void;
   uploadImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  widget: Widget;
+  widget?: Widget;
   panel?: resizableItem;
 };
 

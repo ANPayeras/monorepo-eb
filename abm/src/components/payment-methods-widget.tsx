@@ -15,7 +15,6 @@ type PaymentMethodsProps = {
 }
 
 const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSection, paymentMethods, containerClassName, layout, props }) => {
-
     return (
         <WidgetBaseCard>
             <div
@@ -30,7 +29,7 @@ const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSect
                         paymentMethods.map((pm, i) => (
                             <div
                                 key={i}
-                                className={`flex justify-between items-center ${!pm.active && 'opacity-50'} border-t-[1px] py-1`}
+                                className={`flex justify-between items-center ${!pm.active && 'opacity-50'} border-t-[1px] border-slate-700 py-1`}
                             >
                                 <span>{pm.label}</span>
                                 <span className='w-[60%] ml-auto overflow-hidden text-ellipsis text-right mr-1'>{pm.comments}</span>

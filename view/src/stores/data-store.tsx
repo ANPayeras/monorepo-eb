@@ -6,6 +6,7 @@ type ItemCart = {
     price: number;
     quantity: number;
     category: string;
+    id: string;
 }
 
 export type DataState = {

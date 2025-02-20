@@ -83,6 +83,7 @@ export function DataTable<TData, TValue>({
                                             minWidth: cell.column.columnDef.size,
                                             maxWidth: cell.column.columnDef.size,
                                         }}
+                                        onClick={() => row.toggleExpanded()}
                                         className="px-0"
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

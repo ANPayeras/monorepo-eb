@@ -33,7 +33,6 @@ export const columns: ColumnDef<Sections>[] = [
                 <span className="w-full flex justify-end">
                     <button
                         {...{
-                            onClick: row.getToggleExpandedHandler(),
                             className: 'cursor-pointer hover:text-slate-500'
                         }}
                     >

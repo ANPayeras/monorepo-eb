@@ -17,10 +17,10 @@ const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: s
                 className='w-full min-h-20 max-h-20 flex justify-center items-center rounded-lg relative cursor-pointer overflow-hidden'
                 onClick={() => selectSection('menu')}>
                 {
-                    header.title || isheaderImg ?
+                    isheaderImg ?
                         <div className="h-full w-full relative bg-gray-900">
                             {
-                                header.imgUrl ?
+                                isheaderImg ?
                                     <Image
                                         alt="image"
                                         className="h-full w-full object-cover scale-[2]"

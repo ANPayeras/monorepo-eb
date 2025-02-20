@@ -32,7 +32,7 @@ const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSect
                             return (
                                 <div
                                     key={i}
-                                    className={`flex justify-between items-center ${!dm.active && 'opacity-50'} border-t-[1px] py-1`}
+                                    className={`flex justify-between items-center ${!dm.active && 'opacity-50'} border-t-[1px] border-slate-700 py-1`}
                                 >
                                     <span className='mr-1'>{deliverMethod && <deliverMethod.icon />}</span>
                                     <span className='mr-2'>{dm.label}</span>

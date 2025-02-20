@@ -27,7 +27,7 @@ const EditPreview = () => {
                     <TableRow key={i}>
                         <TableCell
                             {...{ style: { minWidth: columns[0], maxWidth: columns[0], ...style, wordBreak: 'break-word' } }}
-                            className='pl-0'
+                            className='px-0'
                         >
                             <div className='flex items-center justify-start gap-2 h-20'>
                                 {
@@ -40,26 +40,26 @@ const EditPreview = () => {
                                             height={100}
                                         /> : <span><IconPhotoScan size={30} /></span>
                                 }
-                                <div className='flex flex-col h-full justify-between'>
-                                    <span className='w-full overflow-hidden text-wrap'>
+                                <div className='flex flex-col h-full justify-between gap-1'>
+                                    <span className='text-xs sm:text-sm w-full overflow-scroll text-wrap'>
                                         {it.name || 'Nombre item'}
                                     </span>
-                                    <span className='text-slate-400'>
+                                    <span className='text-slate-400 text-xs sm:text-sm '>
                                         $ {it.price || '-'}
                                     </span>
                                 </div>
                             </div>
                         </TableCell>
-                        <TableCell {...{ style: { minWidth: columns[2], maxWidth: columns[2] } }} className='px-0'>
+                        <TableCell {...{ style: { minWidth: columns[2], maxWidth: columns[2] } }} className='px-0 min-w-[40px] max-w-[40px] overflow-hidden'>
                             <div className='flex justify-end items-center gap-1'>
                                 {
                                     cartItem ?
                                         <>
-                                            <IconMinus size={20} className='transition-all cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'decrease')} />
+                                            <IconMinus size={18} className='transition-all cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'decrease')} />
                                             <div className='select-none'>
                                                 {cartItem?.quantity}
                                             </div>
-                                            <IconPlus size={20} className='transition-all cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'increase')} />
+                                            <IconPlus size={18} className='transition-all cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'increase')} />
                                         </> :
                                         <IconShoppingCartPlus
                                             size={18}
