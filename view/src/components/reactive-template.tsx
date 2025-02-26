@@ -17,10 +17,10 @@ const ReactiveTemplate = ({ user, test = false }: { user: string, test?: boolean
   const template = useQuery(api.templates.getTemplate, { user, test })
 
   useEffect(() => {
-    if (template?.template[0]) {
+    if (template?.template[0] && !test) {
       init(template.template[0])
     }
-  }, [template?.template[0]])
+  }, [template?.template[0], test])
 
   if (!template) return <Loader />
 
