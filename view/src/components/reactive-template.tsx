@@ -1,5 +1,6 @@
 "use client"
-import React from 'react'
+
+import React, { useEffect } from 'react'
 import { useQuery } from 'convex/react'
 import Template from './template'
 import Loader from './loader'
@@ -8,9 +9,18 @@ import TemplateNotFound from './test-not-found'
 import { TextActivetNotFound, TextTestNotFound } from '@/constants'
 import BrandLink from './brand-link'
 import TestLabel from './test-label'
+import useInitPosthog from '@/hooks/use-init-posthog'
 
 const ReactiveTemplate = ({ user, test = false }: { user: string, test?: boolean }) => {
+  const { init } = useInitPosthog()
+
   const template = useQuery(api.templates.getTemplate, { user, test })
+
+  useEffect(() => {
+    if (template?.template[0]) {
+      init(template.template[0])
+    }
+  }, [template?.template[0]])
 
   if (!template) return <Loader />
 

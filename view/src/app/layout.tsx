@@ -38,8 +38,8 @@ export default function RootLayout({
       >
         <ConvexClientProvider>
           <CSPostHogProvider>
-            <PostHogPageView />
             <DataStoreProvider>
+              <PostHogPageView />
               {children}
             </DataStoreProvider>
           </CSPostHogProvider>
