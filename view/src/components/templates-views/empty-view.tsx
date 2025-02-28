@@ -11,6 +11,7 @@ import { ResizableWidget } from '../widgets/resizable-widget'
 const EmptyView = ({ template }: { template: Doc<"templates"> }) => {
     const { widgets } = template
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Widget: { [key: string]: any } = {
         text: Text,
         link: Link,

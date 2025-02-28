@@ -6,7 +6,7 @@ const useIdentifyUser = () => {
 
     const identifyUser = (template: Doc<"templates">, userId: Id<"users">) => {
         if (posthog.get_distinct_id() !== template._id) {
-            // posthog.identify(template._id, { user: userId })
+            posthog.identify(template._id, { user: userId })
         }
     }
 
