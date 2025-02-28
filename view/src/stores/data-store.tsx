@@ -6,22 +6,26 @@ type ItemCart = {
     price: number;
     quantity: number;
     category: string;
+    id: string;
 }
 
 export type DataState = {
-    cart: ItemCart[]
+    cart: ItemCart[];
+    isPostHogInit: boolean;
 }
 
 export type DataActions = {
-    handleOnChangeCart: (item: ItemCart) => void,
-    handleOnChangeCartQuantity: (item: ItemCart, type: string) => void,
-    resetState: () => void,
+    handleOnChangeCart: (item: ItemCart) => void;
+    handleOnChangeCartQuantity: (item: ItemCart, type: string) => void;
+    setInitPostHog: () => void;
+    resetState: () => void;
 }
 
 export type DataStore = DataState & DataActions
 
 export const defaultInitialState: DataState = {
     cart: [],
+    isPostHogInit: false,
 }
 
 export const createDataStore = (
@@ -51,10 +55,14 @@ export const createDataStore = (
             }
             return { ...state }
         }),
+        setInitPostHog: () => set((state) => {
+            state.isPostHogInit = true
+            return { ...state }
+        }),
         resetState: () => {
             set(initState)
         },
-    }), { name: 'cart', storage: createJSONStorage(() => sessionStorage) }
+    }), { name: 'cart', storage: createJSONStorage(() => sessionStorage), partialize: (state) => ({ cart: state.cart }), }
     ))
 }
 

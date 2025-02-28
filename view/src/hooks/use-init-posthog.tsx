@@ -1,9 +1,9 @@
 import posthog from 'posthog-js'
 import { Doc } from '../../convex/_generated/dataModel';
-import { useState } from 'react';
+import { useDataStore } from '@/providers/data-store-providers';
 
 const useInitPosthog = () => {
-    const [_isInitPH, setIsInitPH] = useState<boolean>(false)
+    const setInitPostHog = useDataStore(state => state.setInitPostHog)
 
     const init = (template: Doc<"templates">) => {
         posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
@@ -22,8 +22,7 @@ const useInitPosthog = () => {
                 isIdentifiedID: true
             },
             loaded() {
-                setIsInitPH(true)
-                sessionStorage.setItem('isInitPH', 'true')
+                setInitPostHog()
             },
         })
     }

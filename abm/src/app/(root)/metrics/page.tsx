@@ -1,17 +1,27 @@
 import React from 'react'
 import { currentUser } from '@clerk/nextjs/server'
 import BaseCard from '@/components/base-card'
-import DesktopUsers from '@/components/metrics/desktop-users'
-import MobileUsers from '@/components/metrics/mobile-users'
 import MostVisitedPathNames from '@/components/metrics/most-visited-pathnames'
 import UsersLocation from '@/components/metrics/users-locations'
 import TimeVisitedDay from '@/components/metrics/time-visited-day'
 import TimeVisitedHour from '@/components/metrics/time-visited-hour'
 import WidgetsMetrics from '@/components/metrics/widgets-metrics'
 import DesktopMobileUsers from '@/components/metrics/desktop-mobile-users'
+import { fetchQuery } from 'convex/nextjs'
+import { api } from '../../../../convex/_generated/api'
+import EmptyTemplates from '@/components/empty-templates'
 
 const MetricsPage = async () => {
     const user = await currentUser()
+    const activeTemplate = await fetchQuery(api.templates.getActiveTemplateByClerkIdPublic, { clerkId: user?.id! })
+
+    if (!activeTemplate.length) return (
+        <EmptyTemplates
+            mainTitle={'No tienes niguna plantilla activa'}
+            linkTitle={'Activar'}
+            linkUrl={'/templates'} />
+    )
+
     return (
         <section className='size-full max-w-[2000px] m-auto flex p-1 rounded-sm overflow-y-scroll'>
             <div className='flex flex-col w-full h-fit gap-1'>

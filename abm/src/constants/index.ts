@@ -22,6 +22,9 @@ export const estaticTemplates = [
   "paymentMethods",
   "deliverMethods",
   "linkWidget",
+  "resizableWidget",
+  "textWidget",
+  "imgWidget",
 ];
 
 export const helperTexts: { [key: string]: string } = {

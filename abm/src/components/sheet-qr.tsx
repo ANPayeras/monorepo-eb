@@ -11,7 +11,7 @@ import Qr from "./qr"
 export const SheetQR: FC<{ open: boolean, handleChange: (open: boolean) => void }> = ({ open, handleChange }) => {
     return (
         <Sheet open={open} onOpenChange={() => handleChange(!open)}>
-            <SheetContent>
+            <SheetContent className="w-full">
                 <SheetHeader>
                     <SheetTitle>Vista previa</SheetTitle>
                     <SheetDescription>

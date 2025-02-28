@@ -25,11 +25,6 @@ export const columns: ColumnDef<Sections>[] = [
         },
     },
     {
-        accessorKey: "price",
-        header: "Precio",
-        size: 10,
-    },
-    {
         id: 'expander',
         header: () => null,
         size: 10,
@@ -38,7 +33,6 @@ export const columns: ColumnDef<Sections>[] = [
                 <span className="w-full flex justify-end">
                     <button
                         {...{
-                            onClick: row.getToggleExpandedHandler(),
                             className: 'cursor-pointer hover:text-slate-500'
                         }}
                     >

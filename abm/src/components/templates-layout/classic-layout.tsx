@@ -2,30 +2,31 @@ import React from 'react'
 import EmptyInfo from '../empty-info'
 import { useDataStore } from '@/providers/data-store-providers'
 import Image from 'next/image'
-import PaymentMethodsPreview from '../payment-methods-preview'
-import DeliverPreview from '../deliver-preview'
-import ContactInfo from '../contact-info'
+import PaymentMethodsWidget from '../payment-methods-widget'
+import DeliverMethodsWidget from '../deliver-methods-widget'
+import ContactInfoWidget from '../contact-info-widget'
 import { combosArr } from '@/constants'
 import { SelectSection } from '@/interfaces'
 
 const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: string, combo?: number) => void, editSection: SelectSection }) => {
     const { layout, header, combos, paymentMethods, contact, deliverMethods } = useDataStore(state => state)
+    const isheaderImg = header.imgUrl?.localImg || header.imgUrl.uploadImgUrl
     return (
-        <div className="w-[90%] flex flex-col gap-10 items-center">
+        <div className="w-[90%] flex flex-col gap-4 items-center">
             <div
                 className='w-full min-h-20 max-h-20 flex justify-center items-center rounded-lg relative cursor-pointer overflow-hidden'
                 onClick={() => selectSection('menu')}>
                 {
-                    header.title || header.imgUrl ?
+                    isheaderImg ?
                         <div className="h-full w-full relative bg-gray-900">
                             {
-                                header.imgUrl ?
+                                isheaderImg ?
                                     <Image
                                         alt="image"
                                         className="h-full w-full object-cover scale-[2]"
                                         width="1000"
                                         height="1000"
-                                        src={header.imgUrl}
+                                        src={isheaderImg}
                                         priority
                                     /> : <></>
                             }
@@ -61,9 +62,9 @@ const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: s
                     ))
                 }
             </div>
-            <PaymentMethodsPreview {...{ selectSection, editSection, paymentMethods }} />
-            <DeliverPreview {...{ selectSection, editSection, deliverMethods }} />
-            <ContactInfo {...{ selectSection, editSection, contact, layout }} />
+            <PaymentMethodsWidget {...{ selectSection, editSection, paymentMethods, layout }} />
+            <DeliverMethodsWidget {...{ selectSection, editSection, deliverMethods, layout }} />
+            <ContactInfoWidget {...{ selectSection, editSection, contact, layout }} />
         </div>
     )
 }

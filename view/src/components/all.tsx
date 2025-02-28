@@ -15,8 +15,8 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
     const { cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
     const { sentEvent } = useSentEvent()
 
-    const handleBuyItem = ({ price, label, quantity, category }: { price: number, label: string, quantity: number, category: string }) => {
-        handleOnChangeCart({ price, label, quantity, category })
+    const handleBuyItem = ({ price, label, quantity, category, id }: { price: number, label: string, quantity: number, category: string, id: string }) => {
+        handleOnChangeCart({ price, label, quantity, category, id })
         sentEvent('section_cart_item_added', {
             type: 'section_item',
             label,
@@ -35,47 +35,50 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
         return (
             row.original.items.map((it, i) => {
                 const cartItem = cart.find(i => i.label === it.name && i.category === row.original.name)
+                const img = it.itemImage.uploadImgUrl
                 return (
-                    <TableRow key={i} className='text-slate-50'>
-                        <TableCell {...{ style: { minWidth: columns[0], maxWidth: columns[0], ...style } }}>
-                            <div className='flex items-center justify-start gap-1'>
+                    <TableRow key={i}>
+                        <TableCell
+                            {...{ style: { minWidth: columns[0], maxWidth: columns[0], ...style, wordBreak: 'break-word' } }}
+                            className='px-0 sm:px-4'
+                        >
+                            <div className='flex items-center justify-start gap-2 h-20'>
                                 {
-                                    it.itemImage ?
+                                    img ?
                                         <Image
-                                            className='h-[25px] w-[25px] object-contain'
-                                            src={it.itemImage}
-                                            alt={''}
+                                            className='object-cover h-full'
+                                            src={img}
+                                            alt={'item-image'}
                                             width={100}
                                             height={100}
-                                        /> : <IconPhotoScan size={18} />
+                                        /> : <span><IconPhotoScan size={30} /></span>
                                 }
-                                <span className='w-full overflow-hidden text-wrap'>
-                                    {it.name || 'Nombre item'}
-                                </span>
+                                <div className='flex flex-col h-full justify-between gap-1'>
+                                    <span className='w-full overflow-scroll text-wrap text-xs sm:text-sm'>
+                                        {it.name || 'Nombre item'}
+                                    </span>
+                                    <span className='text-slate-400 text-xs sm:text-sm'>
+                                        $ {it.price || '-'}
+                                    </span>
+                                </div>
                             </div>
                         </TableCell>
-                        <TableCell {...{ style: { minWidth: columns[1], maxWidth: columns[1], ...style } }}>${it.price || '-'}</TableCell>
-                        <TableCell {...{ style: { minWidth: columns[2], maxWidth: columns[2] } }} className='pl-0'>
+                        <TableCell {...{ style: { minWidth: columns[2], maxWidth: columns[2] } }} className='max-w-[20px] px-0 sm:px-4 overflow-hidden'>
                             <div className='flex justify-end items-center gap-1'>
                                 {
                                     cartItem ?
                                         <>
-                                            <IconPlus size={22} className='cursor-pointer hover:scale-110'
-                                                onClick={() => handleOnChangeCartQuantity(cartItem, 'increase')}
-                                            />
-                                            <span
-                                                className='px-1'
-                                            >
-                                                {cartItem.quantity}
-                                            </span>
-                                            <IconMinus size={22} className='cursor-pointer hover:scale-110'
-                                                onClick={() => handleOnChangeCartQuantity(cartItem, 'decrease')}
-                                            />
-                                        </> :
+                                            <IconMinus size={20} className='transition-all cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'decrease')} />
+                                            <div className='select-none'>
+                                                {cartItem?.quantity}
+                                            </div>
+                                            <IconPlus size={20} className='transition-all cursor-pointer hover:scale-110' onClick={() => handleOnChangeCartQuantity(cartItem, 'increase')} />
+                                        </>
+                                        :
                                         <IconShoppingCartPlus
                                             size={18}
-                                            className='cursor-pointer hover:scale-110'
-                                            onClick={() => handleBuyItem({ price: Number(it.price), label: it.name || `Item ${i + 1}`, quantity: 1, category: row.original.name })}
+                                            className='transition-all cursor-pointer hover:scale-110'
+                                            onClick={() => handleBuyItem({ price: Number(it.price), label: it.name || `Item ${i + 1}`, quantity: 1, category: row.original.name, id: it.id })}
                                         />
                                 }
                             </div>
@@ -91,13 +94,13 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
             <div className='h-20 flex justify-center items-center rounded-lg relative overflow-hidden'>
                 <div className="h-full w-full relative bg-gray-900">
                     {
-                        template.header.imgUrl ?
+                        template.header.imgUrl.uploadImgUrl ?
                             <BlurImage
                                 alt='header-img'
                                 width='100'
                                 height='100'
                                 className='h-full w-full object-cover hover:scale-110 transition-all'
-                                src={template.header.imgUrl}
+                                src={template.header.imgUrl.uploadImgUrl}
                             /> :
                             <div className='w-full h-full flex items-center justify-center'>
                                 <IconPhotoScan size={40} className='text-slate-200' />
@@ -106,14 +109,20 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
                     <p className="font-bold text-xl text-white absolute bottom-4 left-4 z-40">{template.header.title}</p>
                 </div>
             </div>
-            <div className='rounded-sm overflow-scroll h-full'>
-                <DataTable
-                    columns={columns}
-                    data={[...template.sections]}
-                    getRowCanExpand={() => true}
-                    renderSubComponent={renderSubComponent}
-                />
-            </div>
+            {
+                template.sections.length ?
+                    <div className='rounded-sm overflow-scroll h-full'>
+                        <DataTable
+                            columns={columns}
+                            data={[...template.sections]}
+                            getRowCanExpand={() => true}
+                            renderSubComponent={renderSubComponent}
+                        />
+                    </div> :
+                    <div className='text-center text-black font-bold mt-5'>
+                        No existen items para mostrar
+                    </div>
+            }
         </div>
     )
 }

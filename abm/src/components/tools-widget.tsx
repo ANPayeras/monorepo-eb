@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconChevronRight, IconEdit, IconTrash } from '@tabler/icons-react'
+import { IconChevronDown, IconChevronRight, IconEdit, IconTrash } from '@tabler/icons-react'
 import {
     AnimatePresence,
     motion,
@@ -24,7 +24,12 @@ const ToolsWidget = ({ deleteFunc, editFunc, isEditing = false }: { deleteFunc?:
     }
 
     return (
-        <div className='flex flex-col justify-start ml-2 text-slate-950 relative'>
+        <div
+            className='flex flex-col justify-start text-slate-950 absolute top-0 right-0 rounded-tr-md rounded-br-md transition-all sm:invisible group-hover:visible bg-slate-400 bg-opacity-50 pt-3 h-full z-10'
+            style={{
+                ...(isEditing && { visibility: 'visible' })
+            }}
+        >
             {
                 deleteFunc &&
                 <button className='hover:opacity-60' onClick={deleteFunc}>
@@ -36,11 +41,20 @@ const ToolsWidget = ({ deleteFunc, editFunc, isEditing = false }: { deleteFunc?:
                     editFunc && <>
                         {
                             isEditing ?
-                                <motion.div
-                                    {...animation}
-                                >
-                                    <IconChevronRight size={18} />
-                                </motion.div> :
+                                <>
+                                    <motion.div
+                                        {...animation}
+                                        className='hidden sm:flex'
+                                    >
+                                        <IconChevronRight size={18} />
+                                    </motion.div>
+                                    <motion.div
+                                        {...animation}
+                                        className='sm:hidden'
+                                    >
+                                        <IconChevronDown size={18} />
+                                    </motion.div>
+                                </> :
                                 <motion.button
                                     {...animation}
                                     className='hover:opacity-60 text-slate-900'

@@ -3,17 +3,16 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { usePostHog } from 'posthog-js/react';
-import useInitPosthog from "@/hooks/use-init-posthog";
+import { useDataStore } from "@/providers/data-store-providers";
 
 export default function PostHogPageView(): null {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const posthog = usePostHog();
-  useInitPosthog()
-  const isInitPH = sessionStorage.getItem('isInitPH')
+  const isPostHogInit = useDataStore(state => state.isPostHogInit)
 
   useEffect(() => {
-    if (pathname && Boolean(isInitPH)) {
+    if (pathname && isPostHogInit) {
       let url = window.origin + pathname
       if (searchParams.toString()) {
         url = url + `?${searchParams.toString()}`
@@ -25,7 +24,7 @@ export default function PostHogPageView(): null {
         }
       )
     }
-  }, [pathname, searchParams, isInitPH])
+  }, [pathname, searchParams, isPostHogInit])
 
   return null
 }

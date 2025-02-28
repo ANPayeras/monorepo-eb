@@ -37,7 +37,7 @@ const ActiveTemplate = () => {
                                         <Link href={viewUrl} target='_blank' className='overflow-hidden text-ellipsis text-nowrap hover:underline'>
                                             <span>{viewUrl}</span>
                                         </Link>
-                                        <CopyLink url={viewUrl} />
+                                        <CopyLink text={viewUrl} />
                                     </div> : <></>
                             }
                         </div>

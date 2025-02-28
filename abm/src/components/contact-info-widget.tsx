@@ -4,6 +4,7 @@ import { Contact, Layout } from '@/stores/data-store'
 import ToolsWidget from './tools-widget'
 import { SelectSection } from '@/interfaces'
 import Link from 'next/link'
+import WidgetBaseCard from './widget-base-card'
 
 export const icons = [
     {
@@ -32,34 +33,19 @@ export const icons = [
     },
 ]
 
-const ContactInfo: FC<{ selectSection?: (type: string) => void, editSection?: SelectSection, contact: Contact[], layout: Layout }> = ({ selectSection, editSection, contact, layout }) => {
+const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSection?: SelectSection, contact: Contact[], layout: Layout, props?: any }> = ({ selectSection, editSection, contact, layout, props }) => {
     return (
-        <div className='flex justify-between items-center w-full p-2'>
-            <div className={`flex justify-center items-center gap-1 ${!selectSection && 'w-full'}`}>
+        <WidgetBaseCard containerClassName='bg-transparent border-none shadow-none hover:border-slate-700 hover:border transition-all'>
+            <div className={`hover:border-slate-700 hover:border hover:shadow-sm h-[60px] flex justify-center items-center p-2 gap-1 w-full rounded-sm ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`} {...props}>
                 {
-                    !selectSection && contact.filter(c => c.enabled).map((c, i) => {
-                        const Icon = icons.find(i => i.name === c.title)?.icon!
-                        return (
-                            <Link
-                                key={i}
-                                className="flex justify-center items-center w-[40px] h-[40px] rounded-full font-bold border-[1px]"
-                                href={c?.url || ''}
-                                target='_blank'
-                            >
-                                <Icon size={16} />
-                            </Link>
-                        )
-                    })
-                }
-                {
-                    selectSection && icons.map((ic, i) => {
+                    icons.map((ic, i) => {
                         const socialMedia = contact.find(c => c.title === ic.name)
                         const isEnabled = socialMedia?.enabled
                         return (
                             <Link
                                 key={i}
                                 style={{ borderColor: layout.textsColor, cursor: isEnabled ? 'pointer' : 'unset', pointerEvents: isEnabled ? 'auto' : 'none' }}
-                                className={`bg-slate-${!isEnabled && '200'} flex justify-center items-center w-[40px] h-[40px] rounded-full font-bold border-[1px]`}
+                                className={`bg-slate-${!isEnabled && '200'} flex justify-center items-center w-[40px] h-[40px] rounded-full font-bold border-[1px] hover:scale-105 transition-all shadow-md`}
                                 href={socialMedia?.url || ''}
                                 target='_blank'
                             >
@@ -76,8 +62,8 @@ const ContactInfo: FC<{ selectSection?: (type: string) => void, editSection?: Se
                         isEditing={editSection?.section === 'contact'} />
                     : <></>
             }
-        </div>
+        </WidgetBaseCard>
     )
 }
 
-export default ContactInfo
+export default ContactInfoWidget
