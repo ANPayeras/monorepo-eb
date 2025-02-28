@@ -80,7 +80,7 @@ export type Widget = {
   data?: WidgetData;
 };
 
-type resizableItem = {
+export type resizableItem = {
   id: number;
   size: number;
   img?: {

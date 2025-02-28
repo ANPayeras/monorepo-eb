@@ -25,7 +25,7 @@ const ToolsWidget = ({ deleteFunc, editFunc, isEditing = false }: { deleteFunc?:
 
     return (
         <div
-            className='flex flex-col justify-start text-slate-950 absolute top-0 right-0 rounded-tr-md rounded-br-md transition-all sm:invisible group-hover:visible bg-slate-400 bg-opacity-50 pt-3 h-full'
+            className='flex flex-col justify-start text-slate-950 absolute top-0 right-0 rounded-tr-md rounded-br-md transition-all sm:invisible group-hover:visible bg-slate-400 bg-opacity-50 pt-3 h-full z-10'
             style={{
                 ...(isEditing && { visibility: 'visible' })
             }}

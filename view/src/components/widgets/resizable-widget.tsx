@@ -1,23 +1,37 @@
 import { useCallback } from "react"
-import { Widget } from "@/types"
+import { resizableItem, Widget } from "@/types"
 import WidgetBaseCard from "../widget-base-card"
 import { Doc } from "../../../convex/_generated/dataModel"
 import { Separator } from "@radix-ui/react-separator"
 import ContentResizeWidget from "../content-resize-widget"
+import useSentEvent from "@/hooks/use-sent-events"
 
 export function ResizableWidget({ widget, template }: { widget: Widget, template: Doc<"templates"> }) {
-    const sizes = widget?.data?.resizables
+    const { sentEvent } = useSentEvent()
+    const sizes = widget.data!.resizables!
     const { layout } = template
 
     const getPanelImage = useCallback((panel: number): string => {
-        const arr = widget.data?.resizables || []
-        const panelImg = arr.length ? arr[panel].img?.localImg || arr[panel].img?.uploadImgUrl : ''
+        const panelImg = sizes.length ? sizes[panel].img?.localImg || sizes[panel].img?.uploadImgUrl : ''
         return panelImg || ''
-    }, [widget.data?.resizables])
+    }, [sizes])
+
+    const getPanelData = useCallback((panel: number): resizableItem => {
+        return sizes[panel]
+    }, [sizes])
+
+    const redirect = (panel: resizableItem) => {
+        window.open(panel.url, '_blank')
+        sentEvent('widget_click', {
+            type: widget.type,
+            title: widget.title,
+            linkUrl: panel.url,
+        })
+    }
 
     return (
         <WidgetBaseCard>
-            <div className='flex w-full h-full flex-1 rounded-md'>
+            <div className='flex w-full h-full flex-1 rounded-md overflow-hidden'>
                 <div
                     className='overflow-hidden rounded-md'
                     style={{
@@ -28,10 +42,14 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                         borderBottomRightRadius: sizes && sizes[0].size === 100 ? '4px' : '0px',
                     }}
                 >
-                    <div className="flex h-[200px] w-full items-center justify-center p-6 relative">
+                    <div
+                        className={`flex h-[200px] w-full items-center justify-center p-6 relative transition-all ${getPanelData(0).url ? 'hover:scale-105' : ''}`}
+                        style={{ cursor: getPanelData(0).url ? 'pointer' : 'auto' }}
+                        onClick={getPanelData(0).url ? () => redirect(getPanelData(0)) : undefined}
+                    >
                         <ContentResizeWidget
-                            value={sizes ? widget.data?.resizables![0].value : ''}
-                            textColor={sizes ? widget.data?.resizables![0].textColor || layout?.textsColor : ''}
+                            value={getPanelData(0).value || ''}
+                            textColor={sizes ? getPanelData(0).textColor || layout?.textsColor : ''}
                             image={getPanelImage(0)}
                             placeholder="Panel 1"
                         />
@@ -53,7 +71,10 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                                 borderBottomRightRadius: sizes && sizes[1].size === 100 ? '4px' : '0px',
                             }}
                         >
-                            <div className="flex h-full items-center justify-center p-6 relative">
+                            <div className={`flex h-full items-center justify-center p-6 relative transition-all ${getPanelData(1).url ? 'hover:scale-105' : ''}`}
+                                style={{ cursor: getPanelData(1).url ? 'pointer' : 'auto' }}
+                                onClick={getPanelData(1).url ? () => redirect(getPanelData(1)) : undefined}
+                            >
                                 <ContentResizeWidget
                                     value={sizes ? widget.data?.resizables![1].value : ''}
                                     textColor={sizes ? widget.data?.resizables![1].textColor || layout?.textsColor : ''}
@@ -73,7 +94,10 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                                 borderBottomRightRadius: '4px',
                             }}
                         >
-                            <div className="flex h-full items-center justify-center p-6 relative">
+                            <div className={`flex h-full items-center justify-center p-6 relative transition-all ${getPanelData(1).url ? 'hover:scale-105' : ''}`}
+                                style={{ cursor: getPanelData(2).url ? 'pointer' : 'auto' }}
+                                onClick={getPanelData(2).url ? () => redirect(getPanelData(2)) : undefined}
+                            >
                                 <ContentResizeWidget
                                     value={sizes ? widget.data?.resizables![2].value : ''}
                                     textColor={sizes ? widget.data?.resizables![2].textColor || layout?.textsColor : ''}

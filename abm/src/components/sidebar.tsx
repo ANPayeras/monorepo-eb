@@ -8,6 +8,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
+import Link from 'next/link';
 
 const links = [
     {
@@ -69,7 +70,7 @@ const LeftSidebar = () => {
             <Sidebar open={open} setOpen={setOpen} animate={true}>
                 <SidebarBody className="justify-between gap-10 md:border-r-1">
                     <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-                        <div>
+                        <Link href={'/'} className='w-fit'>
                             <Image
                                 className='h-full w-10 rounded-sm'
                                 src={'/logo.png'}
@@ -77,7 +78,7 @@ const LeftSidebar = () => {
                                 width={100}
                                 height={100}
                             />
-                        </div>
+                        </Link>
                         <div className="mt-8 flex flex-col gap-2">
                             {_links.map((link, idx) => {
                                 const isActive = pathname.includes(link.href)

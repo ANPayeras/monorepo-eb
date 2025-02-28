@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
-import Image from 'next/image'
 import { IconPlus } from '@tabler/icons-react'
+import { BlurImage } from './blur-image'
 
 const ContentResizeWidget = ({ value, image, textColor, placeholder }: { value?: string, image?: string, textColor?: string, placeholder?: string }) => {
 
@@ -30,12 +30,12 @@ const ContentResizeWidget = ({ value, image, textColor, placeholder }: { value?:
             </div>
             {
                 image &&
-                <Image
-                    src={image}
-                    alt='panel-img-widget'
+                <BlurImage
+                    alt='resizable-panel-img'
+                    width='1000'
+                    height='100'
                     className='object-cover absolute z-0 h-full'
-                    width={1000}
-                    height={100}
+                    src={image}
                 />
             }
         </>)
