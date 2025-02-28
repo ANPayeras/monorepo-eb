@@ -25,10 +25,10 @@ function LinkDetail() {
                             style={{ borderBottom: detailWidgets.length - 1 === i ? '' : '1px solid black' }}>
                             <span>{m[1]}</span>
                             <Link
-                                href={decodeURIComponent(m[0])}
+                                href={decodeURIComponent(m[0] as string)}
                                 target='_blank'
                                 className='text-ellipsis whitespace-nowrap overflow-hidden transition-all cursor-pointer hover:underline'>
-                                {decodeURIComponent(m[0])}
+                                {decodeURIComponent(m[0] as string)}
                             </Link>
                         </div>
                     ))
