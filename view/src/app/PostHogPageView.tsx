@@ -24,7 +24,7 @@ export default function PostHogPageView(): null {
         }
       )
     }
-  }, [pathname, searchParams, isPostHogInit])
+  }, [pathname, searchParams, isPostHogInit, posthog])
 
   return null
 }

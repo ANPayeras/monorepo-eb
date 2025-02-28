@@ -20,7 +20,7 @@ const ReactiveTemplate = ({ user, test = false }: { user: string, test?: boolean
     if (template?.template[0] && !test) {
       init(template.template[0])
     }
-  }, [template?.template[0], test])
+  }, [init, template, test])
 
   if (!template) return <Loader />
 
