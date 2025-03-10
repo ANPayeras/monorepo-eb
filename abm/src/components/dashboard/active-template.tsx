@@ -1,4 +1,5 @@
 "use client"
+
 import React from 'react'
 import { useQuery } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
@@ -7,12 +8,13 @@ import CopyLink from '../copy-link'
 import LoaderSpinner from '../loader-spinner'
 import Template from '../template'
 import { useUser } from '@clerk/nextjs'
+import { VIEW_URL } from '@/constants/envs'
 
 const ActiveTemplate = () => {
     const { user } = useUser()
     const template = useQuery(api.templates.getActiveTemplate, !user ? 'skip' : undefined)
 
-    const viewUrl = `${process.env.NEXT_PUBLIC_VIEW_URL}/${user?.username}`
+    const viewUrl = `${VIEW_URL}/t/${user?.username}`
 
     return (
         <div className='h-full w-full max-w-[400px] flex flex-col gap-2 flex-1'>

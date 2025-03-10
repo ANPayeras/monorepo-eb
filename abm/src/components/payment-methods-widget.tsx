@@ -18,7 +18,7 @@ const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSect
     return (
         <WidgetBaseCard>
             <div
-                className={cn(`w-full flex flex-col space-y-1 p-2 ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`, containerClassName)}
+                className={cn(`w-full flex flex-col space-y-1 p-2 rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`, containerClassName)}
                 style={{ color: layout?.textsColor }}
                 {...props}>
                 <div className='flex justify-between items-center gap-4'>

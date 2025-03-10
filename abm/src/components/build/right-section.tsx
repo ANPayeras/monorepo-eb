@@ -41,8 +41,8 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     }
 
     const generatePreview = async () => {
-        saveChanges({ feedback: false })
-        await createTemplateTest({ templateId: template._id })
+        const testData = await createTemplateTest({ templateId: template._id })
+        await saveChanges({ feedback: false, data: { ...template, ...testData } })
         setOpenGenerateQr(true)
     }
 
