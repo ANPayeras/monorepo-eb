@@ -30,7 +30,7 @@ export function ResizableWidget({ widget, selectSection, editWidget, layout, pro
 
     return (
         <WidgetBaseCard>
-            <div className={`flex w-full h-full flex-1 rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`} {...props}>
+            <div className={`flex w-full h-full flex-1 rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`} {...props}>
                 <div
                     className='overflow-hidden rounded-md'
                     style={{

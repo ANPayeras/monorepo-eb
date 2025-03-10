@@ -1,6 +1,14 @@
 import { ConvexError, v } from "convex/values";
-import { internalQuery, mutation, query } from "./_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  MutationCtx,
+  query,
+} from "./_generated/server";
 import schema from "./schema";
+import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
 export const createTemplate = mutation({
   args: {
@@ -93,10 +101,22 @@ export const createTemplateTest = mutation({
       )
       .first();
 
-    if (testTemplate?._id === args.templateId) return;
+    if (testTemplate?._id === args.templateId) {
+      await ctx.scheduler.cancel(testTemplate.testScheduledTimeId!);
+    }
 
-    testTemplate && (await ctx.db.patch(testTemplate?._id, { test: false }));
-    return await ctx.db.patch(args.templateId, { test: true });
+    const scheduledId = await scheduleTemplateTest(
+      ctx,
+      3600000,
+      args.templateId
+    );
+
+    testTemplate && (await ctx.db.patch(testTemplate._id, { test: false }));
+
+    return {
+      test: true,
+      testScheduledTimeId: scheduledId,
+    };
   },
 });
 
@@ -450,3 +470,26 @@ export const getUser = query({
       .collect();
   },
 });
+
+export const deleteTemplateTest = internalMutation({
+  args: {
+    templateId: v.id("templates"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.templateId, { test: false });
+  },
+});
+
+const scheduleTemplateTest = async (
+  ctx: MutationCtx,
+  time: number,
+  templateId: Id<"templates">
+): Promise<Id<"_scheduled_functions">> => {
+  return await ctx.scheduler.runAfter(
+    time,
+    internal.templates.deleteTemplateTest,
+    {
+      templateId,
+    }
+  );
+};

@@ -24,7 +24,7 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
 
     return (
         <WidgetBaseCard>
-            <div className={`flex w-full max-h-[200px] relative ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'}`} {...props}>
+            <div className={`flex w-full max-h-[200px] rounded-md relative ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`} {...props}>
                 {
                     image ?
                         <>

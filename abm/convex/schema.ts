@@ -76,6 +76,7 @@ export default defineSchema({
       })
     ),
     test: v.boolean(),
+    testScheduledTimeId: v.optional(v.id("_scheduled_functions")),
     active: v.boolean(),
     widgets: v.array(
       v.object({
