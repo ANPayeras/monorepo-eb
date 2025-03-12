@@ -133,3 +133,11 @@ export type ImageWidgetInterface = {
   className?: string;
   layout?: Layout;
 };
+
+export type DetailMetricsResponse = [
+  string,
+  string | null,
+  string | null,
+  string | null,
+  number,
+][];

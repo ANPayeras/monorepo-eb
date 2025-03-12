@@ -20,7 +20,7 @@ const TimeVisitedHour = async ({ clerkId }: { clerkId: string }) => {
 
     const metrics: [number, number][] = await fetchAction(api.metrics.getMetrics,
         {
-            query: "select toHour(timestamp - interval 3 hour), count() as t_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' group by toHour(timestamp - interval 3 hour) order by t_count desc limit 5",
+            query: "select toHour(timestamp - interval 3 hour), count() as t_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' and timestamp > now() - interval 3 month group by toHour(timestamp - interval 3 hour) order by t_count desc limit 5",
             clerkId
         })
 
@@ -35,7 +35,7 @@ const TimeVisitedHour = async ({ clerkId }: { clerkId: string }) => {
         <div className='flex flex-col gap-1'>
             <BarChartComponent
                 title={'Horas con mas visitas'}
-                description={'Visitas ultimos 3 meses'}
+                description={'Ultimos 3 meses'}
                 chartConfig={chartConfig}
                 chartData={chartData}
                 formatterType={'hour'}

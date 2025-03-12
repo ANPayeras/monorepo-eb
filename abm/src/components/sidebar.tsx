@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { SidebarBody, SidebarLink, Sidebar } from './ui/sidebar'
 import { IconArrowLeft, IconBrandTabler, IconChartBarPopular, IconLayout, IconTemplate, IconTool, IconUserCircle } from '@tabler/icons-react';
-import { useClerk } from '@clerk/nextjs';
+import { useClerk, useUser } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { useQuery } from 'convex/react';
@@ -55,7 +55,8 @@ const premiumLinks = [
 const LeftSidebar = () => {
     const { signOut } = useClerk()
     const pathname = usePathname()
-    const user = useQuery(api.users.getCurrentUser)
+    const { isSignedIn } = useUser()
+    const user = useQuery(api.users.getCurrentUser, !isSignedIn ? 'skip' : undefined)
     const [open, setOpen] = useState<boolean>(false)
 
     const checkUrlBuild = (): string => {

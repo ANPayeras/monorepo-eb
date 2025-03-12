@@ -11,6 +11,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
+import EmptyChartInfo from "./empty-chart-info"
 
 type PieChartComponent = {
     title: string;
@@ -35,26 +36,29 @@ export function PieChartComponent({ title, description, chartConfig, chartData }
                     config={chartConfig}
                     className="aspect-square h-[200px] w-full"
                 >
-                    <PieChart>
-                        <ChartTooltip
-                            content={<ChartTooltipContent nameKey="visitors" hideLabel />}
-                        />
-                        <Pie data={chartData} dataKey="visitors">
-                            <LabelList
-                                dataKey="label"
-                                className="fill-background hidden md:flex"
-                                stroke="none"
-                                fontSize={12}
-                                formatter={(value: keyof typeof chartConfig) =>
-                                    chartConfig[value]?.label
-                                }
-                            />
-                        </Pie>
-                        <ChartLegend
-                            content={<ChartLegendContent nameKey="label" />}
-                            className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center md:hidden"
-                        />
-                    </PieChart>
+                    {
+                        !chartData.length ? <EmptyChartInfo /> :
+                            <PieChart>
+                                <ChartTooltip
+                                    content={<ChartTooltipContent nameKey="visitors" hideLabel />}
+                                />
+                                <Pie data={chartData} dataKey="visitors">
+                                    <LabelList
+                                        dataKey="label"
+                                        className="fill-background hidden md:flex"
+                                        stroke="none"
+                                        fontSize={12}
+                                        formatter={(value: keyof typeof chartConfig) =>
+                                            chartConfig[value]?.label
+                                        }
+                                    />
+                                </Pie>
+                                <ChartLegend
+                                    content={<ChartLegendContent nameKey="label" />}
+                                    className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center md:hidden"
+                                />
+                            </PieChart>
+                    }
                 </ChartContainer>
             </CardContent>
         </>

@@ -180,6 +180,23 @@ export const getTemplateById = query({
   },
 });
 
+export const getLastTemplateBuild = query({
+  args: {
+    user: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), args.user),
+          q.eq(q.field("lastBuild"), true)
+        )
+      )
+      .first();
+  },
+});
+
 export const updateTemplate = mutation({
   args: {
     ...schema.tables.templates.validator.fields,
@@ -289,7 +306,10 @@ export const activeTemplate = mutation({
       .first();
 
     if (currentActiveTemplate) {
-      return await ctx.db.patch(currentActiveTemplate._id, { active: false });
+      if (currentActiveTemplate._id === args.templateId) {
+        return await ctx.db.patch(currentActiveTemplate._id, { active: false });
+      }
+      await ctx.db.patch(currentActiveTemplate._id, { active: false });
     }
 
     return await ctx.db.patch(args.templateId, { active: true });

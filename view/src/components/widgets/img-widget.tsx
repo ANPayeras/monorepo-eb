@@ -7,14 +7,16 @@ import { BlurImage } from '../blur-image'
 const ImgWidget = ({ widget }: { widget: Widget }) => {
     const { sentEvent } = useSentEvent()
     const image = widget.data?.img?.uploadImgUrl || ''
+    const value = widget?.data?.value
     const url = widget?.data?.url
 
     const redirect = () => {
         window.open(widget?.data?.url, '_blank')
         sentEvent('widget_click', {
             type: widget.type,
-            title: widget.title,
-            linkUrl: widget?.data?.url,
+            title: value,
+            widgetUrl: url,
+            img: image,
         })
     }
 
@@ -35,7 +37,7 @@ const ImgWidget = ({ widget }: { widget: Widget }) => {
                             className='absolute p-10 flex w-full h-full justify-center items-center overflow-hidden break-words break-all'
                             style={{ color: widget.data?.textColor }}
                         >
-                            {widget.data?.value}
+                            {value}
                         </span>
                     </div>
                 </WidgetBaseCard>

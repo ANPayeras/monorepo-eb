@@ -1,8 +1,8 @@
 import React from 'react'
-import { icons } from './contact-info-widget'
 import { Input } from './ui/input'
 import { Switch } from './ui/switch'
 import { useDataStore } from '@/providers/data-store-providers'
+import { icons } from '@/constants'
 
 const ContactTemplate = () => {
     const { contact, handleOnChangeContact, handleOnChangeContactSwitch } = useDataStore(state => state)

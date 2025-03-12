@@ -1,5 +1,5 @@
-import { fetchAction } from 'convex/nextjs'
 import React from 'react'
+import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../../../convex/_generated/api'
 import { currentUser } from '@clerk/nextjs/server'
 import { BarChartCustom } from '@/components/charts/bar-chart-custom'
@@ -10,8 +10,8 @@ import { days, validCombos, validWidgetsTypes } from '@/constants'
 import { capitalizeFirstLetter } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import HeaderComboImgs from '@/components/detail-metrics/header-combo-imgs'
-import LinkDetail from '@/components/detail-metrics/link-detail'
-import SocialsDetail from '@/components/detail-metrics/socials-detail'
+import BaseMetricDetail from '@/components/detail-metrics/base-metric-detail'
+import EmptyChartInfo from '@/components/charts/empty-chart-info'
 
 const MetricDetail = async ({ searchParams }: { searchParams: { type: string, combo?: string } }) => {
     const user = await currentUser()
@@ -28,39 +28,40 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
     if (!validRoute()) notFound()
 
     const queryDinamic = `and properties.type = '${type}' ${combo ? `and properties.comboNumber = '${combo}'` : ''}`
-    // const widgetHours = [[23, 21], [0, 9], [12, 5], [9, 3], [22, 2]]
-    // const widgetDays = [[2, 29], [3, 16]]
+    const metricsInterval = '3 month'
+    // const widgetHours = [ [ '2025-02-26', 21, 4 ], [ '2025-03-11', 21, 4 ] ]
+    // const widgetDays = [ [ '2025-02-26', 2, 4 ], [ '2025-03-11', 1, 4 ] ]
     // const desktopUsers = [[450000]]
     // const mobileUsers = [[0]]
-    // const locationsUsers = [['Argentina', 'Buenos Aires'], ['Argentina', 'Buenos Aires'], ['Argentina', 'Buenos Aires'], ['Argentina', 'Buenos Aires']]
+    // const locationsUsers = [ [ 'Argentina', 'San Justo' ], [ 'Argentina', 'Isidro Casanova' ] ]
 
-    const widgetHours: [number, number][] = await fetchAction(api.metrics.getMetrics,
+    const widgetHours: [string, number, number][] = await fetchAction(api.metrics.getMetrics,
         {
-            query: `select toHour(timestamp - interval 3 hour), count() as t_count from events where distinct_id = 'templateID' ${queryDinamic} group by toHour(timestamp - interval 3 hour) order by t_count desc limit 5`,
+            query: `select toDate(timestamp - interval 3 hour) as timestamp, toHour(timestamp - interval 3 hour), count() as t_count from events where distinct_id = 'templateID' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} group by timestamp, toHour(timestamp - interval 3 hour) order by t_count desc limit 5`,
             clerkId: user?.id!
         })
 
-    const widgetDays: [number, number][] = await fetchAction(api.metrics.getMetrics,
+    const widgetDays: [string, number, number][] = await fetchAction(api.metrics.getMetrics,
         {
-            query: `select toDayOfWeek(timestamp - interval 3 hour), count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} group by toDayOfWeek(timestamp - interval 3 hour) order by t_count desc limit 5`,
+            query: `select toDate(timestamp - interval 3 hour) as timestamp, toDayOfWeek(timestamp - interval 3 hour), count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} group by timestamp, toDayOfWeek(timestamp - interval 3 hour) order by t_count desc limit 5`,
             clerkId: user?.id!
         })
 
     const desktopUsers = await fetchAction(api.metrics.getMetrics,
         {
-            query: `select count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and properties.$device_type = 'Desktop' order by t_count desc`,
+            query: `select count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} and properties.$device_type = 'Desktop' order by t_count desc`,
             clerkId: user?.id!
         })
 
     const mobileUsers = await fetchAction(api.metrics.getMetrics,
         {
-            query: `select count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and properties.$device_type = 'Mobile' order by t_count desc`,
+            query: `select count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} and properties.$device_type = 'Mobile' order by t_count desc`,
             clerkId: user?.id!
         })
 
     const locationsUsers: [string, string][] = await fetchAction(api.metrics.getMetrics,
         {
-            query: `select properties.$geoip_country_name, properties.$geoip_city_name from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} group by properties.$geoip_country_name, properties.$geoip_city_name`,
+            query: `select properties.$geoip_country_name, properties.$geoip_city_name, count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} group by properties.$geoip_country_name, properties.$geoip_city_name order by t_count desc limit 5`,
             clerkId: user?.id!
         })
 
@@ -82,19 +83,24 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
     } satisfies ChartConfig
 
     widgetHours?.forEach((m) => {
-        chartDataHours.push({ hour: `${m[0]}hs`, count: m[1], })
+        chartDataHours.push({ hour: `${m[1]}hs`, count: m[2], })
     });
 
     widgetDays?.forEach((m) => {
-        chartDataDays.push({ day: days[m[0]], count: m[1], })
+        chartDataDays.push({ day: days[m[1]], count: m[2], })
     });
 
     const detail: { [index: string]: JSX.Element } = {
         header: <HeaderComboImgs clerkId={user?.id!} queryDinamic={queryDinamic} />,
         combo: <HeaderComboImgs clerkId={user?.id!} queryDinamic={queryDinamic} />,
-        link: <LinkDetail />,
-        social: <SocialsDetail />,
+        link: <BaseMetricDetail type='link' />,
+        social: <BaseMetricDetail type='social' />,
+        img: <BaseMetricDetail type='img' />,
+        resizable: <BaseMetricDetail type='resizable' />,
     }
+
+    const _desktopUsers = desktopUsers?.length ? desktopUsers[0][0].toLocaleString(['es-ES']) : 0
+    const _mobileUsers = mobileUsers?.length ? mobileUsers[0][0].toLocaleString(['es-ES']) : 0
 
     return (
         <section className='size-full max-w-[1000px] m-auto flex flex-col p-1 rounded-sm overflow-y-scroll gap-2'>
@@ -110,7 +116,7 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
                             Clicks en Escritorio
                         </span>
                         <span className="text-lg font-bold leading-none sm:text-3xl">
-                            {desktopUsers[0][0].toLocaleString(['es-ES'])}
+                            {_desktopUsers}
                         </span>
                     </div>
                     <div
@@ -120,7 +126,7 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
                             Clicks en mobiles
                         </span>
                         <span className="text-lg font-bold leading-none sm:text-3xl">
-                            {mobileUsers[0][0].toLocaleString(['es-ES'])}
+                            {_mobileUsers}
                         </span>
                     </div>
                 </BaseCard>
@@ -154,18 +160,21 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
                     </CardHeader>
                     <CardContent className="px-2 py-2">
                         {
-                            locationsUsers?.map((m, i) => (
-                                <div key={i}
-                                    className='flex w-full justify-between hover:bg-slate-300 transition-all'
-                                    style={{ borderBottom: locationsUsers.length - 1 === i ? '' : '1px solid black' }}>
-                                    <span>{m[1]}, {m[0]}</span>
-                                </div>
-                            ))
+                            !locationsUsers?.length ? <EmptyChartInfo /> :
+                                locationsUsers.map((m, i) => (
+                                    <div key={i}
+                                        className='flex w-full justify-between hover:bg-slate-300 transition-all'
+                                        style={{ borderBottom: locationsUsers.length - 1 === i ? '' : '1px solid black' }}>
+                                        <span>{m[1]}, {m[0]}</span>
+                                    </div>
+                                ))
                         }
                     </CardContent>
                 </BaseCard>
             </div>
-            {detail[type]}
+            <div>
+                {detail[type]}
+            </div>
         </section>
     )
 }

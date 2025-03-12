@@ -1,4 +1,5 @@
 "use client"
+
 import { useDataStore } from '@/providers/data-store-providers'
 import React, { useEffect, useRef, useState } from 'react'
 import { Swiper as SwiperType } from 'swiper/types'
@@ -24,7 +25,6 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
     const { user } = useUser()
     const userConvex = useQuery(api.users.getCurrentUser, !user ? 'skip' : undefined)
     const listTemplates = useQuery(api.templates.listTemplates, !user ? 'skip' : undefined)
-    const lastBuildTemplate = useQuery(api.templates.getLastBuildTemplate, !user || template ? 'skip' : undefined)
     const createTemplate = useMutation(api.templates.createTemplate)
     const router = useRouter()
     const { toast } = useToast()
@@ -60,10 +60,8 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
     useEffect(() => {
         if (template) {
             setTemplateData({ ...template, cart: [], templateBuildId: template._id })
-        } else if (lastBuildTemplate) {
-            router.replace(`/build/${lastBuildTemplate._id}`)
         }
-    }, [setTemplateData, template, lastBuildTemplate, router])
+    }, [setTemplateData, template, router])
 
     const resetTemplate = () => {
         resetState()
@@ -92,7 +90,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
         classic: <ClassicLayout {...{ selectSection, editSection }} />,
     }
 
-    if ((!template && lastBuildTemplate) || !userConvex || !listTemplates) return <LoaderSpinner />
+    if (!userConvex || !listTemplates) return <LoaderSpinner />
 
     if (!listTemplates?.length) return (
         <EmptyTemplates
@@ -122,7 +120,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
                 editSection={editSection}
                 templateLayout={templateLayout || layoutFeatures[layout.templateLayout]}
                 swiperRef={swiperRef}
-                template={template || lastBuildTemplate!}
+                template={template!}
                 userConvex={userConvex} />
             <AlertDialogComponent
                 open={openDialog}

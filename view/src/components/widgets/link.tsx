@@ -7,13 +7,15 @@ import { Doc } from '../../../convex/_generated/dataModel'
 const Link = ({ widget, template }: { widget: Widget, template: Doc<"templates"> }) => {
     const { sentEvent } = useSentEvent()
     const { layout } = template
+    const value = widget?.data?.value
+    const url = widget.data?.url
 
     const redirect = () => {
-        window.open(widget.data?.url, '_blank')
+        window.open(url, '_blank')
         sentEvent('widget_click', {
             type: widget.type,
-            title: widget.title,
-            linkUrl: widget.data?.url,
+            title: value,
+            widgetUrl: url,
         })
     }
 
@@ -27,7 +29,7 @@ const Link = ({ widget, template }: { widget: Widget, template: Doc<"templates">
                                 className='w-full text-center overflow-hidden break-words'
                                 style={{ color: widget.data?.textColor || layout?.textsColor }}
                             >
-                                {widget.data?.value}
+                                {value}
                             </div>
                         </div>
                     </WidgetBaseCard>
