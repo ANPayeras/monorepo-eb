@@ -180,6 +180,23 @@ export const getTemplateById = query({
   },
 });
 
+export const getLastTemplateBuild = query({
+  args: {
+    user: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), args.user),
+          q.eq(q.field("lastBuild"), true)
+        )
+      )
+      .first();
+  },
+});
+
 export const updateTemplate = mutation({
   args: {
     ...schema.tables.templates.validator.fields,
