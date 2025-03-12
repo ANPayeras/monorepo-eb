@@ -10,6 +10,8 @@ import DesktopMobileUsers from '@/components/metrics/desktop-mobile-users'
 import { fetchQuery } from 'convex/nextjs'
 import { api } from '../../../../convex/_generated/api'
 import EmptyTemplates from '@/components/empty-templates'
+import Link from 'next/link'
+import RefetchSsrPage from '@/components/refetch-ssr-page'
 
 const MetricsPage = async () => {
     const user = await currentUser()
@@ -23,7 +25,12 @@ const MetricsPage = async () => {
     )
 
     return (
-        <section className='size-full max-w-[2000px] m-auto flex p-1 rounded-sm overflow-y-scroll'>
+        <section className='size-full max-w-[2000px] m-auto flex flex-col gap-2 p-1 rounded-sm overflow-y-scroll'>
+            <div>
+                Solo se muestran las métricas de la pantilla que esta actualmente activa, si quieres ver metricas de otra{' '}
+                <Link href={'/templates'} className='text-blue-500 hover:underline transition-all'>actívala primero.</Link>
+            </div>
+            <RefetchSsrPage fromPages={['templates']} />
             <div className='flex flex-col w-full h-fit gap-1'>
                 <BaseCard containerClassName='w-full'>
                     <DesktopMobileUsers clerkId={user?.id!} />

@@ -289,7 +289,10 @@ export const activeTemplate = mutation({
       .first();
 
     if (currentActiveTemplate) {
-      return await ctx.db.patch(currentActiveTemplate._id, { active: false });
+      if (currentActiveTemplate._id === args.templateId) {
+        return await ctx.db.patch(currentActiveTemplate._id, { active: false });
+      }
+      await ctx.db.patch(currentActiveTemplate._id, { active: false });
     }
 
     return await ctx.db.patch(args.templateId, { active: true });

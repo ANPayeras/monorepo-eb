@@ -17,7 +17,7 @@ const TimeVisitedDay = async ({ clerkId }: { clerkId: string }) => {
 
     const metrics: [number, number][] = await fetchAction(api.metrics.getMetrics,
         {
-            query: "select toDayOfWeek(timestamp - interval 3 hour), count() as t_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' group by toDayOfWeek(timestamp - interval 3 hour) order by t_count desc limit 7",
+            query: "select toDayOfWeek(timestamp - interval 3 hour), count() as t_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' and timestamp > now() - interval 3 month group by toDayOfWeek(timestamp - interval 3 hour) order by t_count desc",
             clerkId
         })
 
@@ -32,7 +32,7 @@ const TimeVisitedDay = async ({ clerkId }: { clerkId: string }) => {
     return (
         <PieChartComponent
             title='Dias con mas visitas'
-            description='Desde el comienzo'
+            description='Ultimos 3 meses'
             chartConfig={chartConfig}
             chartData={chartData}
         />

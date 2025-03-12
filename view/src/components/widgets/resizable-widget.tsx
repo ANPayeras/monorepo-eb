@@ -20,12 +20,15 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
         return sizes[panel]
     }, [sizes])
 
-    const redirect = (panel: resizableItem) => {
-        window.open(panel.url, '_blank')
+    const redirect = (panel: resizableItem, panelNumber: number) => {
+        const { url, img, value } = panel
+        window.open(url, '_blank')
         sentEvent('widget_click', {
             type: widget.type,
-            title: widget.title,
-            linkUrl: panel.url,
+            title: value,
+            widgetUrl: url,
+            img: img?.uploadImgUrl,
+            panel: panelNumber,
         })
     }
 
@@ -45,7 +48,7 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                     <div
                         className={`flex h-[200px] w-full items-center justify-center p-6 relative transition-all ${getPanelData(0).url ? 'hover:scale-105' : ''}`}
                         style={{ cursor: getPanelData(0).url ? 'pointer' : 'auto' }}
-                        onClick={getPanelData(0).url ? () => redirect(getPanelData(0)) : undefined}
+                        onClick={getPanelData(0).url ? () => redirect(getPanelData(0), 1) : undefined}
                     >
                         <ContentResizeWidget
                             value={getPanelData(0).value || ''}
@@ -73,7 +76,7 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                         >
                             <div className={`flex h-full items-center justify-center p-6 relative transition-all ${getPanelData(1).url ? 'hover:scale-105' : ''}`}
                                 style={{ cursor: getPanelData(1).url ? 'pointer' : 'auto' }}
-                                onClick={getPanelData(1).url ? () => redirect(getPanelData(1)) : undefined}
+                                onClick={getPanelData(1).url ? () => redirect(getPanelData(1), 2) : undefined}
                             >
                                 <ContentResizeWidget
                                     value={sizes ? widget.data?.resizables![1].value : ''}
@@ -96,7 +99,7 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                         >
                             <div className={`flex h-full items-center justify-center p-6 relative transition-all ${getPanelData(1).url ? 'hover:scale-105' : ''}`}
                                 style={{ cursor: getPanelData(2).url ? 'pointer' : 'auto' }}
-                                onClick={getPanelData(2).url ? () => redirect(getPanelData(2)) : undefined}
+                                onClick={getPanelData(2).url ? () => redirect(getPanelData(2), 3) : undefined}
                             >
                                 <ContentResizeWidget
                                     value={sizes ? widget.data?.resizables![2].value : ''}

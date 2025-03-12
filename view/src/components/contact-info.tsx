@@ -54,7 +54,8 @@ const ContactInfoWidget: FC<{ template: Doc<"templates"> }> = ({ template }) => 
                                             className="shadow-md flex justify-center items-center w-[40px] h-[40px] rounded-full font-bold border-[1px] hover:scale-105 transition-all"
                                             onClick={() => sentEvent('widget_click', {
                                                 type: 'social',
-                                                name: c.title,
+                                                title: c.title,
+                                                widgetUrl: c.url,
                                             })}
                                         >
                                             <Icon size={16} />

@@ -3,6 +3,7 @@ import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
 import {
     CardContent,
+    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -11,7 +12,7 @@ const MostVisitedPathNames = async ({ clerkId }: { clerkId: string }) => {
 
     const metrics: [string, number][] = await fetchAction(api.metrics.getMetrics,
         {
-            query: "select properties.$pathname, count() as pt_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' group by properties.$pathname order by pt_count desc",
+            query: "select properties.$pathname, count() as pt_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' and timestamp > now() - interval 3 month group by properties.$pathname order by pt_count desc limit 5",
             clerkId
         })
 
@@ -20,6 +21,7 @@ const MostVisitedPathNames = async ({ clerkId }: { clerkId: string }) => {
             <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
                 <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
                     <CardTitle>Paginas mas visitadas</CardTitle>
+                    <CardDescription>Ultimos 3 meses</CardDescription>
                 </div>
             </CardHeader>
             <CardContent className="px-2 py-2">
