@@ -24,11 +24,6 @@ export const columns: ColumnDef<Sections>[] = [
         },
     },
     {
-        accessorKey: "price",
-        header: "Precio",
-        size: 10,
-    },
-    {
         id: 'expander',
         header: () => null,
         size: 10,

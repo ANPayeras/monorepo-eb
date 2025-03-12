@@ -1,6 +1,14 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import {
+  internalMutation,
+  internalQuery,
+  mutation,
+  MutationCtx,
+  query,
+} from "./_generated/server";
 import schema from "./schema";
+import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
 export const createTemplate = mutation({
   args: {
@@ -33,7 +41,10 @@ export const createTemplate = mutation({
 
     return await ctx.db.insert("templates", {
       user: user[0]._id,
-      header: { imgUrl: "", title: "" },
+      header: {
+        imgUrl: { localImg: "", uploadImgUrl: "", storageId: "" },
+        title: "",
+      },
       sections: [],
       combos: Array.from({ length: 4 }, (_, i) => ({
         description: "",
@@ -47,6 +58,11 @@ export const createTemplate = mutation({
         bgColor: "#ffffff",
         textsColor: "#000000",
         templateLayout: args.layout,
+        backgroundImg: {
+          localImg: "",
+          uploadImgUrl: "",
+          storageId: "",
+        },
       },
       paymentMethods: [],
       active: false,
@@ -85,10 +101,22 @@ export const createTemplateTest = mutation({
       )
       .first();
 
-    if (testTemplate?._id === args.templateId) return;
+    if (testTemplate?._id === args.templateId) {
+      await ctx.scheduler.cancel(testTemplate.testScheduledTimeId!);
+    }
 
-    testTemplate && (await ctx.db.patch(testTemplate?._id, { test: false }));
-    return await ctx.db.patch(args.templateId, { test: true });
+    const scheduledId = await scheduleTemplateTest(
+      ctx,
+      3600000,
+      args.templateId
+    );
+
+    testTemplate && (await ctx.db.patch(testTemplate._id, { test: false }));
+
+    return {
+      test: true,
+      testScheduledTimeId: scheduledId,
+    };
   },
 });
 
@@ -152,6 +180,23 @@ export const getTemplateById = query({
   },
 });
 
+export const getLastTemplateBuild = query({
+  args: {
+    user: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), args.user),
+          q.eq(q.field("lastBuild"), true)
+        )
+      )
+      .first();
+  },
+});
+
 export const updateTemplate = mutation({
   args: {
     ...schema.tables.templates.validator.fields,
@@ -180,9 +225,29 @@ export const updateTemplate = mutation({
       .first();
 
     if (lastBuildTemplate?._id === args._id) {
-      await ctx.db.patch(args._id, { ...args, lastBuild: true });
+      await ctx.db.patch(args._id, {
+        ...args,
+        lastBuild: true,
+        layout: {
+          ...args.layout,
+          backgroundImg: {
+            storageId: args.layout.backgroundImg.storageId,
+            uploadImgUrl: args.layout.backgroundImg.uploadImgUrl,
+          },
+        },
+      });
     } else {
-      await ctx.db.patch(args._id, { ...args, lastBuild: true });
+      await ctx.db.patch(args._id, {
+        ...args,
+        lastBuild: true,
+        layout: {
+          ...args.layout,
+          backgroundImg: {
+            storageId: args.layout.backgroundImg.storageId,
+            uploadImgUrl: args.layout.backgroundImg.uploadImgUrl,
+          },
+        },
+      });
       lastBuildTemplate &&
         (await ctx.db.patch(lastBuildTemplate._id, {
           lastBuild: false,
@@ -241,7 +306,10 @@ export const activeTemplate = mutation({
       .first();
 
     if (currentActiveTemplate) {
-      return await ctx.db.patch(currentActiveTemplate._id, { active: false });
+      if (currentActiveTemplate._id === args.templateId) {
+        return await ctx.db.patch(currentActiveTemplate._id, { active: false });
+      }
+      await ctx.db.patch(currentActiveTemplate._id, { active: false });
     }
 
     return await ctx.db.patch(args.templateId, { active: true });
@@ -259,6 +327,52 @@ export const getActiveTemplate = query({
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("email"), identity.email))
+      .collect();
+
+    if (user.length === 0) {
+      throw new ConvexError("User not found");
+    }
+
+    return await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(q.eq(q.field("user"), user[0]._id), q.eq(q.field("active"), true))
+      )
+      .collect();
+  },
+});
+
+export const getActiveTemplateByClerkId = internalQuery({
+  args: {
+    clerkId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .collect();
+
+    if (user.length === 0) {
+      throw new ConvexError("User not found");
+    }
+
+    return await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(q.eq(q.field("user"), user[0]._id), q.eq(q.field("active"), true))
+      )
+      .collect();
+  },
+});
+
+export const getActiveTemplateByClerkIdPublic = query({
+  args: {
+    clerkId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .collect();
 
     if (user.length === 0) {
@@ -376,3 +490,26 @@ export const getUser = query({
       .collect();
   },
 });
+
+export const deleteTemplateTest = internalMutation({
+  args: {
+    templateId: v.id("templates"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.templateId, { test: false });
+  },
+});
+
+const scheduleTemplateTest = async (
+  ctx: MutationCtx,
+  time: number,
+  templateId: Id<"templates">
+): Promise<Id<"_scheduled_functions">> => {
+  return await ctx.scheduler.runAfter(
+    time,
+    internal.templates.deleteTemplateTest,
+    {
+      templateId,
+    }
+  );
+};

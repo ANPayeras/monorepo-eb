@@ -1,25 +1,26 @@
 import React, { Fragment } from 'react'
 import { Doc } from '../../../convex/_generated/dataModel'
 import Image from 'next/image'
-import PaymentMethodsPreview from '../payment-methods-preview'
-import DeliverPreview from '../deliver-preview'
-import ContactInfo from '../contact-info'
+import PaymentMethodsWidget from '../payment-methods-widget'
+import DeliverMethodsWidget from '../deliver-methods-widget'
+import ContactInfoWidget from '../contact-info-widget'
 
 const ClassicView = ({ template: { layout, header, combos, paymentMethods, contact, deliverMethods } }: { template: Doc<"templates"> }) => {
+    const isheaderImg = header.imgUrl?.localImg || header.imgUrl.uploadImgUrl
     return (
-        <div className="w-[90%] flex flex-col gap-10 items-center overflow-y-scroll">
+        <div className="w-[90%] flex flex-col gap-4 items-center overflow-y-visible">
             {
-                header.title || header.imgUrl ?
+                header.title || isheaderImg ?
                     <div className='w-full min-h-20 max-h-20 flex justify-center items-center rounded-lg relative overflow-hidden'>
                         <div className="h-full w-full relative bg-gray-900">
                             {
-                                header.imgUrl ?
+                                isheaderImg ?
                                     <Image
                                         alt="image"
                                         className="h-full w-full object-cover scale-[2]"
                                         width="1000"
                                         height="1000"
-                                        src={header.imgUrl}
+                                        src={isheaderImg}
                                         priority
                                     /> : <></>
                             }
@@ -53,13 +54,13 @@ const ClassicView = ({ template: { layout, header, combos, paymentMethods, conta
                 }
             </div>
             {
-                paymentMethods.length ? <PaymentMethodsPreview {...{ paymentMethods }} /> : <></>
+                paymentMethods.length ? <PaymentMethodsWidget {...{ paymentMethods, layout }} /> : <></>
             }
             {
-                deliverMethods.length ? <DeliverPreview {...{ deliverMethods }} /> : <></>
+                deliverMethods.length ? <DeliverMethodsWidget {...{ deliverMethods, layout }} /> : <></>
             }
             {
-                contact.length ? <ContactInfo contact={contact} layout={layout} /> : <></>
+                contact.length ? <ContactInfoWidget contact={contact} layout={layout} /> : <></>
             }
         </div>
     )

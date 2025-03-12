@@ -5,7 +5,11 @@ export default defineSchema({
   templates: defineTable({
     user: v.id("users"),
     header: v.object({
-      imgUrl: v.string(),
+      imgUrl: v.object({
+        localImg: v.optional(v.string()),
+        uploadImgUrl: v.string(),
+        storageId: v.union(v.id("_storage"), v.string()),
+      }),
       title: v.string(),
     }),
     sections: v.array(
@@ -14,9 +18,14 @@ export default defineSchema({
         label: v.string(),
         items: v.array(
           v.object({
+            id: v.string(),
             name: v.string(),
             price: v.union(v.string(), v.null()),
-            itemImage: v.string(),
+            itemImage: v.object({
+              localImg: v.optional(v.string()),
+              uploadImgUrl: v.string(),
+              storageId: v.union(v.id("_storage"), v.string()),
+            }),
           })
         ),
       })
@@ -46,6 +55,11 @@ export default defineSchema({
       bgColor: v.string(),
       textsColor: v.string(),
       templateLayout: v.string(),
+      backgroundImg: v.object({
+        localImg: v.optional(v.string()),
+        uploadImgUrl: v.string(),
+        storageId: v.union(v.id("_storage"), v.string()),
+      }),
     }),
     paymentMethods: v.array(
       v.object({
@@ -62,6 +76,7 @@ export default defineSchema({
       })
     ),
     test: v.boolean(),
+    testScheduledTimeId: v.optional(v.id("_scheduled_functions")),
     active: v.boolean(),
     widgets: v.array(
       v.object({
@@ -74,6 +89,32 @@ export default defineSchema({
           v.object({
             value: v.optional(v.string()),
             url: v.optional(v.string()),
+            resizables: v.optional(
+              v.array(
+                v.object({
+                  id: v.number(),
+                  size: v.number(),
+                  img: v.optional(
+                    v.object({
+                      localImg: v.optional(v.string()),
+                      uploadImgUrl: v.string(),
+                      storageId: v.union(v.id("_storage"), v.string()),
+                    })
+                  ),
+                  value: v.optional(v.string()),
+                  textColor: v.optional(v.string()),
+                  url: v.optional(v.string()),
+                })
+              )
+            ),
+            textColor: v.optional(v.string()),
+            img: v.optional(
+              v.object({
+                localImg: v.optional(v.string()),
+                uploadImgUrl: v.string(),
+                storageId: v.union(v.id("_storage"), v.string()),
+              })
+            ),
           })
         ),
       })

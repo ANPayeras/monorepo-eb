@@ -108,6 +108,24 @@ export const getCurrentUser = query({
   },
 });
 
+export const getCurrentUserByClerkId = query({
+  args: {
+    clerkId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .first();
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    return user;
+  },
+});
+
 export const updateUserWh = internalMutation({
   args: {
     isPremium: v.boolean(),
@@ -122,23 +140,6 @@ export const updateUserWh = internalMutation({
 
     await ctx.db.patch(user._id, {
       isPremium: args.isPremium,
-    });
-  },
-});
-
-// Borrar
-export const createUsertest = internalMutation({
-  args: {
-    username: v.string(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.insert("users", {
-      clerkId: "args.clerkId",
-      email: "args.email",
-      imageUrl: "args.imageUrl",
-      name: "args.name",
-      username: args.username,
-      phone: "",
     });
   },
 });

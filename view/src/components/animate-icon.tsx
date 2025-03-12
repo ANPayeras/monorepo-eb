@@ -10,7 +10,7 @@ const variants = {
     }),
 };
 
-const AnimateIcon = ({ children, active, className }: { children: JSX.Element, active: boolean, className: string }) => {
+const AnimateIcon = ({ children, active, className }: { children: JSX.Element, active: boolean, className?: string }) => {
     const controls = useAnimation();
 
     useEffect(() => {

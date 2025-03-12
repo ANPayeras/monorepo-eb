@@ -1,5 +1,6 @@
 "use client"
-import React from 'react'
+
+import React, { useState } from 'react'
 import { useQuery } from 'convex/react'
 import { api } from '../../../../convex/_generated/api'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -9,6 +10,7 @@ import TemplateBtnsOptions from '@/components/template-btns-options'
 import LoaderSpinner from '@/components/loader-spinner'
 import Template from '@/components/template'
 import { useUser } from '@clerk/nextjs'
+import { motion } from "framer-motion";
 import 'swiper/css';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
@@ -16,8 +18,16 @@ import 'swiper/css/pagination';
 const Templates = () => {
   const { user } = useUser()
   const listTemplates = useQuery(api.templates.listTemplates, !user ? 'skip' : undefined)
+  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [templateHovered, setTemplateHovered] = useState<number | null>(null);
 
   if (!listTemplates || !user) return <LoaderSpinner />
+
+  const handleHoverTemplates = (templatePos: number | null) => {
+    if (typeof templatePos === 'number') setIsHovered(true)
+    else setIsHovered(false)
+    setTemplateHovered(templatePos)
+  }
 
   return (
     <div className='flex flex-wrap gap-4 w-full h-full'>
@@ -50,9 +60,15 @@ const Templates = () => {
           >
             {
               listTemplates?.map((t, i) => (
-                <SwiperSlide key={i} className='max-w-[400px] min-w-[300px] h-[95%] relative'>
-                  <Template {...{ template: t, user }} />
-                  <TemplateBtnsOptions t={t} i={i} />
+                <SwiperSlide key={i}>
+                  <motion.div
+                    onHoverStart={() => handleHoverTemplates(i)}
+                    onHoverEnd={() => handleHoverTemplates(null)}
+                    className='max-w-[400px] min-w-[300px] h-full relative'
+                  >
+                    <Template {...{ template: t, user }} />
+                    <TemplateBtnsOptions t={t} i={i} isHovered={isHovered} templateHovered={templateHovered} />
+                  </motion.div>
                 </SwiperSlide>
               ))
             }

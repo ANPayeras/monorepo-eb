@@ -57,51 +57,52 @@ const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
 
     return (
         <section className='flex w-full h-full p-4 gap-1'>
-            <div className='flex justify-center h-[40%] w-full'>
-                <div className='flex flex-1 flex-col justify-center items-center bg-slate-50 rounded-md m-2 p-2'>
-                    <span className='h-1/4 text-center mb-8'>Podes agregar hasta 4 imagenes</span>
-                    <div className='flex flex-col h-full w-full gap-4'>
-                        {
-                            imgUrl.slice(0, 4).map((img, i) => (
-                                <div key={i} className='flex justify-between items-center w-full'>
-                                    <span>
-                                        Imagen {i + 1}
-                                    </span>
-                                    {
-                                        img.url ?
-                                            <div className='flex'>
-                                                <span
-                                                    className='cursor-pointer hover:scale-110 flex justify-center items-center'
-                                                    // onClick={() => deleteImgCombo(combo, i)}
-                                                    onClick={() => deleteImg(i)}
-                                                >
-                                                    <IconTrash size={18} className='text-red-500' />
-                                                </span>
+            <div className='flex justify-center w-full'>
+                <div className='flex flex-1 p-2 h-fit'>
+                    <div className='flex flex-col items-center bg-slate-50 rounded-md text-sm sm:text-medium py-2'>
+                        <span className='text-center mb-8'>Podes agregar hasta 4 imagenes</span>
+                        <div className='flex flex-col w-full gap-4 px-3'>
+                            {
+                                imgUrl.slice(0, 4).map((img, i) => (
+                                    <div key={i} className='flex justify-between items-center w-full'>
+                                        <span>
+                                            Imagen {i + 1}
+                                        </span>
+                                        {
+                                            img.url ?
+                                                <div className='flex'>
+                                                    <span
+                                                        className='cursor-pointer hover:scale-110 flex justify-center items-center'
+                                                        onClick={() => deleteImg(i)}
+                                                    >
+                                                        <IconTrash size={18} className='text-red-500' />
+                                                    </span>
+                                                    <span
+                                                        className='cursor-pointer hover:scale-110 flex justify-center items-center'
+                                                        onClick={() => clickInputFile(i)}
+                                                    >
+                                                        <IconEdit size={18} className='text-gray-500' />
+                                                    </span>
+                                                </div>
+                                                :
                                                 <span
                                                     className='cursor-pointer hover:scale-110 flex justify-center items-center'
                                                     onClick={() => clickInputFile(i)}
                                                 >
-                                                    <IconEdit size={18} className='text-gray-500' />
+                                                    <IconUpload size={18} className='text-gray-500' />
                                                 </span>
-                                            </div>
-                                            :
-                                            <span
-                                                className='cursor-pointer hover:scale-110 flex justify-center items-center'
-                                                onClick={() => clickInputFile(i)}
-                                            >
-                                                <IconUpload size={18} className='text-gray-500' />
-                                            </span>
-                                    }
-                                </div>
-                            ))
-                        }
+                                        }
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <Input
+                            className='h-6 hidden'
+                            ref={imageRef}
+                            onChange={(e) => uploadImage(e)}
+                            name='imgUrl'
+                            type='file' />
                     </div>
-                    <Input
-                        className='h-6 hidden'
-                        ref={imageRef}
-                        onChange={(e) => uploadImage(e)}
-                        name='imgUrl'
-                        type='file' />
                 </div>
                 <div className='flex flex-1 flex-col p-2 gap-4'>
                     <div className='flex justify-between'>
@@ -129,7 +130,7 @@ const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
                         <span>$</span>
                         <Input
                             placeholder='Precio'
-                            className='h-6 w-[50%]'
+                            className='h-6 w-full'
                             type='number'
                             name='price'
                             value={price || ''}

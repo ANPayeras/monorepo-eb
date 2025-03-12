@@ -20,7 +20,7 @@ const ReactiveRoutes = ({ user, component, combo = '', test = false }: { user: s
     } = {
         all: <All template={template[0]} />,
         combo: <Combo template={template[0]} combo={decodeURIComponent(combo)} />,
-        confirmation: <Checkout />,
+        confirmation: <Checkout user={data.user} />,
     }
 
     return (

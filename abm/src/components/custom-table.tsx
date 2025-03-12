@@ -33,7 +33,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         defaultColumn: {
-            size: 100
+            size: 200
         },
         data,
         columns,
@@ -44,10 +44,11 @@ export function DataTable<TData, TValue>({
 
     return (
         <Table>
-            <TableHeader>
+            {/* <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                     <TableRow key={headerGroup.id}>
                         {headerGroup.headers.map((header) => {
+                            console.log(header)
                             return (
                                 <TableHead key={header.id}
                                     style={{
@@ -67,7 +68,7 @@ export function DataTable<TData, TValue>({
                         })}
                     </TableRow>
                 ))}
-            </TableHeader>
+            </TableHeader> */}
             <TableBody>
                 {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map((row) => (
@@ -82,6 +83,8 @@ export function DataTable<TData, TValue>({
                                             minWidth: cell.column.columnDef.size,
                                             maxWidth: cell.column.columnDef.size,
                                         }}
+                                        onClick={() => row.toggleExpanded()}
+                                        className="px-0"
                                     >
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                     </TableCell>

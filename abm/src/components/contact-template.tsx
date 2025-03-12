@@ -1,8 +1,8 @@
 import React from 'react'
-import { icons } from './contact-info'
 import { Input } from './ui/input'
 import { Switch } from './ui/switch'
 import { useDataStore } from '@/providers/data-store-providers'
+import { icons } from '@/constants'
 
 const ContactTemplate = () => {
     const { contact, handleOnChangeContact, handleOnChangeContactSwitch } = useDataStore(state => state)
@@ -29,7 +29,7 @@ const ContactTemplate = () => {
                                 className='data-[state=checked]:bg-green-400'
                                 name='enabled'
                                 onClick={() => handleOnChangeContactSwitch(!!socialMedia?.enabled, ic.name)}
-                                checked={socialMedia?.enabled}
+                                aria-checked={socialMedia?.enabled}
                             />
                         </div>
                     )

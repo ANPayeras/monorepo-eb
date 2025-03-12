@@ -3,7 +3,9 @@ import {
   DeliverMethods,
   Layout,
   PaymentMethods,
+  resizableItem,
   Widget,
+  WidgetData,
 } from "@/stores/data-store";
 import { Doc } from "../../convex/_generated/dataModel";
 import { MutableRefObject } from "react";
@@ -80,7 +82,7 @@ export type RightSectionInterface = {
 
 export type ChangeColorFeatureInterface = {
   title: string;
-  type: keyof Layout;
+  type: keyof Omit<Layout, "backgroundImg">;
   color: IColor;
   onChange: (color: IColor, type: string) => void;
 };
@@ -92,3 +94,64 @@ export type MpBrickInterface = {
   onUnmount: () => void;
   description: string;
 };
+
+export type UpdateImgToolProps = {
+  imageRef: any;
+  isImage: string;
+  deleteImg: () => void;
+  uploadImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  widget?: Widget;
+  panel?: resizableItem;
+};
+
+// Widgets
+
+export type LinkWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
+  layout?: Layout;
+};
+
+export type TextWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
+  layout?: Layout;
+};
+
+export type ImgWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
+  layout?: Layout;
+};
+
+export type ResizableWidgetInterface = {
+  widget: Widget;
+  editWidget: Widget;
+  selectSection: (type: string, combo: number, widget: Widget | {}) => void;
+  props?: any;
+  layout?: Layout;
+};
+
+export type ImageWidgetInterface = {
+  widget: Widget;
+  title?: string;
+  isNestedWidget?: boolean;
+  handleNestedWidgetChanges?: (data: WidgetData) => void;
+  panel?: resizableItem;
+  className?: string;
+  layout?: Layout;
+};
+
+export type DetailMetricsResponse = [
+  string,
+  string | null,
+  string | null,
+  string | null,
+  number,
+][];

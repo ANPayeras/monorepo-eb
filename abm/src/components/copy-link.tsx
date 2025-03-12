@@ -2,12 +2,12 @@
 import React, { useEffect, useState } from 'react'
 import Icon from './Icon'
 
-const CopyLink = ({ url }: { url: string }) => {
+const CopyLink = ({ text = '', iconSize = 18, onClick }: { text?: string, iconSize?: number, onClick?: () => void }) => {
     const [isCopy, setIsCopy] = useState(false)
 
     const copyLink = () => {
         setIsCopy(true)
-        navigator.clipboard.writeText(url)
+        onClick ? onClick() : navigator.clipboard.writeText(text)
     }
 
     useEffect(() => {
@@ -24,9 +24,9 @@ const CopyLink = ({ url }: { url: string }) => {
     }, [isCopy])
 
     return (
-        <button onClick={copyLink} className='hover:scale-105'>
+        <button onClick={copyLink} className='transition-all hover:scale-105'>
             {
-                isCopy ? <Icon name='copyCheck' iconProps={{ size: 18 }} /> : <Icon name='copy' iconProps={{ size: 18 }} />
+                isCopy ? <Icon name='copyCheck' iconProps={{ size: iconSize }} /> : <Icon name='copy' iconProps={{ size: iconSize }} />
             }
         </button>
     )

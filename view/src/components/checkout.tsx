@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDataStore } from '@/providers/data-store-providers'
 import { IconBrandWhatsapp, IconCopy, IconCopyCheck } from '@tabler/icons-react'
-import { usePathname } from 'next/navigation'
-import { useQuery } from 'convex/react'
-import { api } from '../../convex/_generated/api'
+import useSentEvent from '@/hooks/use-sent-events'
+import { Doc } from '../../convex/_generated/dataModel'
 
-const Checkout = () => {
-    const path = usePathname()
-    const user = useQuery(api.templates.getUser, { user: path.split('/')[2] })
+const Checkout = ({ user }: { user: Doc<"users"> }) => {
+    const { sentEvent } = useSentEvent()
     const { cart } = useDataStore(state => state)
     const [isCopy, setIsCopy] = useState(false)
 
@@ -24,7 +22,7 @@ const Checkout = () => {
         return () => clearInterval(interval)
     }, [isCopy])
 
-    const handleSendOrder = (type: string) => {
+    const handleSendOrder = (type: 'copy' | 'whatsapp') => {
         setIsCopy(true)
         let orderString = ''
         cart.forEach((it) => {
@@ -33,7 +31,9 @@ const Checkout = () => {
         orderString += `\nTotal: $${cart.reduce((acc, curV) => acc + (curV.price * curV.quantity), 0)}`
 
         if (type === 'copy') navigator.clipboard.writeText(orderString)
-        if (type === 'whatsapp') window.open(`https://web.whatsapp.com/send?phone=${user && user[0].phone}&text=${encodeURI(orderString)}&app_absent=0`)
+        if (type === 'whatsapp') window.open(`https://web.whatsapp.com/send?phone=${user.phone}&text=${encodeURI(orderString)}&app_absent=0`)
+
+        sentEvent(`checkout_${type}`)
     }
 
     return (
@@ -71,12 +71,15 @@ const Checkout = () => {
                 </span>
             </div>
             <div className='flex flex-col gap-4 w-full text-sm'>
-                <div className='flex w-full justify-between'>
-                    <span>Enviale el detalle al comercio por Whatsapp:</span>
-                    <button onClick={() => handleSendOrder('whatsapp')}>
-                        <IconBrandWhatsapp size={18} className='cursor-pointer hover:scale-110' />
-                    </button>
-                </div>
+                {
+                    user.phone ?
+                        <div className='flex w-full justify-between'>
+                            <span>Enviale el detalle al comercio por Whatsapp:</span>
+                            <button onClick={() => handleSendOrder('whatsapp')}>
+                                <IconBrandWhatsapp size={18} className='cursor-pointer hover:scale-110' />
+                            </button>
+                        </div> : <></>
+                }
                 <div className='flex w-full justify-between'>
                     <span>O copia el detalle y enviaselo por otro medio</span>
                     <button onClick={() => handleSendOrder('copy')}>
