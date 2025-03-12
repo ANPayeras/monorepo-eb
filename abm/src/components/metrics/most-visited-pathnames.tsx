@@ -7,6 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import EmptyChartInfo from '../charts/empty-chart-info'
 
 const MostVisitedPathNames = async ({ clerkId }: { clerkId: string }) => {
 
@@ -26,14 +27,15 @@ const MostVisitedPathNames = async ({ clerkId }: { clerkId: string }) => {
             </CardHeader>
             <CardContent className="px-2 py-2">
                 {
-                    metrics?.map((m, i) => (
-                        <div key={i}
-                            className='flex w-full justify-between'
-                            style={{ borderBottom: metrics.length - 1 === i ? '' : '1px solid black' }}>
-                            <span>{decodeURIComponent(m[0])}</span>
-                            <span>{m[1]}</span>
-                        </div>
-                    ))
+                    !metrics?.length ? <EmptyChartInfo /> :
+                        metrics.map((m, i) => (
+                            <div key={i}
+                                className='flex w-full justify-between'
+                                style={{ borderBottom: metrics.length - 1 === i ? '' : '1px solid black' }}>
+                                <span>{decodeURIComponent(m[0])}</span>
+                                <span>{m[1]}</span>
+                            </div>
+                        ))
                 }
             </CardContent>
         </>

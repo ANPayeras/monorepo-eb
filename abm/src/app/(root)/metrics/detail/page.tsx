@@ -11,6 +11,7 @@ import { capitalizeFirstLetter } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import HeaderComboImgs from '@/components/detail-metrics/header-combo-imgs'
 import BaseMetricDetail from '@/components/detail-metrics/base-metric-detail'
+import EmptyChartInfo from '@/components/charts/empty-chart-info'
 
 const MetricDetail = async ({ searchParams }: { searchParams: { type: string, combo?: string } }) => {
     const user = await currentUser()
@@ -159,18 +160,21 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
                     </CardHeader>
                     <CardContent className="px-2 py-2">
                         {
-                            locationsUsers?.map((m, i) => (
-                                <div key={i}
-                                    className='flex w-full justify-between hover:bg-slate-300 transition-all'
-                                    style={{ borderBottom: locationsUsers.length - 1 === i ? '' : '1px solid black' }}>
-                                    <span>{m[1]}, {m[0]}</span>
-                                </div>
-                            ))
+                            !locationsUsers?.length ? <EmptyChartInfo /> :
+                                locationsUsers.map((m, i) => (
+                                    <div key={i}
+                                        className='flex w-full justify-between hover:bg-slate-300 transition-all'
+                                        style={{ borderBottom: locationsUsers.length - 1 === i ? '' : '1px solid black' }}>
+                                        <span>{m[1]}, {m[0]}</span>
+                                    </div>
+                                ))
                         }
                     </CardContent>
                 </BaseCard>
             </div>
-            {detail[type]}
+            <div>
+                {detail[type]}
+            </div>
         </section>
     )
 }

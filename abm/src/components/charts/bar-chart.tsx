@@ -16,6 +16,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { NameType, Payload, ValueType } from "recharts/types/component/DefaultTooltipContent"
+import EmptyChartInfo from "./empty-chart-info"
 
 type BarChartComponent = {
     title: string;
@@ -102,34 +103,37 @@ export function BarChartComponent({ title, description, chartConfig, chartData, 
                     config={chartConfig}
                     className="aspect-auto h-[250px] w-full"
                 >
-                    <BarChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                            left: 12,
-                            right: 12,
-                        }}
-                    >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="xData"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            minTickGap={20}
-                            tickFormatter={tickFormatters[formatterType]}
-                        />
-                        <ChartTooltip
-                            content={
-                                <ChartTooltipContent
-                                    className="w-[150px]"
-                                    nameKey="views"
-                                    labelFormatter={tooltipLabelFormatters[formatterType]}
-                                />
-                            }
-                        />
-                        <Bar dataKey={_dataKey} fill={`var(--color-${_dataKey})`} />
-                    </BarChart>
+                    {!chartData.length ?
+                        <EmptyChartInfo /> :
+                        <BarChart
+                            accessibilityLayer
+                            data={chartData}
+                            margin={{
+                                left: 12,
+                                right: 12,
+                            }}
+                        >
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="xData"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={8}
+                                minTickGap={20}
+                                tickFormatter={tickFormatters[formatterType]}
+                            />
+                            <ChartTooltip
+                                content={
+                                    <ChartTooltipContent
+                                        className="w-[150px]"
+                                        nameKey="views"
+                                        labelFormatter={tooltipLabelFormatters[formatterType]}
+                                    />
+                                }
+                            />
+                            <Bar dataKey={_dataKey} fill={`var(--color-${_dataKey})`} />
+                        </BarChart>
+                    }
                 </ChartContainer>
             </CardContent>
         </>

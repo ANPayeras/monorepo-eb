@@ -14,6 +14,7 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart"
+import EmptyChartInfo from "./empty-chart-info"
 
 type BarChartCustomComponent = {
     title: string;
@@ -33,25 +34,28 @@ export function BarChartCustom({ title, description, chartConfig, chartData, xDa
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
-                    <BarChart
-                        accessibilityLayer
-                        data={chartData}
-                        layout="vertical"
-                    >
-                        <XAxis type="number" dataKey={xDataKey} hide />
-                        <YAxis
-                            dataKey={yDataKey}
-                            type="category"
-                            tickLine={false}
-                            // tickMargin={10}
-                            axisLine={false}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent hideLabel />}
-                        />
-                        <Bar dataKey={xDataKey} fill={`var(--color-${xDataKey})`} radius={5} />
-                    </BarChart>
+                    {
+                        !chartData.length ? <EmptyChartInfo /> :
+                            <BarChart
+                                accessibilityLayer
+                                data={chartData}
+                                layout="vertical"
+                            >
+                                <XAxis type="number" dataKey={xDataKey} hide />
+                                <YAxis
+                                    dataKey={yDataKey}
+                                    type="category"
+                                    tickLine={false}
+                                    // tickMargin={10}
+                                    axisLine={false}
+                                />
+                                <ChartTooltip
+                                    cursor={false}
+                                    content={<ChartTooltipContent hideLabel />}
+                                />
+                                <Bar dataKey={xDataKey} fill={`var(--color-${xDataKey})`} radius={5} />
+                            </BarChart>
+                    }
                 </ChartContainer>
             </CardContent>
         </>

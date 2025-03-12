@@ -5,8 +5,7 @@ import { capitalizeFirstLetter } from '@/lib/utils'
 import { CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card'
 import { IconChevronRight } from '@tabler/icons-react'
 import Link from 'next/link'
-import { Input } from '../ui/input'
-import { redirect, RedirectType } from 'next/navigation'
+import EmptyChartInfo from '../charts/empty-chart-info'
 
 const WidgetsMetrics = async ({ clerkId }: { clerkId: string }) => {
 
@@ -48,29 +47,34 @@ const WidgetsMetrics = async ({ clerkId }: { clerkId: string }) => {
                 </div>
             </CardHeader>
             <CardContent className="px-2 py-2">
-                <div className='flex w-full md:w-1/2 justify-between pr-6 md:pr-0 mb-1'>
-                    <span>Tipo</span>
-                    <span>Clicks</span>
-                </div>
                 {
-                    metrics?.map((m, i) => (
-                        <Link
-                            key={i}
-                            href={{
-                                pathname: '/metrics/detail',
-                                query: { type: m[0], ...(m[1] && { combo: m[1] }) },
-                            }}
-                            className='flex w-full justify-between hover:bg-slate-200 transition-all cursor-pointer'
-                            style={{ borderBottom: metrics.length - 1 === i ? '' : '1px solid black' }}>
-                            <div className='w-full flex justify-between md:w-1/2'>
-                                <span>{capitalizeFirstLetter(m[0] === 'combo' ? m[1] as string : m[0] as string)}</span>
-                                <span>{m[2]}</span>
+                    !metrics?.length ? <EmptyChartInfo /> :
+                        <>
+                            <div className='flex w-full md:w-1/2 justify-between pr-6 md:pr-0 mb-1'>
+                                <span>Tipo</span>
+                                <span>Clicks</span>
                             </div>
-                            <div className='flex gap-1'>
-                                <span><IconChevronRight className='hover:scale-105' /></span>
-                            </div>
-                        </Link>
-                    ))
+                            {
+                                metrics.map((m, i) => (
+                                    <Link
+                                        key={i}
+                                        href={{
+                                            pathname: '/metrics/detail',
+                                            query: { type: m[0], ...(m[1] && { combo: m[1] }) },
+                                        }}
+                                        className='flex w-full justify-between hover:bg-slate-200 transition-all cursor-pointer'
+                                        style={{ borderBottom: metrics.length - 1 === i ? '' : '1px solid black' }}>
+                                        <div className='w-full flex justify-between md:w-1/2'>
+                                            <span>{capitalizeFirstLetter(m[0] === 'combo' ? m[1] as string : m[0] as string)}</span>
+                                            <span>{m[2]}</span>
+                                        </div>
+                                        <div className='flex gap-1'>
+                                            <span><IconChevronRight className='hover:scale-105' /></span>
+                                        </div>
+                                    </Link>
+                                ))
+                            }
+                        </>
                 }
             </CardContent>
         </>
