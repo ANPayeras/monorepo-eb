@@ -33,7 +33,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         defaultColumn: {
-            size: 100
+            size: 200
         },
         data,
         columns,

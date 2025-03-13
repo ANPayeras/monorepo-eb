@@ -5,6 +5,7 @@ import { api } from '../../convex/_generated/api';
 import { Doc, Id } from '../../convex/_generated/dataModel';
 import Link from 'next/link';
 import { Switch } from './ui/switch';
+import { useIsSmall } from '@/hooks/use-media.query';
 
 const itemVariants: Variants = {
     open: {
@@ -15,21 +16,11 @@ const itemVariants: Variants = {
     closed: { opacity: 0, y: 20, transition: { duration: 0.2 } }
 };
 
-const TemplateBtnsOptions = ({ t, i }: { t: Doc<"templates">, i: number }) => {
+const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"templates">, i: number, isHovered: boolean, templateHovered: number | null }) => {
     const deleteTemplate = useMutation(api.templates.deleteTemplate)
     const activeTemplate = useMutation(api.templates.activeTemplate)
-    const [isHovered, setIsHovered] = useState<boolean>(false);
-    const [templateHovered, setTemplateHovered] = useState<number | null>(null);
+    const isSmall = useIsSmall()
     const [isDeleteTemplate, setIsDeleteTemplate] = useState<boolean>(false);
-
-    const handleHoverTemplates = (templatePos: number | null) => {
-        if (typeof templatePos === 'number') setIsHovered(true)
-        else {
-            setIsHovered(false)
-            setIsDeleteTemplate(false)
-        }
-        setTemplateHovered(templatePos)
-    }
 
     const handleDeleteTemplate = () => {
         setIsDeleteTemplate(true)
@@ -43,16 +34,14 @@ const TemplateBtnsOptions = ({ t, i }: { t: Doc<"templates">, i: number }) => {
     return (
         <motion.div
             initial={false}
-            animate={isHovered && templateHovered === i ? "open" : "closed"}
-            onHoverStart={() => handleHoverTemplates(i)}
-            onHoverEnd={() => handleHoverTemplates(null)}
+            animate={(isHovered && templateHovered === i) || isSmall ? "open" : "closed"}
             variants={{
                 open: {
-                    opacity: 0.95,
-                    boxShadow: '10px 10px 5px 0px rgba(30,41,59,1)'
+                    opacity: 1,
+                    display: 'flex',
                 }
             }}
-            className="flex justify-around items-center w-full h-[95%] opacity-0 bg-slate-400 absolute top-0 left-0 rounded-sm z-50"
+            className="justify-around items-center w-full opacity-0 hidden bg-slate-400 absolute top-0 left-0 rounded-t-sm overflow-hidden"
         >
             <motion.div
                 variants={{
@@ -73,38 +62,25 @@ const TemplateBtnsOptions = ({ t, i }: { t: Doc<"templates">, i: number }) => {
                         }
                     }
                 }}
-                className='flex flex-col gap-4'
+                className='flex justify-between w-full'
             >
                 {
                     !isDeleteTemplate &&
                     <>
-                        {
-                            <motion.div
-                                className='px-2 py-1 bg-black text-white font-bold absolute top-0 right-0 flex items-center gap-4 rounded-tr-sm'
-                                variants={itemVariants}
-                            >
-                                <span>{t.active ? 'Activa' : 'Inactiva'}</span>
-                                <Switch
-                                    className='data-[state=checked]:bg-green-400'
-                                    name='enabled'
-                                    onClick={() => activeTemplate({ templateId: t._id })}
-                                    checked={t.active}
-                                />
-                            </motion.div>
-                        }
-                        <Link href={`/build/${t._id}`}>
-                            <motion.button
-                                className='px-5 py-1 bg-black text-white rounded-sm font-bold w-full'
-                                variants={itemVariants}
-                                whileHover={{
-                                    scale: 1.1
-                                }}
-                            >
-                                Editar
-                            </motion.button>
-                        </Link>
                         <motion.button
-                            className='px-5 py-1 bg-black text-white rounded-sm font-bold'
+                            variants={itemVariants}
+                            whileHover={{
+                                scale: 1.1
+                            }}
+                        >
+                            <Link
+                                href={`/build/${t._id}`}
+                                className='h-full px-5 py-1 bg-black text-white rounded-tl-sm font-bold text-sm sm:text-medium flex justify-center items-center'>
+                                Editar
+                            </Link>
+                        </motion.button>
+                        <motion.button
+                            className='flex px-5 py-1 bg-black text-white font-bold text-sm sm:text-medium justify-center items-center'
                             variants={itemVariants}
                             whileHover={{
                                 scale: 1.1
@@ -112,20 +88,28 @@ const TemplateBtnsOptions = ({ t, i }: { t: Doc<"templates">, i: number }) => {
                             onClick={() => handleDeleteTemplate()}>
                             Eliminar
                         </motion.button>
+                        <motion.div
+                            className='px-1 py-1 bg-black text-white font-bold flex items-center gap-2 sm:gap-4 rounded-tr-sm'
+                            variants={itemVariants}
+                        >
+                            <Switch
+                                className='data-[state=checked]:bg-green-400 scale-90 sm:scale-100'
+                                name='enabled'
+                                onClick={() => activeTemplate({ templateId: t._id })}
+                                checked={t.active}
+                            />
+                        </motion.div>
                     </>
                 }
                 {
-                    isDeleteTemplate && templateHovered === i &&
-                    <motion.div
-                        variants={itemVariants}
-                        className='flex flex-col gap-4'
-                    >
-                        <motion.span variants={itemVariants} className='text-center'>
+                    isDeleteTemplate && (templateHovered === i || isSmall) &&
+                    <>
+                        <motion.span variants={itemVariants} className='flex pl-1 items-center text-center text-sm sm:text-medium'>
                             Desea borrar la plantilla?
                         </motion.span>
-                        <div className='flex justify-around'>
+                        <motion.div className='flex gap-2'>
                             <motion.button
-                                className='px-5 py-1 bg-black text-white rounded-sm font-bold'
+                                className='px-5 py-1 bg-black text-white font-bold text-sm sm:text-medium'
                                 variants={itemVariants}
                                 whileHover={{
                                     scale: 1.1
@@ -134,7 +118,7 @@ const TemplateBtnsOptions = ({ t, i }: { t: Doc<"templates">, i: number }) => {
                                 No
                             </motion.button>
                             <motion.button
-                                className='px-5 py-1 bg-black text-white rounded-sm font-bold'
+                                className='px-5 py-1 bg-black text-white font-bold text-sm sm:text-medium'
                                 variants={itemVariants}
                                 whileHover={{
                                     scale: 1.1
@@ -142,9 +126,8 @@ const TemplateBtnsOptions = ({ t, i }: { t: Doc<"templates">, i: number }) => {
                                 onClick={() => onDeleteTemplate(t._id)}>
                                 Si
                             </motion.button>
-                        </div>
-
-                    </motion.div>
+                        </motion.div>
+                    </>
                 }
             </motion.div>
         </motion.div>

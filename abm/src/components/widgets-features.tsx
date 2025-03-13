@@ -39,6 +39,20 @@ const Widgtes = [
         widgetHandler: 'unique',
         id: '',
     },
+    {
+        type: 'resizable',
+        enabled: false,
+        title: 'Redimensionable',
+        widgetHandler: 'multiple',
+        id: '',
+    },
+    {
+        type: 'img',
+        enabled: false,
+        title: 'Imagen',
+        widgetHandler: 'multiple',
+        id: '',
+    },
 ]
 
 const WidgetsFeatures = () => {

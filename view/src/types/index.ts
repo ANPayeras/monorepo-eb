@@ -3,7 +3,12 @@ import { Id } from "../../convex/_generated/dataModel";
 type Items = {
   name: string;
   price: string | null;
-  itemImage: string;
+  id: string;
+  itemImage: {
+    localImg?: string;
+    uploadImgUrl: string;
+    storageId: Id<"_storage"> | string;
+  };
 };
 
 export type Sections = {
@@ -75,7 +80,27 @@ export type Widget = {
   data?: WidgetData;
 };
 
+export type resizableItem = {
+  id: number;
+  size: number;
+  img?: {
+    localImg?: string;
+    uploadImgUrl: string;
+    storageId: Id<"_storage"> | string;
+  };
+  value?: string;
+  textColor?: string;
+  url?: string;
+};
+
 type WidgetData = {
   value?: string;
   url?: string;
+  resizables?: resizableItem[];
+  textColor?: string;
+  img?: {
+    localImg?: string;
+    uploadImgUrl?: string;
+    storageId?: Id<"_storage"> | string;
+  };
 };

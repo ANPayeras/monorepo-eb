@@ -13,13 +13,15 @@ import { api } from '../../../convex/_generated/api'
 import { useToast } from '@/hooks/use-toast'
 import { RightSectionInterface } from '@/interfaces'
 import { Doc } from '../../../convex/_generated/dataModel'
+import ChangeBgImgFeature from '../change-bg-img-feature'
+import AllPageLoader from '../all-page-loader'
 
-const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, swiperRef, template, userConvex }) => {
-    const { header, sections, combos, contact, layout, paymentMethods, deliverMethods, orderWidgets, widgets } = useDataStore(state => state)
+const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, swiperRef, template }) => {
     const handleOnChangeLayout = useDataStore(state => state.handleOnChangeLayout)
     const createTemplateTest = useMutation(api.templates.createTemplateTest)
     const updateTemplate = useMutation(api.templates.updateTemplate)
     const [openGenerateQr, setOpenGenerateQr] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [bgColor, setBgColor] = useColor("#561ecb");
     const [textsColor, setTextsColor] = useColor("#561ecb");
     const { toast } = useToast()
@@ -39,14 +41,15 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     }
 
     const generatePreview = async () => {
-        saveChanges({ feedback: false })
-        await createTemplateTest({ templateId: template._id })
+        const testData = await createTemplateTest({ templateId: template._id })
+        await saveChanges({ feedback: false, data: { ...template, ...testData } })
         setOpenGenerateQr(true)
     }
 
     const saveChanges = useCallback(async ({ feedback, data }: { feedback: boolean, data?: Doc<"templates"> }) => {
         let payload = data || template
         try {
+            setIsLoading(true)
             await updateTemplate({ ...payload })
             feedback &&
                 toast({
@@ -58,9 +61,11 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
             toast({
                 title: "Error al guardar",
                 description: "Por favor intente de nuevo",
-                variant: 'destructive'
+                variant: 'destructive',
+                duration: 1000,
             })
         }
+        setIsLoading(false)
     }, [template, toast, updateTemplate])
 
     useEffect(() => {
@@ -78,7 +83,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
             <div className='w-full h-full overflow-hidden bg-slate-300 rounded-sm'>
                 {
                     !editSection.section &&
-                    <div className='p-4 h-full flex flex-col justify-between'>
+                    <div className='p-4 h-full flex flex-col justify-between gap-10 sm:gap-0'>
                         <div className='flex flex-col gap-10'>
                             <div className='flex flex-col'>
                                 {
@@ -102,6 +107,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
                                         type={'textsColor'}
                                         color={textsColor}
                                         onChange={handleChangeColor} />
+                                    <ChangeBgImgFeature />
                                 </div>
                             </div>
                             {
@@ -114,6 +120,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
                 }
                 <SectionsEdit section={editSection.section} combo={editSection.combo} widget={editSection.widget} />
                 <SheetQR open={openGenerateQr} handleChange={setOpenGenerateQr} />
+                <AllPageLoader isOpen={isLoading} />
             </div>
         </div>
     )

@@ -38,7 +38,7 @@ const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
                                     </>
                                 }
                             </Carousel> :
-                            <span className='text-slate-50'>Aqui veras las imagenes que agregues</span>
+                            <span className='text-slate-50 text-center'>Aqui veras las imagenes que agregues</span>
                     }
 
                 </div>
@@ -71,7 +71,7 @@ const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
                                     <IconShoppingCartPlus
                                         size={18}
                                         className='cursor-pointer hover:scale-110'
-                                        onClick={() => handleOnChangeCart({ price: Number(price), label: title, quantity: 1, category: `combo ${combo + 1}` })}
+                                        onClick={() => handleOnChangeCart({ price: Number(price), label: title, quantity: 1, category: `combo ${combo + 1}`, id })}
                                     />
                             }
                         </div>
