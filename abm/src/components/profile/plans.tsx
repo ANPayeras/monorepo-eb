@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useEffect, useState } from 'react'
+import React, { ChangeEvent, useCallback, useEffect, useState, useTransition } from 'react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { useAction, useQuery } from 'convex/react'
@@ -10,6 +10,8 @@ import MpBrick from '../mp-brick'
 import SelectPaymentMethod from './select-payment-method'
 import { Tab } from '../ui/tabs'
 import TransferencePm from './transference-pm'
+import { VexorSubscriptionBody, VexorSubscriptionResponse } from 'vexor'
+import { vexor } from '@/lib/vexor'
 
 const Plans = () => {
     const user = useQuery(api.users.getCurrentUser)
@@ -21,6 +23,7 @@ const Plans = () => {
     const [ready, setReady] = useState<boolean>(false)
     const [pm, setSelectPM] = useState<Tab>()
     const [selectedPlan, setSelectedPlan] = useState<PreApprovalPlansItem>()
+    const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
         const getPlans = async () => {
@@ -80,6 +83,40 @@ const Plans = () => {
         transference: <TransferencePm userId={user._id} />
     }
 
+    const subscriptionPlan: VexorSubscriptionBody = {
+        name: 'Awesome Subscription Plan',
+        description: 'Cool description for the plan that customers will see 😎',
+        interval: 'month',
+        price: 30,
+        currency: 'ARS',
+        successRedirect: 'https://vercel.com/docs/monorepos',
+        customer: {
+            email: 'test_customer@email.com',
+            name: 'Test Customer'
+        }
+    }
+
+
+    const handleSubscribe = async () => {
+        startTransition(
+            async () => {
+                try {
+                    const response: VexorSubscriptionResponse = await vexor.subscribe.mercadopago(subscriptionPlan)
+                    // const response: VexorSubscriptionResponse = await vexor.portal({
+                    //     platform: 'mercadopago',
+                    //     identifier: '548d2e49-c935-42ba-9527-9f92d21e52e2',
+                    //     returnUrl: 'http://localhost:3000'
+                    // })
+
+                    // window.open(response.payment_url, "_blank")
+                    console.log(response)
+                } catch (error) {
+                    console.log(error);
+                }
+            });
+    }
+
+    console.log(isPending)
     return (
         <div className='flex flex-col gap-5 w-full'>
             <span className='border-b border-t text-center py-1 text-sm md:text-medium '>
@@ -111,7 +148,8 @@ const Plans = () => {
             <div className='w-full flex justify-center items-center'>
                 <Button
                     disabled={!selectedPlan}
-                    onClick={() => setOpenSheet(true)}
+                    onClick={handleSubscribe}
+                // onClick={() => setOpenSheet(true)}
                 >
                     Pagar
                 </Button>
