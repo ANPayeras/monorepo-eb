@@ -1,8 +1,7 @@
 import type { WebhookEvent } from "@clerk/nextjs/server";
 import { httpRouter } from "convex/server";
 import { Webhook } from "svix";
-
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
 
 const handleClerkWebhook = httpAction(async (ctx, request) => {
@@ -44,7 +43,7 @@ const handleSuscriptionWebhook = httpAction(async (ctx, request) => {
   const body: { data: { id: string }; type: string; action: string } =
     await request.json();
   const validation = await ctx.runAction(
-    internal.payment.validateRequestSuscription,
+    api.payment.validateRequestSuscription,
     {
       headers: { xSignature, xRequestId },
       body,
@@ -58,39 +57,6 @@ const handleSuscriptionWebhook = httpAction(async (ctx, request) => {
   await ctx.runMutation(internal.users.createUsertest, {
     username: JSON.stringify(body),
   });
-
-  if (body.type === "payment" && body.action === "payment.created") {
-    const payment = await ctx.runAction(internal.payment.getPayment, {
-      id: body.data.id,
-    });
-
-    if (payment?.metadata?.preapproval_id) {
-      const preapproval = await ctx.runAction(internal.payment.getSuscription, {
-        id: payment.metadata.preapproval_id,
-      });
-
-      if (payment?.external_reference === preapproval?.external_reference) {
-        await ctx.runMutation(internal.users.updateUserWh, {
-          isPremium: false,
-          userId: preapproval.external_reference!,
-        });
-      }
-    }
-  }
-
-  if (body.type === "subscription_preapproval" && body.action === "updated") {
-    // Cancelaciones
-    const preapproval = await ctx.runAction(internal.payment.getSuscription, {
-      id: body.data.id,
-    });
-
-    if (preapproval.status === "cancelled") {
-      await ctx.runMutation(internal.users.updateUserWh, {
-        isPremium: false,
-        userId: preapproval.external_reference!,
-      });
-    }
-  }
 
   return new Response(null, {
     status: 200,

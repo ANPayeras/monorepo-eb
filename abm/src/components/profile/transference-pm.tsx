@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TransferencePm = ({ userId }: { userId: string }) => {
+const TransferencePm = ({ userId }: { userId?: string }) => {
     return (
         <div className='flex flex-col gap-2 text-sm xs:text-medium text-center'>
             <span>Envia una trasnferenica al siuginete CBU:</span>

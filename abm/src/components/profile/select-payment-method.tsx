@@ -14,9 +14,9 @@ const SelectPaymentMethod = ({ tab = 0, onSelectPM }: { tab: number, onSelectPM:
                             reference: 'transference',
                         },
                         {
-                            title: "Tarjeta",
+                            title: "Mercado Pago",
                             value: '1',
-                            reference: 'card',
+                            reference: 'mp',
                         },
                     ]}
                 onClick={onSelectPM}

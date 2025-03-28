@@ -124,3 +124,5 @@ export const icons = [
     name: "mail",
   },
 ];
+
+export const feedbacksReferencess = ["success", "error"];

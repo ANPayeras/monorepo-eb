@@ -1,4 +1,5 @@
 "use client"
+
 import React, { useEffect, useRef, useState } from 'react'
 import { useUser, } from '@clerk/nextjs'
 import { Tabs } from './ui/tabs'
@@ -17,9 +18,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useParams } from 'next/navigation';
 import { statusClerk } from '@/constants';
-import { Compare } from './ui/compare';
-import Plans from './profile/plans';
-import PlanFeatures from './profile/plan-features';
+import SuscriptionPlans from './profile/suscription-plans';
 
 const Profile = () => {
     const { profile } = useParams()
@@ -208,22 +207,9 @@ const Profile = () => {
                             >
                                 Proximamente
                             </motion.h3> */}
-                            {/* <CardPayment
-                                // customization={{ paymentMethods: { maxInstallments: 1, minInstallments: 1 } }}
-                                initialization={{ amount: 5000 }}
-                                onSubmit={() => createPlan({})}
-                            /> */}
                             <div className='w-full'>
-                                <Compare
-                                    firstComponent={<PlanFeatures type='free' />}
-                                    secondComponent={<PlanFeatures type='premium' />}
-                                    firstImageClassName="object-cover object-left-top"
-                                    secondImageClassname="object-cover object-left-top"
-                                    className="w-full"
-                                    slideMode="drag"
-                                />
+                                <SuscriptionPlans />
                             </div>
-                            <Plans />
                         </div>
                     </SwiperSlide>
                 </Swiper>

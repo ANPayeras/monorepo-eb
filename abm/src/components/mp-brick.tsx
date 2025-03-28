@@ -1,22 +1,23 @@
 import React, { FC, memo, useEffect } from 'react'
 import { CardPayment, initMercadoPago } from '@mercadopago/sdk-react';
 import { MpBrickInterface } from '@/interfaces';
+import { MP_API_KEY } from '@/constants/envs';
 
 const MpBrick: FC<MpBrickInterface> = ({ onReady, onUnmount, amount, email, description }) => {
 
     useEffect(() => {
-        initMercadoPago('APP_USR-eefb00f8-7d0c-4df9-a077-5724c67182e0', { locale: 'es-AR' });
+        initMercadoPago(MP_API_KEY!, { locale: 'es-AR' });
         return () => {
             onUnmount()
             window?.cardPaymentBrickController?.unmount();
         };
-    }, []);
+    }, [onUnmount]);
 
     return (
         <>
             <div className='flex flex-col gap-2'>
                 <span>
-                    Podes pagar con Tarejeta de debito o credito, el pago se procesara por Mercado Pago. <br />
+                    Podes pagar con Tarjeta de debito o credito, el pago se procesara por Mercado Pago. <br />
                     Veras tu suscripcion activa ahi.
                 </span>
                 <span>

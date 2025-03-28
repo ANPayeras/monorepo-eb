@@ -126,6 +126,8 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
                 open={openDialog}
                 onOpenChange={() => setOpenDialog(false)}
                 onConfirm={() => resetTemplate()}
+                title='Desea crear un nuevo template?'
+                description='Cualquier cambio no guardado se perdera'
             />
         </section>
     )

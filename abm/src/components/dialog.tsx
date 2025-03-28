@@ -10,22 +10,31 @@ import {
 } from "@/components/ui/alert-dialog"
 import { useOutsideClick } from "@/hooks/use-outside-click"
 import { useRef } from "react"
+import { AlertDialogProps } from "./types";
 
-export function AlertDialogComponent({ open, onOpenChange, onConfirm }: { open: boolean, onOpenChange: () => void, onConfirm: () => void }) {
- const ref = useRef<HTMLDivElement>(null);
+export function AlertDialogComponent({
+    open,
+    onOpenChange,
+    onConfirm,
+    description,
+    title,
+    acceptText = 'Continuar',
+    cancelText = 'Cancelar'
+}: AlertDialogProps) {
+    const ref = useRef<HTMLDivElement>(null);
     useOutsideClick(ref, onOpenChange)
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent ref={ref} className="w-[90%] rounded-lg">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Desea crear un nuevo template?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Cualquier cambio no guardado se perdera
+                    <AlertDialogTitle>{title}</AlertDialogTitle>
+                    <AlertDialogDescription className="whitespace-pre-line">
+                        {description}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={onConfirm}>Continuar</AlertDialogAction>
+                    <AlertDialogCancel>{cancelText}</AlertDialogCancel>
+                    <AlertDialogAction onClick={onConfirm}>{acceptText}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

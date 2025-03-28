@@ -144,6 +144,101 @@ export const updateUserWh = internalMutation({
   },
 });
 
+export const checkIsUserPremiun = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("User not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), identity.email))
+      .first();
+
+    return !!user?.isPremium;
+  },
+});
+
+export const checkFreeTrial = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("User not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), identity.email))
+      .first();
+
+    let status = "";
+
+    if (typeof user?.freeTrial === "undefined") status = "never";
+    else {
+      status = String(user.freeTrial.active);
+    }
+
+    return status;
+  },
+});
+
+export const updateFreeTrial = mutation({
+  args: {
+    active: v.boolean(),
+    endDate: v.optional(v.string()),
+    startDate: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { active, endDate, startDate } = args;
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("User not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), identity.email))
+      .first();
+
+    return await ctx.db.patch(user?._id!, {
+      isPremium: true,
+      freeTrial: {
+        active,
+        endDate: user?.freeTrial?.endDate || endDate || "",
+        startDate: user?.freeTrial?.startDate || startDate || "",
+      },
+    });
+  },
+});
+
+export const checkHasFreeTrial = internalMutation({
+  args: {
+    reference: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("_id"), args.reference))
+      .first();
+
+    if (!!user?.freeTrial?.active) {
+      await ctx.db.patch(user._id, {
+        freeTrial: {
+          active: false,
+          endDate: user.freeTrial.endDate,
+          startDate: user.freeTrial.startDate,
+        },
+      });
+    }
+
+    return user;
+  },
+});
+
 // Borrar
 export const createUsertest = internalMutation({
   args: {

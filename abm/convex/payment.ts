@@ -1,13 +1,13 @@
 "use node";
-import MercadoPagoConfig, {
-  Payment,
-  PreApproval,
-  PreApprovalPlan,
-} from "mercadopago";
+
+import { Payment, PreApproval, PreApprovalPlan } from "mercadopago";
 import { action, internalAction } from "./_generated/server";
 import { PreApprovalPlanResponse } from "mercadopago/dist/clients/preApprovalPlan/commonTypes";
 import { v } from "convex/values";
 import * as crypto from "crypto";
+import { internal } from "./_generated/api";
+import { MercadoPagoClient } from "@/lib/mercadopago-instance";
+import { MP_WEBHOOK_SECRET } from "@/constants/envs";
 
 export interface PreApprovalPlansItem extends PreApprovalPlanResponse {
   external_reference?: string;
@@ -23,19 +23,16 @@ export type PreApprovalPlans = {
   };
 };
 
-export const mercadopago = new MercadoPagoConfig({
-  accessToken:
-    "APP_USR-3561778190366939-112011-7c0672e062f1b2af519620b697bbc0f1-2106748988", // Pordcutivas usuario de prueba vendedor
-});
-
 export const getPlans = action({
   args: {},
   handler: async () => {
-    const preapproval = await new PreApprovalPlan(mercadopago).search();
+    const preapproval = await new PreApprovalPlan(MercadoPagoClient).search({
+      options: { status: "active" },
+    });
 
     const arr: PreApprovalPlans[] = [];
 
-    // console.log(preapproval.results);
+    console.log(preapproval.results);
     preapproval.results?.forEach((p: PreApprovalPlansItem) => {
       let obj: PreApprovalPlans = { type: "", plans: {} };
       if (p.external_reference?.includes("3")) {
@@ -135,9 +132,9 @@ export const createSuscription = action({
     email: v.string(),
     userId: v.id("users"),
   },
-  handler: async (ctx, args) => {
+  handler: async (_ctx, args) => {
     // Creamos suscripcion con el card_token_id y el preapproval_plan_id
-    const suscription = await new PreApproval(mercadopago).create({
+    const suscription = await new PreApproval(MercadoPagoClient).create({
       body: {
         preapproval_plan_id: args.preapproval_plan_id,
         card_token_id: args.token,
@@ -151,7 +148,7 @@ export const createSuscription = action({
   },
 });
 
-export const validateRequestSuscription = internalAction({
+export const validateRequestSuscription = action({
   args: {
     headers: v.object({ xSignature: v.string(), xRequestId: v.string() }),
     body: v.any(),
@@ -180,12 +177,9 @@ export const validateRequestSuscription = internalAction({
       }
     });
 
-    const secret =
-      "bc3abda7e7c4bac303202b362f32d951dde1a9a7a99975044909e1b0053a6664";
-
     const manifest = `id:${body.data.id};request-id:${xRequestId};ts:${ts};`;
 
-    const hmac = crypto.createHmac("sha256", secret);
+    const hmac = crypto.createHmac("sha256", MP_WEBHOOK_SECRET!);
     hmac.update(manifest);
 
     const sha = hmac.digest("hex");
@@ -194,12 +188,55 @@ export const validateRequestSuscription = internalAction({
   },
 });
 
+// export const validateRequestSuscription = internalAction({
+//   args: {
+//     headers: v.object({ xSignature: v.string(), xRequestId: v.string() }),
+//     body: v.any(),
+//   },
+//   handler: async (_ctx, args) => {
+//     const {
+//       body,
+//       headers: { xRequestId, xSignature },
+//     } = args;
+
+//     const parts = xSignature?.split(",");
+
+//     let ts;
+//     let hash;
+
+//     parts?.forEach((part) => {
+//       const [key, value] = part.split("=");
+//       if (key && value) {
+//         const trimmedKey = key.trim();
+//         const trimmedValue = value.trim();
+//         if (trimmedKey === "ts") {
+//           ts = trimmedValue;
+//         } else if (trimmedKey === "v1") {
+//           hash = trimmedValue;
+//         }
+//       }
+//     });
+
+//     const secret =
+//       "bc3abda7e7c4bac303202b362f32d951dde1a9a7a99975044909e1b0053a6664";
+
+//     const manifest = `id:${body.data.id};request-id:${xRequestId};ts:${ts};`;
+
+//     const hmac = crypto.createHmac("sha256", secret);
+//     hmac.update(manifest);
+
+//     const sha = hmac.digest("hex");
+
+//     return sha === hash;
+//   },
+// });
+
 export const getSuscription = internalAction({
   args: {
     id: v.string(),
   },
   handler: async (ctx, args) => {
-    const preapproval = await new PreApproval(mercadopago).get({
+    const preapproval = await new PreApproval(MercadoPagoClient).get({
       id: args.id,
     });
     return preapproval;
@@ -211,9 +248,145 @@ export const getPayment = internalAction({
     id: v.string(),
   },
   handler: async (ctx, args) => {
-    const payment = await new Payment(mercadopago).get({
+    const payment = await new Payment(MercadoPagoClient).get({
       id: args.id,
     });
     return payment;
   },
 });
+
+export const updatePlan = action({
+  args: {
+    id: v.string(),
+    userId: v.id("users"),
+  },
+  handler: async (_ctx, args) => {
+    const preApprovalPlan = await new PreApprovalPlan(MercadoPagoClient).get({
+      preApprovalPlanId: args.id,
+    });
+
+    const backUrl = new URL(preApprovalPlan.back_url!);
+    const backUrlParams = new URLSearchParams(backUrl.search);
+    const ids = backUrlParams.getAll("ids");
+
+    let newBackUrl = preApprovalPlan.back_url;
+    if (!ids.length) {
+      newBackUrl += `?ids=${args.userId}`;
+    } else {
+      const existId = ids.find((id) => id === args.userId);
+      if (existId) return preApprovalPlan;
+      newBackUrl += `&=${args.userId}`;
+    }
+
+    const preApprovalPlanUpdated = await new PreApprovalPlan(
+      MercadoPagoClient
+    ).update({
+      id: args.id,
+      updatePreApprovalPlanRequest: {
+        back_url: newBackUrl,
+      },
+    });
+
+    return preApprovalPlanUpdated;
+  },
+});
+
+export const createSuscriptionDB = action({
+  args: {
+    subscriptionPreapprovalId: v.string(),
+    reference: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const suscription = await new PreApproval(MercadoPagoClient).get({
+      id: args.subscriptionPreapprovalId,
+    });
+
+    // Cancelamos periodo de prueba
+    await ctx.runMutation(internal.users.checkHasFreeTrial, {
+      reference: args.reference,
+    });
+
+    // Guardamos la suscripcion en la tabla
+    await ctx.runMutation(internal.suscriptions.insertSuscription, {
+      suscription,
+    });
+
+    return suscription;
+  },
+});
+
+export const cancellSuscriptionDB = action({
+  args: {
+    subscriptionPreapprovalId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.runMutation(internal.suscriptions.cancellSuscription, {
+      subscriptionPreapprovalId: args.subscriptionPreapprovalId,
+    });
+
+    return "";
+  },
+});
+
+// export const cronCheckSuscriptions = action({
+//   handler: async (ctx) => {
+//     const suscriptionsAnual = await new PreApproval(MercadoPagoClient).search({
+//       options: {
+//         preapproval_plan_id: "2c93808495ce12870195d2c73fda02d2",
+//         limit: 100,
+//       },
+//     });
+
+//     const suscriptionsMonthly = await new PreApproval(MercadoPagoClient).search(
+//       {
+//         options: {
+//           preapproval_plan_id: "2c93808495b859210195d2c854a10ea1",
+//           limit: 100,
+//         },
+//       }
+//     );
+
+//     const suscriptionsAnualDB = await ctx.runQuery(
+//       api.suscriptions.getAllSuscriptionsByPlan,
+//       {
+//         planID: "2c93808495ce12870195d2c73fda02d2",
+//       }
+//     );
+//     const suscriptionsMonthlyDB = await ctx.runQuery(
+//       api.suscriptions.getAllSuscriptionsByPlan,
+//       {
+//         planID: "2c93808495b859210195d2c854a10ea1",
+//       }
+//     );
+
+//     if (suscriptionsAnual.paging?.total !== suscriptionsAnualDB.length) {
+//       console.log("las anuales no coinciden");
+//       const { results } = suscriptionsAnual;
+//       // 1- Chequeamos por Payer ID, en caso de que haya pagado con el mismo email
+//       const promises = suscriptionsAnualDB.map((s) => {
+//         const filter = results!.filter(
+//           (w) => w.payer_id === s.payerId && !w.external_reference
+//         );
+
+//         if (filter[0]) {
+//           const { status } = filter[0];
+//           // Si esta authorized le habilitamos el premium
+//           // Si esta cancelled le deshabilitamos el premium
+//           // Retornar la promesa
+//         }
+//       });
+
+//       // Si existen promises resolverlas
+
+//       // Si no existe puede que haya pagado con otro email, habilitar de forma manual
+//     }
+
+//     // if (suscriptionsMonthly.paging?.total !== suscriptionsMonthlyDB.length) {
+//     //   console.log("las mensuales no coinciden");
+//     // }
+//     // console.log("suscriptionsAnual", suscriptionsAnualDB);
+//     // console.log("suscriptionsMonthly", suscriptionsMonthlyDB);
+
+//     return "";
+//   },
+// });
