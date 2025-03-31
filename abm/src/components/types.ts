@@ -40,3 +40,5 @@ export type LoaderSpinnerProps = {
   className?: string;
   color?: SpinnersColors;
 };
+
+export type RowProps = { title: string; description: string };

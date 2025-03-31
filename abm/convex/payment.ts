@@ -231,11 +231,11 @@ export const validateRequestSuscription = action({
 //   },
 // });
 
-export const getSuscription = internalAction({
+export const getSuscriptionMP = action({
   args: {
     id: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (_ctx, args) => {
     const preapproval = await new PreApproval(MercadoPagoClient).get({
       id: args.id,
     });

@@ -16,11 +16,7 @@ const MpBrick: FC<MpBrickInterface> = ({ onReady, onUnmount, amount, email, desc
     return (
         <>
             <div className='flex flex-col gap-2'>
-                <span>
-                    Podes pagar con Tarjeta de debito o credito, el pago se procesara por Mercado Pago. <br />
-                    Veras tu suscripcion activa ahi.
-                </span>
-                <span>
+                <span className='whitespace-pre-line'>
                     {description}
                 </span>
             </div>
@@ -32,7 +28,7 @@ const MpBrick: FC<MpBrickInterface> = ({ onReady, onUnmount, amount, email, desc
                             formSubmit: "Suscribir",
                         },
                         hidePaymentButton: true,
-                        hideFormTitle: true,
+                        // hideFormTitle: true,
                     },
                 }}
                 initialization={{ amount, payer: { email } }}

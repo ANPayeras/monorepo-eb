@@ -13,17 +13,20 @@ import MpBrick from '../mp-brick'
 import Button from '../buttons/button'
 import Success from '../feedbacks/success'
 import Error from '../feedbacks/error'
-import { PreApprovalResponse } from 'mercadopago/dist/clients/preApproval/commonTypes'
 import { SelectedPlan } from './types'
 import { AlertDialogComponent } from '../dialog'
-import { addDaysToDate } from '@/lib/utils'
+import { addDaysToDate, getLocalDateAndTime } from '@/lib/utils'
 import FreeTrialMsg from './free-trial-msg'
 import LinkWord from '../link-word'
 import { feedbacksReferencess } from '@/constants'
+import Row from '../row'
+import { PreApprovalResponse } from 'mercadopago/dist/clients/preApproval/commonTypes'
+import ActiveSuscriptionMsg from './active-suscription-msg'
 
 const SuscriptionPlans = () => {
     const { isSignedIn } = useUser()
     const createSuscription = useAction(api.payment.createSuscription)
+    const getActiveSucriptionMP = useAction(api.payment.getSuscriptionMP)
     const plans = useQuery(api.plans.getPlansDB, isSignedIn ? undefined : 'skip')
     const user = useQuery(api.users.getCurrentUser, isSignedIn ? undefined : 'skip')
     const activeSucription = useQuery(api.suscriptions.getActiveSuscription, isSignedIn ? undefined : 'skip')
@@ -35,8 +38,17 @@ const SuscriptionPlans = () => {
     const [pm, setSelectPM] = useState<Tab>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [ready, setReady] = useState<boolean>(false)
-    const [suscriptionReady, setSuscriptionReady] = useState<PreApprovalResponse>()
     const [openDialog, setOpenDialog] = useState<boolean>(false)
+    const [suscription, setSuscription] = useState<PreApprovalResponse>()
+
+    const getSuscriptionFromMP = useCallback(async () => {
+        const suscription = await getActiveSucriptionMP({ id: activeSucription?.subscriptionPreapprovalId! })
+        setSuscription(suscription)
+    }, [activeSucription?.subscriptionPreapprovalId, getActiveSucriptionMP])
+
+    useEffect(() => {
+        if (activeSucription) getSuscriptionFromMP()
+    }, [activeSucription, getSuscriptionFromMP])
 
     const selectedRecurring = useMemo(() => {
         if (selectedPlan) {
@@ -58,21 +70,20 @@ const SuscriptionPlans = () => {
         try {
             const plan = isAnual ? selectedPlan?.anual : selectedPlan?.monthly
             const cardFormData = await window?.cardPaymentBrickController?.getFormData()
-            const suscription = await createSuscription({
+            await createSuscription({
                 token: cardFormData.token,
                 email: "test_user_1591280665@testuser.com",
                 // email: user.email,
                 userId: user?._id!,
                 preapproval_plan_id: plan?.id!,
             })
-            setSuscriptionReady(suscription)
             onSelectPM({
                 title: 'success',
                 value: '1',
                 reference: 'success'
             })
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             onSelectPM({
                 title: 'error',
                 value: '1',
@@ -103,11 +114,11 @@ const SuscriptionPlans = () => {
             <MpBrick
                 email={user?.email!}
                 amount={Number(selectedRecurring?.price)}
-                description={'a'}
+                description={'El pago se procesara por Mercado Pago, una vez realizado podras ver la suscripcion ahi. \n\n El pago puede demorar hasta 24hs en acreditarse'}
                 onReady={onReady}
                 onUnmount={onUnmount}
             />,
-        transference: <TransferencePm />,
+        transference: <TransferencePm reference={`${user?._id}-${selectedRecurring?.id?.slice(-4)}`} />,
         success:
             <Success title='Se ha suscripto de manera exitosa'>
                 <div className='flex flex-col gap-2 w-full'>
@@ -172,7 +183,19 @@ const SuscriptionPlans = () => {
                     isFreeTrialActive &&
                     <FreeTrialMsg />
                 }
+                {
+                    activeSucription && !isFreeTrialActive &&
+                    <ActiveSuscriptionMsg />
+                }
             </div>
+            {
+                activeSucription &&
+                <div>
+                    <Row title='Nombre del plan:' description={suscription?.reason || ''} />
+                    <Row title='Precio:' description={`$ ${String(suscription?.auto_recurring?.transaction_amount || '')}`} />
+                    <Row title='Poxima fecha de pago:' description={getLocalDateAndTime(suscription?.next_payment_date || '').date} />
+                </div>
+            }
             <div className='flex flex-wrap flex-col xs:flex-row justify-center items-center gap-5'>
                 {
                     plans?.map((p) => (
@@ -240,7 +263,7 @@ const SuscriptionPlans = () => {
             <SheetPayment
                 open={openSheet}
                 handleChange={handleChangeSheet}
-                title={selectedPlan?.title || ''}
+                title={activeSucription ? '' : selectedPlan?.title || ''}
                 description={isFreeTrialActive ? 'Dejaras de tener la prueba gratuita.' : ''}
                 descriptionClassName='text-red-500'
             >
