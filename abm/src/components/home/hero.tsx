@@ -26,16 +26,16 @@ const Hero = () => {
                     ...Pero que era super necesario
                 </div>
                 <div className='flex gap-4'>
-                    <HoverBorderGradientButton>
-                        <Link href='/sign-up'>
+                    <Link href='/sign-up'>
+                        <HoverBorderGradientButton>
                             Comienza gratis
-                        </Link>
-                    </HoverBorderGradientButton>
-                    <HoverBorderGradientButton>
-                        <Link href='/sign-in'>
+                        </HoverBorderGradientButton>
+                    </Link>
+                    <Link href='/sign-in'>
+                        <HoverBorderGradientButton>
                             Iniciar sesion
-                        </Link>
-                    </HoverBorderGradientButton>
+                        </HoverBorderGradientButton>
+                    </Link>
                 </div>
             </motion.div>
         </AuroraBackground>

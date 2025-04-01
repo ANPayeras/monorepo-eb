@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Card, CardTitle, CardDescription } from '../ui/card'
-import { Switch } from '../ui/switch'
-import { IconRosetteDiscountCheck } from '@tabler/icons-react'
+
 import { useAction, useMutation, useQuery } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
 import { useUser } from '@clerk/nextjs'
@@ -13,15 +11,15 @@ import MpBrick from '../mp-brick'
 import Button from '../buttons/button'
 import Success from '../feedbacks/success'
 import Error from '../feedbacks/error'
-import { SelectedPlan } from './types'
 import { AlertDialogComponent } from '../dialog'
-import { addDaysToDate, getLocalDateAndTime } from '@/lib/utils'
-import FreeTrialMsg from './free-trial-msg'
+import { addDaysToDate } from '@/lib/utils'
 import LinkWord from '../link-word'
 import { feedbacksReferencess } from '@/constants'
-import Row from '../row'
 import { PreApprovalResponse } from 'mercadopago/dist/clients/preApproval/commonTypes'
-import ActiveSuscriptionMsg from './active-suscription-msg'
+import SuscriptionPlansFooter from './suscription-plans-footer'
+import SuscriptionPlansHeader from './suscription-plans-header'
+import SuscriptionPlansBody from './suscription-plans-body'
+import { Doc } from '../../../convex/_generated/dataModel'
 
 const SuscriptionPlans = () => {
     const { isSignedIn } = useUser()
@@ -33,7 +31,7 @@ const SuscriptionPlans = () => {
     const freeTrialStatus = useQuery(api.users.checkFreeTrial, isSignedIn ? undefined : 'skip')
     const activeFreeTrial = useMutation(api.users.updateFreeTrial)
     const [isAnual, setIsAnual] = useState(true)
-    const [selectedPlan, setSelectedPlan] = useState<SelectedPlan>()
+    const [selectedPlan, setSelectedPlan] = useState<Doc<"plans">>()
     const [openSheet, setOpenSheet] = useState<boolean>(false)
     const [pm, setSelectPM] = useState<Tab>()
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -55,11 +53,6 @@ const SuscriptionPlans = () => {
             return isAnual ? selectedPlan?.anual : selectedPlan?.monthly
         }
     }, [selectedPlan, isAnual])
-
-    const premiunValidation = useCallback((plan: SelectedPlan) => {
-        const { _id } = plan
-        return _id === selectedPlan?._id
-    }, [selectedPlan?._id])
 
     const onSelectPM = useCallback((e: Tab) => {
         setSelectPM(e)
@@ -170,85 +163,21 @@ const SuscriptionPlans = () => {
 
     return (
         <div className='flex flex-col gap-10'>
-            <div className='flex flex-col md:flex-row justify-between items-center text-sm sm:text-medium gap-2 md:gap-0'>
-                <div className='flex justify-center items-center gap-2'>
-                    <span style={{ opacity: isAnual ? .5 : 1 }}>Mensual</span>
-                    <Switch onClick={() => setIsAnual(!isAnual)} checked={isAnual} />
-                    <span style={{ opacity: isAnual ? 1 : .5 }}>Anual (-40%)</span>
-                </div>
-                {/* <div>
-                    Precios en Ars
-                </div> */}
-                {
-                    isFreeTrialActive &&
-                    <FreeTrialMsg />
-                }
-                {
-                    activeSucription && !isFreeTrialActive &&
-                    <ActiveSuscriptionMsg />
-                }
-            </div>
-            {
-                activeSucription &&
-                <div>
-                    <Row title='Nombre del plan:' description={suscription?.reason || ''} />
-                    <Row title='Precio:' description={`$ ${String(suscription?.auto_recurring?.transaction_amount || '')}`} />
-                    <Row title='Poxima fecha de pago:' description={getLocalDateAndTime(suscription?.next_payment_date || '').date} />
-                </div>
-            }
-            <div className='flex flex-wrap flex-col xs:flex-row justify-center items-center gap-5'>
-                {
-                    plans?.map((p) => (
-                        <Card
-                            key={p._id}
-                            onClick={() => setSelectedPlan(p)}
-                            style={{
-                                border: premiunValidation(p) ? '1px solid green' : '',
-                                transform: premiunValidation(p) ? 'scaleX(1.05) scaleY(1.05)' : '',
-                                backgroundColor: premiunValidation(p) ? '#00800050' : ''
-                            }}
-                            className='relative p-2 cursor-pointer w-[95%] xs:w-[300px] xs:h-[400px] flex flex-col justify-between hover:scale-[1.01] hover:shadow-md hover:shadow-slate-800 transition-all'
-                        >
-                            <div className='flex flex-col gap-5'>
-                                <div className='flex flex-col gap-2'>
-                                    <div className='flex justify-between'>
-                                        <CardTitle className='text-lg sm:text-2xl'>
-                                            {p.title}
-                                        </CardTitle>
-                                        {
-                                            p?.anual?.price && p?.monthly?.price &&
-                                            <CardDescription className='absolute text-black top-0 right-0 bg-orange-300 rounded-tr-lg rounded-bl-lg p-1 shadow-lg'>
-                                                {
-                                                    isAnual ? `$${p.anual.price} al año` : `$${p.monthly.price} al mes`
-                                                }
-                                            </CardDescription>
-                                        }
-                                    </div>
-                                    {
-                                        p.description &&
-                                        <CardDescription>
-                                            {
-                                                !hasFreeTrial && p.description
-                                            }
-                                        </CardDescription>
-                                    }
-                                </div>
-                                <ul>
-                                    {
-                                        p.features.map((f, i) => (
-                                            <li key={i} className='flex gap-1'>
-                                                <IconRosetteDiscountCheck className='text-green-500' size={18} />
-                                                <span className='text-sm'>{f}</span>
-                                            </li>
-                                        ))
-                                    }
-                                </ul>
-                            </div>
-                        </Card>
-                    ))
-                }
-            </div>
-            <div className='flex justify-center'>
+            <SuscriptionPlansHeader
+                activeSucription={activeSucription}
+                isAnual={isAnual}
+                isFreeTrialActive={isFreeTrialActive}
+                setIsAnual={setIsAnual}
+                suscription={suscription}
+            />
+            <SuscriptionPlansBody
+                plans={plans || []}
+                hasFreeTrial={hasFreeTrial}
+                isAnual={isAnual}
+                selectedPlan={selectedPlan}
+                setSelectedPlan={setSelectedPlan}
+            />
+            <SuscriptionPlansFooter>
                 {
                     activeSucription ?
                         <LinkWord link={activeSucription?.adminUrl || ''} text='Ver suscripcion' /> :
@@ -259,7 +188,8 @@ const SuscriptionPlans = () => {
                             {primaryActionText[freeTrialStatus || '']}
                         </Button>
                 }
-            </div>
+
+            </SuscriptionPlansFooter>
             <SheetPayment
                 open={openSheet}
                 handleChange={handleChangeSheet}

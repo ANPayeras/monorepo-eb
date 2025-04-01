@@ -61,7 +61,7 @@ const FeaturesSection = () => {
     ];
 
     return (
-        <div className="w-full min-h-screen py-4 px-2 flex items-center">
+        <div className="w-full min-h-screen py-4 px-2 flex items-center bg-gradient-to-b from-slate-500 to-slate-400">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 relative z-0 py-10 max-w-7xl mx-auto gap-1">
                 {features.map((feature, index) => (
                     <Feature key={feature.title} {...feature} index={index} />

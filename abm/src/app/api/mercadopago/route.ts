@@ -1,4 +1,4 @@
-import { PreApproval, Payment } from "mercadopago";
+import { PreApproval, Payment, Invoice } from "mercadopago";
 import { fetchAction } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { MercadoPagoClient } from "@/lib/mercadopago-instance";
@@ -35,10 +35,10 @@ export async function POST(request: Request) {
       case "created":
         // Creamos la suscripcion en la tabla
         // Cancelamos periodo de prueba si lo hay
-        await fetchAction(api.payment.createSuscriptionDB, {
-          subscriptionPreapprovalId: data.id,
-          reference: preapproval.external_reference as Id<"users">,
-        });
+        // await fetchAction(api.payment.createSuscriptionDB, {
+        //   subscriptionPreapprovalId: data.id,
+        //   reference: preapproval.external_reference as Id<"users">,
+        // });
         break;
       case "updated":
         // Si status === 'canceled' cancelar suscripcion
@@ -51,6 +51,19 @@ export async function POST(request: Request) {
         break;
       default:
         break;
+    }
+  }
+
+  if (type === "subscription_authorized_payment") {
+    const authotizedPayment = await new Invoice(MercadoPagoClient).get({
+      id: data.id,
+    });
+
+    if (authotizedPayment.status === "processed") {
+      await fetchAction(api.payment.createSuscriptionDB, {
+        subscriptionPreapprovalId: authotizedPayment.preapproval_id!,
+        reference: authotizedPayment.external_reference as Id<"users">,
+      });
     }
   }
 

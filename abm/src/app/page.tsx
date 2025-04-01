@@ -4,6 +4,7 @@ import { DockMenu } from "@/components/home/dockMenu";
 import { CardsCarrousel } from "@/components/home/cardsCarrousel";
 import Contact from "@/components/home/contact";
 import FeaturesSection from "@/components/home/features-section";
+import Plans from "@/components/home/plans";
 
 const page = () => {
     return (
@@ -17,6 +18,9 @@ const page = () => {
             </section>
             <section id="features">
                 <FeaturesSection />
+            </section>
+            <section id="plans">
+                <Plans />
             </section>
             <section id="contact">
                 <Contact />
