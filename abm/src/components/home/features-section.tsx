@@ -1,13 +1,14 @@
 import React from 'react'
+
 import {
-    IconAdjustmentsBolt,
-    IconCloud,
-    IconCurrencyDollar,
-    IconEaseInOut,
-    IconHeart,
+    IconArrowNarrowRightDashed,
+    IconBulb,
+    IconChartLine,
+    IconDeviceGamepad,
     IconHelp,
-    IconRouteAltLeft,
-    IconTerminal2,
+    IconInputAi,
+    IconPerspective,
+    IconRecharging,
 } from "@tabler/icons-react";
 import { Feature } from './feature';
 
@@ -17,46 +18,46 @@ const FeaturesSection = () => {
             title: "Hecho para emprendedores",
             description:
                 "Una herramienta facil de usar.",
-            icon: <IconTerminal2 color='white' />,
+            icon: <IconBulb color='white' />,
         },
         {
             title: "Bajos costos",
             description:
-                "Apalanca tu negocio con costos bajos",
-            icon: <IconEaseInOut color='white' />,
+                "Apalanca tu negocio con costos bajos.",
+            icon: <IconRecharging color='white' />,
         },
         {
             title: "Responsive",
             description:
                 "Diseñado tanto para celulares como para computadoras.",
-            icon: <IconCurrencyDollar color='white' />,
+            icon: <IconPerspective color='white' />,
         },
         {
             title: "Metricas",
-            description: "Visualiza metricas sobre el uso de tu plantilla.",
-            icon: <IconCloud color='white' />,
-        },
-        {
-            title: "IA",
-            description: "Con el poder de la I.A. conoce cuales son las tendencias de los usuarios.",
-            icon: <IconRouteAltLeft color='white' />,
+            description: "Visualiza metricas sobre el uso de tus plantillas.",
+            icon: <IconChartLine color='white' />,
         },
         {
             title: "Soporte personlaizado",
             description:
-                "Atencion al cliente a la altura de los clientes.",
+                "Te acompañamos durante el todo el proceso.",
             icon: <IconHelp color='white' />,
         },
         {
-            title: "Blockchain",
-            description:
-                "If you donot like EveryAI, we will convince you to like us.",
-            icon: <IconAdjustmentsBolt color='white' />,
+            title: "I.A. (Proximamente)",
+            description: "Con el poder de la I.A. conoce cuales son las tendencias de los usuarios.",
+            icon: <IconInputAi color='white' />,
         },
         {
-            title: "And everything else",
-            description: "I just ran out of copy ideas. Accept my sincere apologies",
-            icon: <IconHeart color='white' />,
+            title: "Gamificacion (Proximamente)",
+            description:
+                "Consigue logros por usar la plataforma.",
+            icon: <IconDeviceGamepad color='white' />,
+        },
+        {
+            title: "Esto recien empieza",
+            description: "Muchas ideas en desarrollo...",
+            icon: <IconArrowNarrowRightDashed color='white' />,
         },
     ];
 

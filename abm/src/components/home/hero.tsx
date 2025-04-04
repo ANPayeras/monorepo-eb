@@ -17,7 +17,7 @@ const Hero = () => {
                     duration: 0.8,
                     ease: "easeInOut",
                 }}
-                className="relative flex flex-col gap-4 items-center justify-center px-4"
+                className="relative flex flex-col gap-4 items-center justify-center px-4 z-0"
             >
                 <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
                     El folleto electronico que nadie pidio...

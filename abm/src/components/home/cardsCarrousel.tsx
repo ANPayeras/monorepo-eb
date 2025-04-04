@@ -48,7 +48,7 @@ export function CardsCarrousel() {
 
     return (
         <div className="w-full h-full py-4 bg-gradient-to-b from-slate-600 to-slate-500">
-            <h2 className="pl-4 mx-auto text-xl md:text-5xl font-bold bg-gradient-to-br from-slate-950 to-slate-700 bg-clip-text font-sans text-transparent pb-4">
+            <h2 className="pl-4 mx-auto text-xl md:text-5xl font-bold bg-gradient-to-br from-slate-200 to-slate-500 bg-clip-text font-sans text-transparent pb-4">
                 Personaliza la plantilla a tu gusto
             </h2>
             <Carousel items={cards} />

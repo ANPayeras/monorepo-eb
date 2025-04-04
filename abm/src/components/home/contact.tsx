@@ -15,7 +15,7 @@ const Contact = () => {
                 duration: 0.8,
                 ease: "easeInOut",
             }}
-            className="relative flex gap-4 items-center justify-around py-28 px-4 bg-slate-400"
+            className="relative flex gap-4 items-center justify-around py-28 px-4 bg-gradient-to-t from-slate-400 to-slate-300"
         >
             <div className="flex items-center dark:text-white gap-2">
                 <Image
