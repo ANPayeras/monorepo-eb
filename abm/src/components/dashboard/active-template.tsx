@@ -45,7 +45,7 @@ const ActiveTemplate = () => {
                         </div>
                         {
                             template?.length ?
-                                <Template {...{ template: template[0], user: user! }} /> :
+                                <Template {...{ template: template[0], username: user?.username || '' }} /> :
                                 <div className='bg-slate-50 border rounded-sm p-2 text-center text-medium flex flex-col gap-4 h-full justify-center'>
                                     <p>Ups, parece que todavia no tienes una plantilla activa</p>
                                     <p>Agrega una para comenzar a usar EBrochure</p>
