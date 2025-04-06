@@ -19,6 +19,8 @@ import { api } from '../../convex/_generated/api';
 import { useParams } from 'next/navigation';
 import { statusClerk } from '@/constants';
 import SuscriptionPlans from './profile/suscription-plans';
+import useFlag from '@/hooks/use-flag';
+import AnimatedText from './animated-text';
 
 const Profile = () => {
     const { profile } = useParams()
@@ -26,6 +28,7 @@ const Profile = () => {
     const userConvex = useQuery(api.users.getCurrentUser, !user ? 'skip' : undefined)
     const updateUser = useMutation(api.users.updateUser)
     const swiperRef = useRef<SwiperType>()
+    const isPaymentActive = useFlag('payment')
     const [moveTabIdx, setMoveTabIdx] = useState<number>(0)
 
     useEffect(() => {
@@ -194,22 +197,12 @@ const Profile = () => {
                         <UserProfile />
                     </SwiperSlide> */}
                     <SwiperSlide>
-                        <div className='flex flex-col items-center justify-start gap-4 h-full overflow-y-scroll bg-slate-100'>
-                            {/* <motion.h3
-                                initial={{ opacity: 0.5, y: 0 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{
-                                    delay: 0.5,
-                                    duration: 0.8,
-                                    ease: "easeInOut",
-                                }}
-                                className="bg-gradient-to-br from-slate-500 to-slate-900 py-4 bg-clip-text text-center text-4xl font-medium tracking-tight text-transparent"
-                            >
-                                Proximamente
-                            </motion.h3> */}
-                            <div className='w-full'>
-                                <SuscriptionPlans />
-                            </div>
+                        <div className='flex items-center justify-center h-full overflow-y-scroll bg-slate-100'>
+                            {
+                                isPaymentActive ?
+                                    <SuscriptionPlans /> :
+                                    <AnimatedText text='Próximamente' />
+                            }
                         </div>
                     </SwiperSlide>
                 </Swiper>

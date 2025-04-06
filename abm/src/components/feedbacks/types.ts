@@ -9,3 +9,8 @@ export type ErrosProps = {
   title: string;
   children?: ReactNode;
 };
+
+export type PendingProps = {
+  title: string;
+  children?: ReactNode;
+};

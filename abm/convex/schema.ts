@@ -167,4 +167,8 @@ export default defineSchema({
       })
     ),
   }),
+  flags: defineTable({
+    key: v.string(),
+    active: v.boolean(),
+  }),
 });

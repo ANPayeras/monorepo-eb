@@ -155,3 +155,5 @@ export type DetailMetricsResponse = [
   string | null,
   number,
 ][];
+
+export type FlagsKeys = "payment";

@@ -125,4 +125,4 @@ export const icons = [
   },
 ];
 
-export const feedbacksReferencess = ["success", "error"];
+export const feedbacksReferencess = ["success", "error", "pending"];
