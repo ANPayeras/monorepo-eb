@@ -29,6 +29,33 @@ export const getActiveSuscription = query({
   },
 });
 
+export const getPendingSuscription = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("User not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), identity.email))
+      .first();
+
+    const suscription = await ctx.db
+      .query("suscriptions")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), user?._id!),
+          q.eq(q.field("status"), "pending")
+        )
+      )
+      .first();
+
+    return suscription;
+  },
+});
+
 export const insertSuscription = internalMutation({
   args: {
     suscription: v.any(),
@@ -54,7 +81,7 @@ export const insertSuscription = internalMutation({
 
     const suscription = await ctx.db.insert("suscriptions", {
       user: userId,
-      status: "active",
+      status: "pending",
       adminUrl: `https://www.mercadopago.com.ar/subscriptions/details/${subscription_id}`,
       payerId: payer_id,
       subscriptionPreapprovalId: subscription_id,
@@ -62,9 +89,55 @@ export const insertSuscription = internalMutation({
     });
 
     await ctx.db.patch(external_reference as Id<"users">, {
-      isPremium: true,
       suscriptionId: suscription,
     });
+
+    return suscription;
+  },
+});
+
+export const updateSuscription = internalMutation({
+  args: {
+    suscription: v.any(),
+    data: v.optional(
+      v.object({
+        user: v.optional(v.id("users")),
+        status: v.optional(v.string()),
+        adminUrl: v.optional(v.string()),
+        payerId: v.optional(v.number()),
+        subscriptionPreapprovalPlanId: v.optional(v.string()),
+        subscriptionPreapprovalId: v.optional(v.string()),
+        subscriptionAuthorizedPaymentId: v.optional(v.string()),
+        paymentId: v.optional(v.string()),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const { subscription_id, external_reference, payer_id } = args.suscription;
+
+    let userId = external_reference;
+
+    if (!external_reference) {
+      const sus = await ctx.db
+        .query("suscriptions")
+        .filter((q) => q.eq(q.field("payerId"), payer_id))
+        .first();
+
+      userId = sus?.user;
+    }
+
+    const suscription = await ctx.db.patch(
+      subscription_id as Id<"suscriptions">,
+      {
+        ...args.data,
+      }
+    );
+
+    if (args.data?.status === "active") {
+      await ctx.db.patch(userId as Id<"users">, {
+        isPremium: true,
+      });
+    }
 
     return suscription;
   },

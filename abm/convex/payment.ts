@@ -315,6 +315,37 @@ export const createSuscriptionDB = action({
   },
 });
 
+export const updateSuscriptionDB = action({
+  args: {
+    subscriptionPreapprovalId: v.string(),
+    data: v.optional(
+      v.object({
+        user: v.optional(v.id("users")),
+        status: v.optional(v.string()),
+        adminUrl: v.optional(v.string()),
+        payerId: v.optional(v.number()),
+        subscriptionPreapprovalPlanId: v.optional(v.string()),
+        subscriptionPreapprovalId: v.optional(v.string()),
+        subscriptionAuthorizedPaymentId: v.optional(v.string()),
+        paymentId: v.optional(v.string()),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const suscription = await new PreApproval(MercadoPagoClient).get({
+      id: args.subscriptionPreapprovalId,
+    });
+
+    // Modificamos la suscripcion en la tabla
+    await ctx.runMutation(internal.suscriptions.updateSuscription, {
+      suscription,
+      data: args.data,
+    });
+
+    return suscription;
+  },
+});
+
 export const cancellSuscriptionDB = action({
   args: {
     subscriptionPreapprovalId: v.string(),

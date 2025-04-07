@@ -33,12 +33,12 @@ export async function POST(request: Request) {
 
     switch (action) {
       case "created":
-        // Creamos la suscripcion en la tabla
+        // Creamos la suscripcion en la tabla con status pending
         // Cancelamos periodo de prueba si lo hay
-        // await fetchAction(api.payment.createSuscriptionDB, {
-        //   subscriptionPreapprovalId: data.id,
-        //   reference: preapproval.external_reference as Id<"users">,
-        // });
+        await fetchAction(api.payment.createSuscriptionDB, {
+          subscriptionPreapprovalId: data.id,
+          reference: preapproval.external_reference as Id<"users">,
+        });
         break;
       case "updated":
         // Si status === 'canceled' cancelar suscripcion
@@ -60,9 +60,12 @@ export async function POST(request: Request) {
     });
 
     if (authotizedPayment.status === "processed") {
-      await fetchAction(api.payment.createSuscriptionDB, {
+      await fetchAction(api.payment.updateSuscriptionDB, {
         subscriptionPreapprovalId: authotizedPayment.preapproval_id!,
-        reference: authotizedPayment.external_reference as Id<"users">,
+        data: {
+          subscriptionAuthorizedPaymentId: authotizedPayment.id,
+          status: "active",
+        },
       });
     }
   }

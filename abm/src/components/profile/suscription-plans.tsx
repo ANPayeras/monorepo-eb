@@ -9,7 +9,6 @@ import { Tab } from '../ui/tabs'
 import TransferencePm from './transference-pm'
 import MpBrick from '../mp-brick'
 import Button from '../buttons/button'
-import Success from '../feedbacks/success'
 import Error from '../feedbacks/error'
 import { AlertDialogComponent } from '../dialog'
 import { addDaysToDate } from '@/lib/utils'
@@ -20,6 +19,7 @@ import SuscriptionPlansFooter from './suscription-plans-footer'
 import SuscriptionPlansHeader from './suscription-plans-header'
 import SuscriptionPlansBody from './suscription-plans-body'
 import { Doc } from '../../../convex/_generated/dataModel'
+import Pending from '../feedbacks/pending'
 
 const SuscriptionPlans = () => {
     const { isSignedIn } = useUser()
@@ -28,6 +28,7 @@ const SuscriptionPlans = () => {
     const plans = useQuery(api.plans.getPlansDB, isSignedIn ? undefined : 'skip')
     const user = useQuery(api.users.getCurrentUser, isSignedIn ? undefined : 'skip')
     const activeSucription = useQuery(api.suscriptions.getActiveSuscription, isSignedIn ? undefined : 'skip')
+    const pendingSucription = useQuery(api.suscriptions.getPendingSuscription, isSignedIn ? undefined : 'skip')
     const freeTrialStatus = useQuery(api.users.checkFreeTrial, isSignedIn ? undefined : 'skip')
     const activeFreeTrial = useMutation(api.users.updateFreeTrial)
     const [isAnual, setIsAnual] = useState(true)
@@ -71,9 +72,9 @@ const SuscriptionPlans = () => {
                 preapproval_plan_id: plan?.id!,
             })
             onSelectPM({
-                title: 'success',
+                title: 'pending',
                 value: '1',
-                reference: 'success'
+                reference: 'pending'
             })
         } catch (error) {
             // console.log(error)
@@ -112,13 +113,12 @@ const SuscriptionPlans = () => {
                 onUnmount={onUnmount}
             />,
         transference: <TransferencePm reference={`${user?._id}-${selectedRecurring?.id?.slice(-4)}`} />,
-        success:
-            <Success title='Se ha suscripto de manera exitosa'>
-                <div className='flex flex-col gap-2 w-full'>
-                    <span className='text-center'>Mira tu suscripcion en el siguiente enlace:</span>
-                    <LinkWord link={activeSucription?.adminUrl || ''} />
+        pending:
+            <Pending title='Suscripcion en proceso'>
+                <div className='flex w-full'>
+                    <span className='text-center'>Una vez validado el pago, se activara la suscripcion. Este proceso puede demorar hasta 2 horas</span>
                 </div>
-            </Success>,
+            </Pending>,
         error:
             <Error title='Hubo un error, por favor reintente'>
                 <Button
@@ -161,8 +161,19 @@ const SuscriptionPlans = () => {
         }
     }, [isFreeTrialActive, plans, activeSucription])
 
+    useEffect(() => {
+        if (feedbacksReferencess.includes(String(pm?.reference)) && activeSucription) {
+            onSelectPM({
+                reference: "transference",
+                title: "Transferencia",
+                value: "0"
+            })
+            setOpenSheet(false)
+        }
+    }, [activeSucription, onSelectPM, pm])
+
     return (
-        <div className='flex flex-col gap-10'>
+        <div className='w-full h-full flex flex-col gap-10'>
             <SuscriptionPlansHeader
                 activeSucription={activeSucription}
                 isAnual={isAnual}
@@ -183,12 +194,12 @@ const SuscriptionPlans = () => {
                         <LinkWord link={activeSucription?.adminUrl || ''} text='Ver suscripcion' /> :
                         <Button
                             onClick={!hasFreeTrial ? () => setOpenDialog(true) : () => setOpenSheet(true)}
-                            disabled={!selectedPlan || selectedPlan?.type === 'free'}
+                            disabled={!selectedPlan || selectedPlan?.type === 'free' || !!pendingSucription}
+                            leftIconName={pendingSucription ? 'clockFilled' : undefined}
                         >
-                            {primaryActionText[freeTrialStatus || '']}
+                            {pendingSucription ? 'Validando suscripcion' : primaryActionText[freeTrialStatus || '']}
                         </Button>
                 }
-
             </SuscriptionPlansFooter>
             <SheetPayment
                 open={openSheet}
