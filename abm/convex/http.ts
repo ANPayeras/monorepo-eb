@@ -1,8 +1,7 @@
 import type { WebhookEvent } from "@clerk/nextjs/server";
 import { httpRouter } from "convex/server";
 import { Webhook } from "svix";
-
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
 
 const handleClerkWebhook = httpAction(async (ctx, request) => {
@@ -18,6 +17,7 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
         imageUrl: event.data.image_url,
         name: event.data.first_name || "",
         username: event.data.username || `user${event.data.id}`,
+        isPremiun: false,
       });
       break;
     case "user.updated":
@@ -37,12 +37,44 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
   });
 });
 
+const handleSuscriptionWebhook = httpAction(async (ctx, request) => {
+  const xSignature = request.headers.get("x-signature")!;
+  const xRequestId = request.headers.get("x-request-id")!;
+  const body: { data: { id: string }; type: string; action: string } =
+    await request.json();
+  const validation = await ctx.runAction(
+    api.payment.validateRequestSuscription,
+    {
+      headers: { xSignature, xRequestId },
+      body,
+    }
+  );
+
+  if (!validation) {
+    return new Response("Unauthorized", { status: 400 });
+  }
+
+  await ctx.runMutation(internal.users.createUsertest, {
+    username: JSON.stringify(body),
+  });
+
+  return new Response(null, {
+    status: 200,
+  });
+});
+
 const http = httpRouter();
 
 http.route({
   path: "/clerk",
   method: "POST",
   handler: handleClerkWebhook,
+});
+
+http.route({
+  path: "/suscription",
+  method: "POST",
+  handler: handleSuscriptionWebhook,
 });
 
 const validateRequest = async (

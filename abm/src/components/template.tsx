@@ -4,7 +4,7 @@ import { UserResource } from '@clerk/types'
 import ClassicView from './templates-views/classic-view'
 import EmptyView from './templates-views/empty-view'
 
-const Template = ({ template, user }: { template: Doc<"templates">, user: UserResource }) => {
+const Template = ({ template, username }: { template: Doc<"templates">, username: string }) => {
     const { layout } = template
 
     const templateView: { [key: string]: JSX.Element } = {
@@ -21,7 +21,7 @@ const Template = ({ template, user }: { template: Doc<"templates">, user: UserRe
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: '100% 100%',
             }}>
-            <div>{user.username}</div>
+            <div>{username}</div>
             {templateView[layout.templateLayout]}
         </div>
     )

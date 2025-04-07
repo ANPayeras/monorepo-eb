@@ -17,7 +17,7 @@ const Hero = () => {
                     duration: 0.8,
                     ease: "easeInOut",
                 }}
-                className="relative flex flex-col gap-4 items-center justify-center px-4"
+                className="relative flex flex-col gap-4 items-center justify-center px-4 z-0"
             >
                 <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
                     El folleto electronico que nadie pidio...
@@ -26,16 +26,16 @@ const Hero = () => {
                     ...Pero que era super necesario
                 </div>
                 <div className='flex gap-4'>
-                    <HoverBorderGradientButton>
-                        <Link href='/sign-up'>
+                    <Link href='/sign-up'>
+                        <HoverBorderGradientButton>
                             Comienza gratis
-                        </Link>
-                    </HoverBorderGradientButton>
-                    <HoverBorderGradientButton>
-                        <Link href='/sign-in'>
+                        </HoverBorderGradientButton>
+                    </Link>
+                    <Link href='/sign-in'>
+                        <HoverBorderGradientButton>
                             Iniciar sesion
-                        </Link>
-                    </HoverBorderGradientButton>
+                        </HoverBorderGradientButton>
+                    </Link>
                 </div>
             </motion.div>
         </AuroraBackground>

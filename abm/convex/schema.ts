@@ -129,5 +129,46 @@ export default defineSchema({
     phone: v.optional(v.string()),
     username: v.optional(v.string()),
     isPremium: v.optional(v.boolean()),
+    suscriptionId: v.optional(v.id("suscriptions")),
+    freeTrial: v.optional(
+      v.object({
+        active: v.boolean(),
+        startDate: v.string(),
+        endDate: v.string(),
+      })
+    ),
+  }),
+  suscriptions: defineTable({
+    user: v.id("users"),
+    status: v.string(),
+    adminUrl: v.string(),
+    payerId: v.number(),
+    subscriptionPreapprovalPlanId: v.optional(v.string()),
+    subscriptionPreapprovalId: v.optional(v.string()),
+    subscriptionAuthorizedPaymentId: v.optional(v.string()),
+    paymentId: v.optional(v.string()),
+  }),
+  plans: defineTable({
+    type: v.string(),
+    premium: v.boolean(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    features: v.array(v.string()),
+    monthly: v.optional(
+      v.object({
+        price: v.string(),
+        id: v.string(),
+      })
+    ),
+    anual: v.optional(
+      v.object({
+        price: v.string(),
+        id: v.string(),
+      })
+    ),
+  }),
+  flags: defineTable({
+    key: v.string(),
+    active: v.boolean(),
   }),
 });

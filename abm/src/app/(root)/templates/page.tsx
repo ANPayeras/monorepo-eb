@@ -66,7 +66,7 @@ const Templates = () => {
                     onHoverEnd={() => handleHoverTemplates(null)}
                     className='max-w-[400px] min-w-[300px] h-full relative'
                   >
-                    <Template {...{ template: t, user }} />
+                    <Template {...{ template: t, username: user.username || '' }} />
                     <TemplateBtnsOptions t={t} i={i} isHovered={isHovered} templateHovered={templateHovered} />
                   </motion.div>
                 </SwiperSlide>

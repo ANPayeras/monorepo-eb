@@ -3,6 +3,7 @@ import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
 import {
     IconHome,
+    IconMoneybag,
     IconPhone,
     IconSearch,
     IconTools,
@@ -29,6 +30,13 @@ const links = [
             <IconTools className="h-full w-full text-neutral-500 dark:text-neutral-300" />
         ),
         href: "#features",
+    },
+    {
+        title: "Planes",
+        icon: (
+            <IconMoneybag className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+        ),
+        href: "#plans",
     },
     {
         title: "Contacto",
