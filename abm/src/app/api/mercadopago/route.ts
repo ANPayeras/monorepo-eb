@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       await fetchAction(api.payment.updateSuscriptionDB, {
         subscriptionPreapprovalId: authotizedPayment.preapproval_id!,
         data: {
-          subscriptionAuthorizedPaymentId: authotizedPayment.id,
+          subscriptionAuthorizedPaymentId: data.id,
           status: "active",
         },
       });
