@@ -126,12 +126,16 @@ export const updateSuscription = internalMutation({
       userId = sus?.user;
     }
 
-    const suscription = await ctx.db.patch(
-      subscription_id as Id<"suscriptions">,
-      {
-        ...args.data,
-      }
-    );
+    const suscription = await ctx.db
+      .query("suscriptions")
+      .filter((q) =>
+        q.eq(q.field("subscriptionPreapprovalId"), subscription_id)
+      )
+      .first();
+
+    await ctx.db.patch(suscription?._id!, {
+      ...args.data,
+    });
 
     if (args.data?.status === "active") {
       await ctx.db.patch(userId as Id<"users">, {
