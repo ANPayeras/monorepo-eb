@@ -1,23 +1,18 @@
-"use client"
-import { useUser } from '@clerk/nextjs'
-import Link from 'next/link'
 import React from 'react'
 import LoaderSpinner from '../loader-spinner'
+import { currentUser } from '@clerk/nextjs/server'
+import PlanDescription from './plan-description'
 
-const UserDetails = () => {
-    const user = useUser()
+const UserDetails = async () => {
+    const user = await currentUser()
+
     return (
         <div className='bg-slate-50 rounded-sm border p-2 gap-2 flex flex-col md:flex-row items-center justify-between'>
             {
-                !user.isLoaded ? <LoaderSpinner size='sm' /> :
+                !user ? <LoaderSpinner size='sm' /> :
                     <>
-                        <span className='text-sm md:text-lg'>Bienvenid@ <span className='text-blue-800 font-bold'>{user?.user?.username}</span>, como has estado?</span>
-                        <div className='flex items-center gap-2 text-[12px]'>
-                            <span className='p-1 bg-red-300 rounded-sm'>Gratuito</span>
-                            <Link href={'/profile/price'} className='hover:underline'>
-                                <span>Cambiar de plan</span>
-                            </Link>
-                        </div>
+                        <span className='text-sm md:text-lg'>Bienvenid@ <span className='text-blue-800 font-bold'>{user?.username}</span>, como has estado?</span>
+                        <PlanDescription />
                     </>
 
             }

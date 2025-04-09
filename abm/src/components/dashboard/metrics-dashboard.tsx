@@ -11,7 +11,7 @@ const MetricsDashboard = ({ clerkId }: { clerkId: string }) => {
             className='flex bg-slate-50 w-full gap-2 rounded-sm border p-2 shadow-lg flex-col'
         >
             <div className='w-full flex justify-between'>
-                <span>Principales Metricas</span>
+                <span>Principales Métricas</span>
                 <Link
                     href={'/metrics'}
                     className='hover:scale-105 transition-all'>
