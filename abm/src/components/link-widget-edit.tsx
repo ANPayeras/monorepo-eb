@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, useMemo } from 'react'
 import { Input } from './ui/input'
 import { useDataStore } from '@/providers/data-store-providers'
 import { resizableItem, Widget, WidgetData } from '@/stores/data-store'
@@ -31,6 +31,16 @@ const LinkWidgetEdit = ({ widget, handleNestedWidgetChanges, panel, className }:
             handleWidgetChanges(widget, { url: e.target.value })
     }
 
+    const isUrlDisabled = useMemo(() => {
+        switch (widget.type) {
+            case 'link':
+                return !widget?.data?.value
+            case 'resizable':
+                return !panel?.value && (!panel?.img?.storageId || !panel?.img?.storageId)
+        }
+
+    }, [widget.type, widget?.data?.value, panel?.value, panel?.img])
+
     return (
         <div className={cn('flex flex-col gap-4 p-4', className)}>
             <div className='flex flex-col gap-2 relative'>
@@ -60,6 +70,7 @@ const LinkWidgetEdit = ({ widget, handleNestedWidgetChanges, panel, className }:
                     placeholder='URL'
                     name='url'
                     value={panel?.url || widget?.data?.url || ''}
+                    disabled={isUrlDisabled}
                     onChange={handleChangeLink}
                 />
             </div>

@@ -9,14 +9,14 @@ const ContactTemplate = () => {
     return (
         <div className='flex flex-col gap-4 p-4'>
             <span className='text-center'>
-                Habilita o deshabilita redes sociales a mostrar:
+                Habilita o deshabilita redes sociales:
             </span>
             {
                 icons.map((ic, i) => {
                     const socialMedia = contact.find(c => c.title === ic.name)
                     return (
                         <div key={i} className='flex justify-between items-center gap-4'>
-                            <ic.icon size={30} className='hover:scale-110' />
+                            <ic.icon size={30} className='hover:scale-110 transition-all' />
                             <Input
                                 className='h-6'
                                 placeholder={ic.name === 'mail' ? 'Mail' : 'Url'}
@@ -29,7 +29,7 @@ const ContactTemplate = () => {
                                 className='data-[state=checked]:bg-green-400'
                                 name='enabled'
                                 onClick={() => handleOnChangeContactSwitch(!!socialMedia?.enabled, ic.name)}
-                                aria-checked={socialMedia?.enabled}
+                                checked={!!socialMedia?.enabled}
                             />
                         </div>
                     )

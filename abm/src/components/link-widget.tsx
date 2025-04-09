@@ -3,6 +3,7 @@ import { useDataStore } from '@/providers/data-store-providers'
 import ToolsWidget from './tools-widget'
 import { LinkWidgetInterface } from '@/interfaces'
 import WidgetBaseCard from './widget-base-card'
+import PlaceholdersWidgets from './widgets/placeholders-widgets'
 
 const LinkWidget = ({ widget, selectSection, editWidget, layout, props }: LinkWidgetInterface) => {
     const deleteWidget = useDataStore(state => state.deleteWidget)
@@ -18,7 +19,7 @@ const LinkWidget = ({ widget, selectSection, editWidget, layout, props }: LinkWi
                     className='w-full min-h-[100px] max-h-[100px] text-center overflow-hidden break-words'
                     style={{ color: widget.data?.textColor || layout?.textsColor }}
                 >
-                    {widget.data?.value}
+                    {widget.data?.value || <PlaceholdersWidgets type='link' />}
                 </div>
             </div>
             {

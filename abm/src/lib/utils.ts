@@ -23,3 +23,7 @@ export const getLocalDateAndTime = (date: string) => {
     time: _date.toLocaleTimeString(),
   };
 };
+
+export const checkLoadingQuery = (query: any) => {
+  return typeof query === "undefined";
+};

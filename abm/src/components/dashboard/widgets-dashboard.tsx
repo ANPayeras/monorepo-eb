@@ -29,7 +29,7 @@ const WidgetsDashboard = () => {
                     <div className='absolute left-[5px] top-0'>Próximamente...</div>
                 </div>
                 <div className='bg-slate-50 hover:scale-105 transition-all flex h-[200px] gap-2 justify-center items-center rounded-sm border p-2 relative shadow-lg'>
-                    <span>Blockchain</span>
+                    <span>Gamificación</span>
                     <div className='absolute left-[5px] top-0'>Próximamente...</div>
                 </div>
             </div>

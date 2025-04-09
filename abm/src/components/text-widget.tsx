@@ -3,6 +3,7 @@ import { useDataStore } from '@/providers/data-store-providers'
 import ToolsWidget from './tools-widget'
 import { TextWidgetInterface } from '@/interfaces'
 import WidgetBaseCard from './widget-base-card'
+import PlaceholdersWidgets from './widgets/placeholders-widgets'
 
 const TextWidget = ({ widget, selectSection, editWidget, layout, props }: TextWidgetInterface) => {
     const deleteWidget = useDataStore(state => state.deleteWidget)
@@ -17,7 +18,7 @@ const TextWidget = ({ widget, selectSection, editWidget, layout, props }: TextWi
                 <div className='w-full min-h-[100px] max-h-[100px] text-center overflow-hidden break-words'
                     style={{ color: widget.data?.textColor || layout?.textsColor }}
                 >
-                    {widget.data?.value}
+                    {widget.data?.value || <PlaceholdersWidgets type='text' />}
                 </div>
             </div>
             {
