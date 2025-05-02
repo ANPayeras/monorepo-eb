@@ -1,4 +1,5 @@
 "use client"
+
 import React from 'react'
 import { AuroraBackground } from '../ui/aurora-background'
 import { motion } from "framer-motion";
@@ -19,11 +20,11 @@ const Hero = () => {
                 }}
                 className="relative flex flex-col gap-4 items-center justify-center px-4 z-0"
             >
-                <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
-                    El folleto electronico que nadie pidio...
+                <div className="text-3xl md:text-6xl font-bold dark:text-white text-center">
+                    Digitlizá tus ideas con folletos electrónicos fáciles de hacer
                 </div>
                 <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
-                    ...Pero que era super necesario
+                    ¡De encerio, es muy fácil!
                 </div>
                 <div className='flex gap-4'>
                     <Link href='/sign-up'>
@@ -33,7 +34,7 @@ const Hero = () => {
                     </Link>
                     <Link href='/sign-in'>
                         <HoverBorderGradientButton>
-                            Iniciar sesion
+                            Iniciar sesión
                         </HoverBorderGradientButton>
                     </Link>
                 </div>

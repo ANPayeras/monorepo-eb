@@ -13,7 +13,7 @@ const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSectio
             <div className={`hover:border-slate-700 hover:border hover:shadow-sm h-[60px] flex justify-center items-center p-2 gap-1 w-full rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`} {...props}>
                 {
                     contact.length ? contact.map((c, i) => {
-                        const Icon = icons.find(icon => icon.name === c.title)!
+                        const Icon = icons?.find(icon => icon.name === c.title)!
                         return (
                             <Link
                                 key={i}
@@ -22,7 +22,7 @@ const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSectio
                                 href={c?.url || ''}
                                 target='_blank'
                             >
-                                <Icon.icon size={16} />
+                                {Icon && <Icon.icon size={16} />}
                             </Link>
                         )
                     }) : <PlaceholdersWidgets type='socials' />

@@ -1,17 +1,19 @@
 "use client";
+
 import Image from "next/image";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { layoutCardsTexts } from "@/constants";
 import { useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
+import CloseIcon from "./close-icon";
+import { cardsData } from "./cards";
 
 export default function LayoutCards() {
   const createTemplate = useMutation(api.templates.createTemplate)
   const router = useRouter()
-  const [active, setActive] = useState<(typeof cards)[number] | boolean | null>(
+  const [active, setActive] = useState<(typeof cardsData)[number] | boolean | null>(
     null
   );
   const id = useId();
@@ -133,24 +135,24 @@ export default function LayoutCards() {
                       exit={{ opacity: 0 }}
                       className="text-neutral-600 text-xs md:text-sm lg:text-base h-40 md:h-fit pb-10 flex flex-col items-start gap-4 overflow-auto dark:text-neutral-400 [mask:linear-gradient(to_bottom,white,white,transparent)] [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                     >
-                      {typeof active.content === "function"
+                      {/* {typeof active.content === "function"
                         ? active.content()
-                        : active.content}
+                        : active.content} */}
+                      <p>{active.content}</p>
                     </motion.div>
                   </div>
                 </div>
               </motion.div>
-
             </motion.div>
           </motion.div>
         ) : null}
       </AnimatePresence>
       <ul className="max-w-7xl mx-auto w-full grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] md:grid-cols-[repeat(auto-fit,_minmax(300px,_400px))] items-start gap-8">
-        {cards.map((card, index) => (
+        {cardsData.map((card, index) => (
           <motion.div
             layoutId={`card-${card.title}-${id}`}
             key={card.title}
-            onClick={() => setActive(card)}
+            onClick={card.content ? () => setActive(card) : undefined}
             className="h-[400px] flex hover:scale-105 dark:hover:bg-neutral-800 rounded-xl cursor-pointer transition-all shadow-lg"
           >
             <div className="flex gap-4 flex-col w-full h-[400px]">
@@ -178,75 +180,14 @@ export default function LayoutCards() {
                 </div>
               </motion.div>
             </div>
-          </motion.div>
-        ))}
-      </ul>
+          </motion.div >
+        ))
+        }
+      </ul >
     </>
   );
 }
 
-export const CloseIcon = () => {
-  return (
-    <motion.svg
-      initial={{
-        opacity: 0,
-      }}
-      animate={{
-        opacity: 1,
-      }}
-      exit={{
-        opacity: 0,
-        transition: {
-          duration: 0.05,
-        },
-      }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-4 w-4 text-black"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18 6l-12 12" />
-      <path d="M6 6l12 12" />
-    </motion.svg>
-  );
-};
 
-const cards = [
-  {
-    description: "",
-    title: "Clasico",
-    src: "/classic-layout.png",
-    ctaText: layoutCardsTexts.ctaText,
-    ctaLink: layoutCardsTexts.ctaLink,
-    type: 'classic',
-    content: () => {
-      return (
-        <p>
-          Diseño clasico, se pueden agregar una lista, hasta 4 combos, medios de entrega, medios de pago y redes sociales.
-        </p>
-      );
-    },
-  },
-  {
-    description: "",
-    title: "Simple",
-    src: "/empty-layout.png",
-    ctaText: layoutCardsTexts.ctaText,
-    ctaLink: layoutCardsTexts.ctaLink,
-    type: 'empty',
-    content: () => {
-      return (
-        <p>
-          Diseño simple, totalmente personalizable. Agrega descripciones y links libremente.
-        </p>
-      );
-    },
-  },
-];
+
+

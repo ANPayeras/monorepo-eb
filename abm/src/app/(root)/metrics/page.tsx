@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { currentUser } from '@clerk/nextjs/server'
 import BaseCard from '@/components/base-card'
 import MostVisitedPathNames from '@/components/metrics/most-visited-pathnames'
@@ -12,6 +12,7 @@ import { api } from '../../../../convex/_generated/api'
 import EmptyTemplates from '@/components/empty-templates'
 import Link from 'next/link'
 import RefetchSsrPage from '@/components/refetch-ssr-page'
+import LoaderSpinner from '@/components/loader-spinner'
 
 const MetricsPage = async () => {
     const user = await currentUser()
@@ -33,29 +34,41 @@ const MetricsPage = async () => {
             <RefetchSsrPage fromPages={['templates']} />
             <div className='flex flex-col w-full h-fit gap-1'>
                 <BaseCard containerClassName='w-full'>
-                    <DesktopMobileUsers clerkId={user?.id!} />
+                    <Suspense fallback={<LoaderSpinner size='sm' />}>
+                        <DesktopMobileUsers clerkId={user?.id!} />
+                    </Suspense>
                 </BaseCard>
                 <div className='flex flex-col md:flex-row w-full gap-1'>
                     <BaseCard containerClassName='w-full h-auto'>
-                        <MostVisitedPathNames clerkId={user?.id!} />
+                        <Suspense fallback={<LoaderSpinner size='sm' />}>
+                            <MostVisitedPathNames clerkId={user?.id!} />
+                        </Suspense>
                     </BaseCard>
                     <BaseCard containerClassName='w-full h-auto'>
-                        <UsersLocation clerkId={user?.id!} />
+                        <Suspense fallback={<LoaderSpinner size='sm' />}>
+                            <UsersLocation clerkId={user?.id!} />
+                        </Suspense>
                     </BaseCard>
                     <BaseCard containerClassName='w-full h-auto'>
-                        <WidgetsMetrics clerkId={user?.id!} />
+                        <Suspense fallback={<LoaderSpinner size='sm' />}>
+                            <WidgetsMetrics clerkId={user?.id!} />
+                        </Suspense>
                     </BaseCard>
                 </div>
                 <div className='flex flex-col md:flex-row w-full gap-1 md:h-[400px]'>
                     <BaseCard containerClassName='w-full md:h-full flex flex-col justify-between'>
-                        <TimeVisitedDay clerkId={user?.id!} />
+                        <Suspense fallback={<LoaderSpinner size='sm' />}>
+                            <TimeVisitedDay clerkId={user?.id!} />
+                        </Suspense>
                     </BaseCard>
                     <BaseCard containerClassName='w-full md:h-full'>
-                        <TimeVisitedHour clerkId={user?.id!} />
+                        <Suspense fallback={<LoaderSpinner size='sm' />}>
+                            <TimeVisitedHour clerkId={user?.id!} />
+                        </Suspense>
                     </BaseCard>
                 </div>
             </div>
-        </section>
+        </section >
     )
 }
 

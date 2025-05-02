@@ -5,6 +5,7 @@ import React, {
   useState,
   createContext,
   useContext,
+  useCallback,
 } from "react";
 import {
   IconArrowNarrowLeft,
@@ -24,6 +25,7 @@ interface CarouselProps {
 
 type Card = {
   src: string;
+  src2?: string;
   title: string;
   category: string;
   content: React.ReactNode;
@@ -163,8 +165,14 @@ export const Card = ({
   layout?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
+  const [animate, setAnimate] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null);
   const { onCardClose, currentIndex } = useContext(CarouselContext);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    onCardClose(index);
+  }, [index, onCardClose]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -181,7 +189,7 @@ export const Card = ({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open]);
+  }, [handleClose, open]);
 
   useOutsideClick(containerRef, () => handleClose());
 
@@ -189,10 +197,13 @@ export const Card = ({
     setOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    onCardClose(index);
-  };
+  useEffect(() => {
+    if (card.src && card.src2) {
+      setTimeout(() => {
+        setAnimate(!animate)
+      }, 5000)
+    }
+  }, [card.src, card.src2, animate])
 
   return (
     <>
@@ -239,29 +250,73 @@ export const Card = ({
       <motion.div
         layoutId={layout ? `card-${card.title}` : undefined}
         // onClick={handleOpen}
-        className="rounded-3xl bg-gray-100 dark:bg-neutral-900 h-80 w-56 md:h-[35rem] md:w-96 overflow-hidden flex flex-col items-start justify-start relative z-10"
+        className="rounded-3xl bg-gray-100 dark:bg-neutral-900 h-80 w-56 md:h-[35rem] md:w-96 overflow-hidden flex flex-col items-start justify-start relative z-10 shadow-md border border-slate-500"
       >
         <div className="absolute h-full top-0 inset-x-0 bg-gradient-to-b from-black/50 via-transparent to-transparent z-30 pointer-events-none" />
-        <div className="relative z-40 p-8">
+        <div className="relative z-40 p-2 md:p-8">
           <motion.p
             layoutId={layout ? `category-${card.category}` : undefined}
-            className="text-white text-sm md:text-base font-medium font-sans text-left"
+            className="text-white text-sm md:text-base font-medium font-sans text-left [text-shadow:_0_0_0.5px_black]"
           >
             {card.category}
           </motion.p>
           <motion.p
             layoutId={layout ? `title-${card.title}` : undefined}
-            className="text-white text-xl md:text-3xl font-semibold max-w-xs text-left [text-wrap:balance] font-sans mt-2"
+            className="text-white text-medium md:text-xl font-semibold max-w-xs text-left [text-wrap:balance] font-sans mt-2 [text-shadow:_0_0_0.5px_black]"
           >
             {card.title}
           </motion.p>
         </div>
-        <BlurImage
-          src={card.src}
-          alt={card.title}
-          fill
-          className="object-cover absolute z-10 inset-0"
-        />
+        {
+          card.src && card.src2 ?
+            <AnimatePresence>
+              {animate ? (
+                <motion.div
+                  key='src-1'
+                  className="absolute h-full w-full"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 1,
+                    delay: 0.5,
+                  }}
+                >
+                  <BlurImage
+                    src={card.src}
+                    alt={card.title}
+                    fill
+                    className="object-cover absolute z-10 inset-0"
+                  />
+                </motion.div>
+              ) :
+                <motion.div
+                  key='src-2'
+                  className="absolute h-full w-full"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{
+                    duration: 1,
+                    delay: 0.5,
+                  }}
+                >
+                  <BlurImage
+                    src={card.src2}
+                    alt={card.title}
+                    fill
+                    className="object-cover absolute z-10 inset-0"
+                  />
+                </motion.div>
+              }
+            </AnimatePresence> :
+            <BlurImage
+              src={card.src}
+              alt={card.title}
+              fill
+              className="object-cover absolute z-10 inset-0"
+            />
+        }
       </motion.div>
     </>
   );
@@ -288,10 +343,10 @@ export const BlurImage = ({
       width={width}
       height={height}
       loading="lazy"
-      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 30vw, 30vw"
+      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 50vw, 50vw"
       decoding="async"
       blurDataURL={typeof src === "string" ? src : undefined}
-      alt={alt ? alt : "Background of a beautiful view"}
+      alt={alt ? alt : "Carrousel image"}
       {...rest}
     />
   );
