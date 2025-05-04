@@ -2,11 +2,12 @@
 
 import React from 'react'
 import { IconMoodConfuzedFilled } from '@tabler/icons-react'
-import { useRouter } from 'next/navigation'
 import Button from '@/components/buttons/button'
 
-const error = () => {
-    const router = useRouter()
+const Error = ({ reset }: {
+    error: Error & { digest?: string }
+    reset: () => void
+}) => {
     return (
         <div className='w-full h-screen bg-slate-200 flex items-center justify-center'>
             <div className='text-center flex flex-col justify-center items-center gap-5'>
@@ -14,7 +15,7 @@ const error = () => {
                 <span>
                     Ups parece que hubo un error, ponte en contacto con el administrador.
                 </span>
-                <Button onClick={() => router.refresh()}>
+                <Button onClick={reset}>
                     Reintentar
                 </Button>
             </div>
@@ -22,4 +23,4 @@ const error = () => {
     )
 }
 
-export default error
+export default Error
