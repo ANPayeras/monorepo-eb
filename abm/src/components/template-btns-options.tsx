@@ -6,6 +6,8 @@ import { Doc, Id } from '../../convex/_generated/dataModel';
 import Link from 'next/link';
 import { Switch } from './ui/switch';
 import { useIsSmall } from '@/hooks/use-media.query';
+import { revalidatePathAction } from '@/actions/actions';
+import { useDataStore } from '@/providers/data-store-providers';
 
 const itemVariants: Variants = {
     open: {
@@ -17,6 +19,7 @@ const itemVariants: Variants = {
 };
 
 const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"templates">, i: number, isHovered: boolean, templateHovered: number | null }) => {
+    const { resetState } = useDataStore(state => state)
     const deleteTemplate = useMutation(api.templates.deleteTemplate)
     const activeTemplate = useMutation(api.templates.activeTemplate)
     const isSmall = useIsSmall()
@@ -26,9 +29,11 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
         setIsDeleteTemplate(true)
     }
 
-    const onDeleteTemplate = (id: Id<"templates">) => {
+    const onDeleteTemplate = async (id: Id<"templates">) => {
         setIsDeleteTemplate(false)
-        deleteTemplate({ templateId: id })
+        await deleteTemplate({ templateId: id })
+        await revalidatePathAction(`/build/${id}`)
+        resetState()
     }
 
     return (

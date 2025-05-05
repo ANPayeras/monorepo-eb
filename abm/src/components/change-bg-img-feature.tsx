@@ -37,8 +37,8 @@ const ChangeBgImgFeature = () => {
 
     const isImage = backgroundImg?.localImg || backgroundImg?.uploadImgUrl
     return (
-        <div className='flex justify-between items-center'>
-            <div className='flex gap-4'>
+        <div className='flex justify-between items-center h-8'>
+            <div className='flex gap-4 text-sm md:text-medium'>
                 <span>Imagen de Fondo:</span>
             </div>
             <div className='flex gap-2'>

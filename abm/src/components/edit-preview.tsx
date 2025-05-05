@@ -8,6 +8,7 @@ import { Sections } from '@/stores/data-store'
 import { IconMinus, IconPhotoScan, IconPlus, IconShoppingCartPlus } from '@tabler/icons-react'
 import { columns } from './table/columns'
 import Image from 'next/image'
+import { amountToCurrency } from '@/lib/utils'
 
 const EditPreview = () => {
     const { sections, header, cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
@@ -45,7 +46,7 @@ const EditPreview = () => {
                                         {it.name || 'Nombre item'}
                                     </span>
                                     <span className='text-slate-400 text-xs sm:text-sm '>
-                                        $ {it.price || '-'}
+                                        {amountToCurrency(Number(it.price)) || '-'}
                                     </span>
                                 </div>
                             </div>

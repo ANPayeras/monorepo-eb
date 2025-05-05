@@ -3,6 +3,7 @@ import { useDataStore } from '@/providers/data-store-providers'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel'
 import Image from 'next/image'
 import { IconMinus, IconPlus, IconShoppingCartPlus } from '@tabler/icons-react'
+import { amountToCurrency } from '@/lib/utils'
 
 const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
     const { combos, layout, cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
@@ -53,8 +54,7 @@ const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
                     </div>
                     <div className='flex w-full'>
                         <div className='flex flex-1 justify-start border-b-[1px] gap-4'>
-                            <span>$</span>
-                            <span>{price || '-'}</span>
+                            <span>{amountToCurrency(Number(price)) || '-'}</span>
                         </div>
                         <div className='flex flex-[2] justify-end items-center'>
                             {

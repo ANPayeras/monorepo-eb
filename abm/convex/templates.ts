@@ -262,16 +262,18 @@ export const deleteTemplate = mutation({
   },
   handler: async (ctx, args) => {
     const template = await ctx.db.get(args.templateId);
-    const templates = await ctx.db.query("templates").collect();
 
     if (!template) {
       throw new ConvexError("Template not found");
     }
 
-    if (template.lastBuild) {
-      if (templates.length > 1) {
-        await ctx.db.patch(templates[0]._id, { lastBuild: true });
-      }
+    const userTemplates = await ctx.db
+      .query("templates")
+      .filter((q) => q.eq(q.field("user"), template.user))
+      .collect();
+
+    if (template.lastBuild && userTemplates.length) {
+      await ctx.db.patch(userTemplates[0]._id, { lastBuild: true });
     }
 
     return await ctx.db.delete(args.templateId);

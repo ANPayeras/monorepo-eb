@@ -1,5 +1,5 @@
 import React from 'react'
-import LayoutCards from '@/components/layout-cards'
+import LayoutCards from '@/components/layouts/layout-cards'
 
 const page = () => {
     return (

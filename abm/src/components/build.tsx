@@ -13,15 +13,15 @@ import EmptyLayout from './templates-layout/empty-layout'
 import ClassicLayout from './templates-layout/classic-layout'
 import NavBuild from './nav-build'
 import SwiperTemplatesPreview from './swiper-templates-preview'
-import { LayoutFeatures } from '@/interfaces'
 import { Widget } from '@/stores/data-store'
 import { useUser } from '@clerk/nextjs'
 import EmptyTemplates from './empty-templates'
 import RightSection from './build/right-section';
 import { layoutFeatures } from '@/constants'
 import { useToast } from '@/hooks/use-toast'
+import AllPageLoader from './all-page-loader'
 
-const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null, templateLayout: LayoutFeatures | undefined }) => {
+const Build = ({ template }: { template: Doc<"templates"> | null }) => {
     const { user } = useUser()
     const userConvex = useQuery(api.users.getCurrentUser, !user ? 'skip' : undefined)
     const listTemplates = useQuery(api.templates.listTemplates, !user ? 'skip' : undefined)
@@ -33,6 +33,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
     const { layout, paymentMethods, contact, cart, deliverMethods, setTemplateData, resetState } = useDataStore(state => state)
 
     const [openDialog, setOpenDialog] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [editSection, setEditSection] = useState({
         section: '',
         combo: 0,
@@ -69,6 +70,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
     }
 
     const saveChanges = async () => {
+        setIsLoading(true)
         try {
             const id = await createTemplate({ layout: layout.templateLayout })
             router.replace(`/build/${id}`)
@@ -79,6 +81,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
                 variant: 'destructive'
             })
         }
+        setIsLoading(false)
     }
 
     const openModal = () => {
@@ -94,7 +97,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
 
     if (!listTemplates?.length) return (
         <EmptyTemplates
-            mainTitle={'Todavia no seleccionaste ninguna plantilla selecciona un diseño y comenza a crear'}
+            mainTitle={'Todavia no creaste ninguna plantilla seleccioná un diseño y comenzá a crear'}
             linkTitle={'Ver diseños'}
             linkUrl={'/layouts'} />
     )
@@ -112,13 +115,13 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
                     layout={layout}
                     cart={cart}
                     editSection={editSection}
-                    layoutTemplate={layoutTemplate[templateLayout?.name || layout.templateLayout]}
+                    layoutTemplate={layoutTemplate[layout.templateLayout]}
                     userData={userConvex}
                 />
             </div>
             <RightSection
                 editSection={editSection}
-                templateLayout={templateLayout || layoutFeatures[layout.templateLayout]}
+                templateLayout={layoutFeatures[layout.templateLayout]}
                 swiperRef={swiperRef}
                 template={template!}
                 userConvex={userConvex} />
@@ -129,6 +132,7 @@ const Build = ({ template, templateLayout }: { template: Doc<"templates"> | null
                 title='Desea crear un nuevo template?'
                 description='Cualquier cambio no guardado se perdera'
             />
+            <AllPageLoader isOpen={isLoading} />
         </section>
     )
 }
