@@ -19,6 +19,7 @@ import EmptyTemplates from './empty-templates'
 import RightSection from './build/right-section';
 import { layoutFeatures } from '@/constants'
 import { useToast } from '@/hooks/use-toast'
+import AllPageLoader from './all-page-loader'
 
 const Build = ({ template }: { template: Doc<"templates"> | null }) => {
     const { user } = useUser()
@@ -32,6 +33,7 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
     const { layout, paymentMethods, contact, cart, deliverMethods, setTemplateData, resetState } = useDataStore(state => state)
 
     const [openDialog, setOpenDialog] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [editSection, setEditSection] = useState({
         section: '',
         combo: 0,
@@ -68,6 +70,7 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
     }
 
     const saveChanges = async () => {
+        setIsLoading(true)
         try {
             const id = await createTemplate({ layout: layout.templateLayout })
             router.replace(`/build/${id}`)
@@ -78,6 +81,7 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
                 variant: 'destructive'
             })
         }
+        setIsLoading(false)
     }
 
     const openModal = () => {
@@ -128,6 +132,7 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
                 title='Desea crear un nuevo template?'
                 description='Cualquier cambio no guardado se perdera'
             />
+            <AllPageLoader isOpen={isLoading} />
         </section>
     )
 }
