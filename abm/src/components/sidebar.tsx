@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import Link from 'next/link';
+import { useDataStore } from '@/providers/data-store-providers';
 
 const links = [
     {
@@ -56,12 +57,12 @@ const LeftSidebar = () => {
     const { signOut } = useClerk()
     const pathname = usePathname()
     const { isSignedIn } = useUser()
+    const { templateBuildId } = useDataStore(state => state)
     const user = useQuery(api.users.getCurrentUser, !isSignedIn ? 'skip' : undefined)
     const [open, setOpen] = useState<boolean>(false)
 
     const checkUrlBuild = (): string => {
-        const isEditing = pathname.includes('build') && pathname.split('/').length === 3
-        return isEditing ? pathname : '/build'
+        return templateBuildId ? `/build/${templateBuildId}` : '/build'
     }
 
     const _links = [...links, ...(user?.isPremium && premiumLinks || [])]
