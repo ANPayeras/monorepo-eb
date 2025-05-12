@@ -1,3 +1,4 @@
+import { DetailedHTMLProps, VideoHTMLAttributes } from "react";
 import { Id } from "../../convex/_generated/dataModel";
 
 type Items = {
@@ -103,4 +104,13 @@ type WidgetData = {
     uploadImgUrl?: string;
     storageId?: Id<"_storage"> | string;
   };
+};
+
+export type BgVideoPlayerProps = {
+  src: string;
+  videoProps?: DetailedHTMLProps<
+    VideoHTMLAttributes<HTMLVideoElement>,
+    HTMLVideoElement
+  >;
+  className?: string;
 };

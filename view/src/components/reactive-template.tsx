@@ -10,6 +10,7 @@ import { TextActivetNotFound, TextTestNotFound } from '@/constants'
 import BrandLink from './brand-link'
 import TestLabel from './test-label'
 import useInitPosthog from '@/hooks/use-init-posthog'
+import BgVideoPlayer from './bg-video'
 
 const ReactiveTemplate = ({ user, test = false }: { user: string, test?: boolean }) => {
   const { init } = useInitPosthog()
@@ -26,7 +27,7 @@ const ReactiveTemplate = ({ user, test = false }: { user: string, test?: boolean
 
   if (!template.template.length) return <TemplateNotFound text={<span className='text-center px-2'>{test ? TextTestNotFound : TextActivetNotFound}</span>} />
 
-  const { layout: { bgColor, textsColor, backgroundImg } } = template.template[0]
+  const { layout: { bgColor, textsColor, backgroundImg, backgroundVideo } } = template.template[0]
 
   return (
     <div
@@ -36,9 +37,12 @@ const ReactiveTemplate = ({ user, test = false }: { user: string, test?: boolean
         color: textsColor,
         backgroundImage: `url(${backgroundImg.uploadImgUrl || ''})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: '100% 100%',
+        backgroundSize: 'cover',
       }}
     >
+      {
+        backgroundVideo?.uploadVideoUrl && <BgVideoPlayer src={backgroundVideo.uploadVideoUrl} className='rounded-none' />
+      }
       <Template template={template.template[0]} userData={template.user} />
       <BrandLink />
       {
