@@ -60,7 +60,7 @@ const WidgetsFeatures = () => {
     const widgets = useDataStore(state => state.widgets)
     return (
         <div className='flex flex-col gap-2'>
-            <h3>Activa los widgets:</h3>
+            <h3 className='bg-white px-2 py-1 rounded-sm'>Widgets</h3>
             <div className='flex flex-wrap gap-4'>
                 {
                     Widgtes.map((w, i) => {

@@ -82,7 +82,7 @@ export type RightSectionInterface = {
 
 export type ChangeColorFeatureInterface = {
   title: string;
-  type: keyof Omit<Layout, "backgroundImg">;
+  type: keyof Omit<Layout, "backgroundImg" | "backgroundVideo">;
   color: IColor;
   onChange: (color: IColor, type: string) => void;
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { BgVideoPlayerProps } from '@/types'
+import { BgVideoPlayerProps } from './types'
 import { cn } from '@/lib/utils'
 
 const BgVideoPlayer = ({ src, videoProps, className, style }: BgVideoPlayerProps) => {

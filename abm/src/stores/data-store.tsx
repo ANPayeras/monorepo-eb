@@ -66,6 +66,11 @@ export type Layout = {
         uploadImgUrl: string;
         storageId: Id<"_storage"> | string;
     };
+    backgroundVideo: {
+        localVideo?: string;
+        uploadVideoUrl: string;
+        storageId: Id<"_storage"> | string;
+    };
 }
 
 export type ItemCart = {
@@ -155,7 +160,9 @@ export type DataActions = {
     addTemplateBuild: (id: Id<"templates">) => void;
     //
     handleOnChangeBgLayoutImg: (localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => void;
+    handleOnChangeBgLayoutVideo: (localVideo?: string, uploadVideoUrl?: string, storageId?: Id<"_storage">) => void;
     deleteBgLayoutImg: () => void;
+    deleteBgLayoutVideo: () => void;
 }
 
 export type DataStore = DataState & DataActions
@@ -180,6 +187,11 @@ export const defaultInitialState: DataState = {
             localImg: '',
             uploadImgUrl: '',
             storageId: '',
+        },
+        backgroundVideo: {
+            localVideo: '',
+            uploadVideoUrl: '',
+            storageId: ''
         },
     },
     paymentMethods: [],
@@ -209,6 +221,11 @@ const iState: DataState = {
             localImg: '',
             uploadImgUrl: '',
             storageId: '',
+        },
+        backgroundVideo: {
+            localVideo: '',
+            uploadVideoUrl: '',
+            storageId: ''
         },
     },
     paymentMethods: [],
@@ -360,7 +377,7 @@ export const createDataStore = (
             return { ...state, layout: { ...state.layout, textsColor } }
         }),
         handleOnChangeLayout: (color: string, type: Layout['textsColor'] | Layout['bgColor']) => set((state) => {
-            state.layout[type as keyof Omit<Layout, "backgroundImg">] = color
+            state.layout[type as keyof Omit<Layout, "backgroundImg" | "backgroundVideo">] = color
             return { ...state }
         }),
         handleOnChangePM: (event: ChangeEvent<HTMLInputElement>, label: string) => set((state) => {
@@ -526,10 +543,25 @@ export const createDataStore = (
             }
             return { ...state }
         }),
+        handleOnChangeBgLayoutVideo: (localVideo?: string, uploadVideoUrl?: string, storageId?: Id<"_storage">) => set((state) => {
+            if (localVideo) state.layout.backgroundVideo.localVideo = localVideo
+            if (uploadVideoUrl && storageId) {
+                state.layout.backgroundVideo.localVideo = ''
+                state.layout.backgroundVideo.uploadVideoUrl = uploadVideoUrl
+                state.layout.backgroundVideo.storageId = storageId
+            }
+            return { ...state }
+        }),
         deleteBgLayoutImg: () => set((state) => {
             state.layout.backgroundImg.localImg = ''
             state.layout.backgroundImg.uploadImgUrl = ''
             state.layout.backgroundImg.storageId = ''
+            return { ...state }
+        }),
+        deleteBgLayoutVideo: () => set((state) => {
+            state.layout.backgroundVideo.localVideo = ''
+            state.layout.backgroundVideo.uploadVideoUrl = ''
+            state.layout.backgroundVideo.storageId = ''
             return { ...state }
         }),
     }))

@@ -1,4 +1,4 @@
-import { DetailedHTMLProps, VideoHTMLAttributes } from "react";
+import { CSSProperties, DetailedHTMLProps, VideoHTMLAttributes } from "react";
 import { Id } from "../../convex/_generated/dataModel";
 
 type Items = {
@@ -113,4 +113,12 @@ export type BgVideoPlayerProps = {
     HTMLVideoElement
   >;
   className?: string;
+  style?: CSSProperties;
+};
+
+export type ReactiveTemplateProps = {
+  user: string;
+  component: string;
+  combo: string;
+  test?: boolean;
 };

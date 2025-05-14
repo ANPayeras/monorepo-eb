@@ -1,4 +1,4 @@
-import React, { FC, MutableRefObject } from 'react'
+import React, { CSSProperties, FC, MutableRefObject, useCallback, useEffect, useMemo, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCreative } from 'swiper/modules';
 import { Swiper as SwiperType } from 'swiper/types'
@@ -6,12 +6,13 @@ import 'swiper/css/effect-cards';
 import 'swiper/css';
 import { estaticTemplates } from '@/constants';
 import SectionsPreview from './sections-preview';
-import { IconBrandWhatsapp, IconCopy, IconPhonePlus } from '@tabler/icons-react';
+import { IconBrandWhatsapp, IconPhonePlus } from '@tabler/icons-react';
 import { ItemCart, Layout } from '@/stores/data-store';
 import LoaderSpinner from './loader-spinner';
 import Link from 'next/link';
 import { Doc } from '../../convex/_generated/dataModel';
 import CopyLink from './copy-link';
+import BgVideoPlayer from './bg-video';
 
 type SwiperTemplatesPreviewProps = {
     swiperRef: MutableRefObject<SwiperType | undefined>;
@@ -24,6 +25,8 @@ type SwiperTemplatesPreviewProps = {
 
 const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, userData, layout, editSection, layoutTemplate, cart }) => {
 
+    const [visibility, setVisibility] = useState<CSSProperties['visibility']>('visible')
+
     const handleSendOrder = (type: string) => {
         let orderString = ''
         cart.forEach((it) => {
@@ -35,13 +38,17 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
         if (type === 'whatsapp') window.open(`https://web.whatsapp.com/send?phone=${userData?.phone}&text=${encodeURI(orderString)}&app_absent=0`)
     }
 
+    const isVideo = useMemo(() => {
+        return layout.backgroundVideo?.localVideo || layout.backgroundVideo?.uploadVideoUrl
+    }, [layout.backgroundVideo?.localVideo, layout.backgroundVideo?.uploadVideoUrl])
+
     const style = {
         display: 'flex',
-        backgroundColor: layout.bgColor,
         color: layout.textsColor,
+        backgroundColor: !isVideo ? layout.bgColor : '',
         backgroundImage: `url(${layout.backgroundImg?.localImg || layout.backgroundImg.uploadImgUrl})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: '100% 100%',
+        backgroundSize: 'cover',
     }
 
     const renderLayout = () => {
@@ -59,12 +66,24 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
         )
     }
 
+    const onSwiperChange = useCallback((swiperEvent: SwiperType) => {
+        if (swiperEvent.activeIndex === 0) setVisibility('visible')
+        if (swiperEvent.activeIndex === 1) setVisibility('hidden')
+    }, [])
+
+    useEffect(() => {
+        swiperRef.current?.on('slideChange', onSwiperChange)
+    }, [swiperRef, onSwiperChange])
+
     if (layout.templateLayout === 'empty') {
         return (
-            <div className='w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden'>
+            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden'>
+                {
+                    isVideo && <BgVideoPlayer src={isVideo} />
+                }
                 <div
-                    className='flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm border-gray-500 border'
-                    style={style}
+                    className='absolute w-full flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm border-gray-500 border'
+                    style={{ ...style, backgroundColor: !isVideo ? layout.bgColor : '', }}
                 >
                     {renderLayout()}
                 </div>
@@ -72,7 +91,10 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
         )
     } else {
         return (
-            <div className='w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden'>
+            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden'>
+                {
+                    isVideo && <BgVideoPlayer src={isVideo} />
+                }
                 <Swiper
                     effect={'creative'}
                     creativeEffect={{
@@ -93,11 +115,16 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                 >
                     <SwiperSlide
                         className='flex-col gap-10 py-10 items-center overflow-y-auto rounded-sm border-gray-500 border'
-                        style={style}
+                        style={{
+                            ...style,
+                            visibility,
+                        }}
                     >
                         {renderLayout()}
                     </SwiperSlide>
-                    <SwiperSlide className='flex justify-center p-4 rounded-sm' style={style}>
+                    <SwiperSlide
+                        className='flex justify-center p-4 rounded-sm'
+                        style={{ ...style }}>
                         <div className='flex flex-col justify-start items-center w-full gap-4'>
                             <div className='w-full h-10 border-b-2 flex items-center justify-end'>
                                 <span>Detalle del pedido:</span>

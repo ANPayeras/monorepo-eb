@@ -5,7 +5,7 @@ import { Id } from '../../convex/_generated/dataModel';
 
 const useUploadFile = () => {
     const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-    const { startUpload } = useUploadFiles(generateUploadUrl)
+    const { startUpload, isUploading } = useUploadFiles(generateUploadUrl)
     const getImageUrl = useMutation(api.templates.getUrl);
     const _deleteFile = useMutation(api.files.deleteFile)
 
@@ -32,6 +32,7 @@ const useUploadFile = () => {
         uploadFile,
         deleteFile,
         bulkDeleteFiles,
+        isUploading,
     }
 }
 

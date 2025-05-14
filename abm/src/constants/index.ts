@@ -126,3 +126,5 @@ export const icons = [
 ];
 
 export const feedbacksReferencess = ["success", "error", "pending"];
+
+export const assetsTypesPermitted = ["video/mp4", "image/png", "image/jpeg"];

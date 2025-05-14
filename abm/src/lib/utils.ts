@@ -1,3 +1,4 @@
+import { assetsTypesPermitted } from "@/constants";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -62,4 +63,11 @@ export const amountToCurrency = (value: number): string => {
   const formattedNumbers = formatNumbers(numbers);
 
   return `$${formattedNumbers},${decimals}`;
+};
+
+export const checkAsset = (file: File) => {
+  const validSize = file.size < 25000000; // 25 MB
+  const validType = assetsTypesPermitted.includes(file.type);
+
+  if (!validSize || !validType) throw new Error("Tamaño o formato inválido");
 };

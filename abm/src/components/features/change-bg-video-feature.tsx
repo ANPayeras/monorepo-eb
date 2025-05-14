@@ -1,20 +1,20 @@
 import React, { useRef } from 'react'
 import { IconEdit, IconTrash, IconUpload } from '@tabler/icons-react'
-import { Input } from './ui/input'
 import useUploadFile from '@/hooks/use-upload-file';
 import { useDataStore } from '@/providers/data-store-providers';
-import { Id } from '../../convex/_generated/dataModel';
-import LoaderSpinner from './loader-spinner';
-import { checkAsset } from '@/lib/utils';
+import { Input } from '../ui/input';
+import { Id } from '../../../convex/_generated/dataModel';
+import LoaderSpinner from '../loader-spinner';
 import { useToast } from '@/hooks/use-toast';
+import { checkAsset } from '@/lib/utils';
 
-const ChangeBgImgFeature = () => {
-    const { layout: { backgroundImg }, handleOnChangeBgLayoutImg, deleteBgLayoutImg } = useDataStore(state => state)
-    const imageRef = useRef<HTMLInputElement>(null);
+const ChangeBgVideoFeature = () => {
+    const { layout: { backgroundVideo }, handleOnChangeBgLayoutVideo, deleteBgLayoutVideo } = useDataStore(state => state)
+    const videoRef = useRef<HTMLInputElement>(null);
     const { uploadFile, deleteFile, isUploading } = useUploadFile()
     const { toast } = useToast()
 
-    const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadVideo = async (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         const { files } = e.target
         if (!files || !files?.length) return;
@@ -24,12 +24,12 @@ const ChangeBgImgFeature = () => {
             const reader = new FileReader();
             checkAsset(file)
             reader.addEventListener("load", async () => {
-                if (backgroundImg.localImg || backgroundImg.uploadImgUrl) {
-                    await deleteImg()
+                if (backgroundVideo.localVideo || backgroundVideo.uploadVideoUrl) {
+                    await deleteVideo()
                 }
-                handleOnChangeBgLayoutImg(reader.result as string)
+                handleOnChangeBgLayoutVideo(reader.result as string)
                 const data = await uploadFile(file)
-                handleOnChangeBgLayoutImg('', data.url!, data.storageId)
+                handleOnChangeBgLayoutVideo('', data.url!, data.storageId)
             });
             reader.readAsDataURL(file);
         } catch (error) {
@@ -44,19 +44,19 @@ const ChangeBgImgFeature = () => {
         }
     }
 
-    const deleteImg = async () => {
-        await deleteFile(backgroundImg.storageId as Id<"_storage">)
-        imageRef.current!.value = ''
-        deleteBgLayoutImg()
+    const deleteVideo = async () => {
+        await deleteFile(backgroundVideo.storageId as Id<"_storage">)
+        videoRef.current!.value = ''
+        deleteBgLayoutVideo()
     }
 
-    const isImage = backgroundImg?.localImg || backgroundImg?.uploadImgUrl
+    const isVideo = backgroundVideo?.localVideo || backgroundVideo?.uploadVideoUrl
 
     return (
         <div className='flex justify-between items-center h-8'>
             <div className='flex flex-col text-sm md:text-medium'>
-                <span>Imagen de Fondo:</span>
-                <span className='text-xs text-slate-700'>Formato: jpg, jpeg, png / Max: 25MB</span>
+                <span>Video de Fondo:</span>
+                <span className='text-xs text-slate-700'>Formato: mp4 / Max: 25MB</span>
             </div>
             <div className='flex gap-2'>
                 {
@@ -65,20 +65,19 @@ const ChangeBgImgFeature = () => {
                         <>
                             <span
                                 className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
-                                onClick={() => imageRef.current?.click()}
+                                onClick={() => videoRef.current?.click()}
                             >
                                 {
-
-                                    isImage ?
+                                    isVideo ?
                                         <IconEdit size={18} className='text-gray-500' /> :
                                         <IconUpload size={18} className='text-gray-500' />
                                 }
                             </span>
                             {
-                                isImage &&
+                                isVideo &&
                                 <span
                                     className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
-                                    onClick={deleteImg}
+                                    onClick={deleteVideo}
                                 >
                                     <IconTrash size={18} className='text-red-500' />
                                 </span>
@@ -88,14 +87,14 @@ const ChangeBgImgFeature = () => {
             </div>
             <Input
                 className='hidden'
-                ref={imageRef}
-                onChange={(e) => uploadImage(e)}
-                name='layoutBgImg'
+                ref={videoRef}
+                onChange={(e) => uploadVideo(e)}
+                name='layoutBgVideo'
                 type='file'
-                accept=".jpg, .jpeg, .png"
+                accept=".mp4"
             />
         </div>
     )
 }
 
-export default ChangeBgImgFeature
+export default ChangeBgVideoFeature
