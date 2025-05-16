@@ -1,5 +1,5 @@
 import { CSSProperties, DetailedHTMLProps, VideoHTMLAttributes } from "react";
-import { Id } from "../../convex/_generated/dataModel";
+import { Doc, Id } from "../../convex/_generated/dataModel";
 
 type Items = {
   name: string;
@@ -122,3 +122,15 @@ export type ReactiveTemplateProps = {
   combo: string;
   test?: boolean;
 };
+
+export type MainPageProps = {
+  params: { user: string; path?: string[] };
+  searchParams: { [key: string]: string };
+};
+
+export type TemplateProps = {
+  template: Doc<"templates">;
+  userData: Doc<"users">;
+};
+
+export type ClassicViewProps = TemplateProps;

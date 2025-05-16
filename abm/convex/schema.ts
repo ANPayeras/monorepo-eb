@@ -60,11 +60,11 @@ export default defineSchema({
         uploadImgUrl: v.string(),
         storageId: v.union(v.id("_storage"), v.string()),
       }),
-      backgroundVideo: v.object({
+      backgroundVideo: v.optional(v.object({
         localVideo: v.optional(v.string()),
         uploadVideoUrl: v.string(),
         storageId: v.union(v.id("_storage"), v.string()),
-      }),
+      })),
     }),
     paymentMethods: v.array(
       v.object({
