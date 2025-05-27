@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { checkAsset, cn } from '@/lib/utils';
 import { Menubar, MenubarContent, MenubarMenu, MenubarSeparator, MenubarTrigger, MenubarRadioGroup, MenubarRadioItem, MenubarCheckboxItem } from '@/components/ui/menubar';
-import { Switch } from '@/components/ui/switch';
 import Button from '@/components/buttons/button';
 import UpdateAssetTool from '@/components/update-img-tool';
 import './page.css'
@@ -33,7 +32,7 @@ const Page = () => {
 
     const { background, border, text, shadowImg, shadowText, img } = imgProps
 
-    const [bgColorFeature, setBgColor] = useColor("#ffffff");
+    const [bgColorFeature, setBgColor] = useColor("#d5c9c9");
     const [textsColorFeature, setTextsColor] = useColor("#000000");
 
     const handleChangeColor = (color: IColor, type: string) => {
@@ -55,12 +54,18 @@ const Page = () => {
             return
         }
 
-        toPng(node.current, { cacheBust: true, })
+        const div = document.createElement('div')
+        div.innerText = 'Hecho con e-brochure'
+        div.className = 'absolute contrast-0 right-1 bottom-0 text-xs'
+        node.current.appendChild(div)
+
+        toPng(node.current, { cacheBust: true })
             .then((dataUrl) => {
                 const link = document.createElement('a')
                 link.download = 'colaboracion.png'
                 link.href = dataUrl
                 link.click()
+                node.current!.removeChild(div)
             })
             .catch((err) => {
                 console.log(err)
@@ -72,6 +77,10 @@ const Page = () => {
     }
 
     const getLocalUrl = (file: File[]) => {
+        if (!file.length) {
+            setBlobUrl('')
+            return
+        }
         try {
             const reader = new FileReader();
             checkAsset(file[0])
@@ -91,10 +100,13 @@ const Page = () => {
     }
 
     const onAcept = () => {
-        setImgProps({
-            ...imgProps,
-            img: blobUrl
-        })
+        if (blobUrl) {
+            setImgProps({
+                ...imgProps,
+                img: blobUrl
+            })
+            setBlobUrl('')
+        }
         setIsSuccess(true)
         let interval = setInterval(() => {
             setIsSuccess(false)
@@ -303,6 +315,7 @@ const Page = () => {
                                 'image/png': []
                             },
                             maxFiles: 1,
+                            disabled: !!blobUrl
                         }}
                         modalTexts={{
                             description: 'Formato: jpg, jpeg, png / Max: 25 MB / Max: 1'
@@ -322,47 +335,49 @@ const Page = () => {
                 img ?
                     <>
                         <div className='flex justify-center'>
-                            <div
-                                ref={node}
-                                className='relative h-[300px] w-[300px] flex justify-center items-center rounded-sm border-slate-400 border-[0.5px] shadow-lg'
-                                style={{
-                                    backgroundColor: bgColorFeature.hex,
-                                }}
-                            >
-                                <svg
-                                    version="1.1"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    x="0px" y="0px"
-                                    width="300px" height="300px"
-                                    viewBox="0 0 300 300" enableBackground="new 0 0 300 300"
-                                    className='z-10 scale-80'>
-                                    <defs>
-                                        <path id="criclePath" d=" M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0 " />
-                                    </defs>
-
-                                    {/* <!-- <circle cx="150" cy="150" r="150" fill="#000" /> --> */}
-                                    <g>
-                                        <use href="#criclePath" fill="none" />
-                                        <text fill={textsColorFeature.hex} className={cn(shadowText && 'shadowText')}>
-                                            <textPath href="#criclePath">{text}</textPath>
-                                        </text>
-                                    </g>
-                                </svg>
+                            <div className='h-fit w-fit rounded-sm border-slate-400 border-[0.5px] shadow-lg p-[5px]'>
                                 <div
-                                    className={cn('absolute w-full h-full rounded-sm flex justify-center items-center', background)}
+                                    ref={node}
+                                    className='relative h-[300px] w-[300px] flex justify-center items-center'
                                     style={{
-                                        backgroundColor: bgColorFeature.hex
+                                        backgroundColor: bgColorFeature.hex,
                                     }}
                                 >
-                                    <div className={cn('h-40 w-40 box-content relative flex justify-center items-center rounded-full border-transparent border-[5px]', border, shadowImg && 'shadowFilter')}>
-                                        <Image
-                                            className='absolute rounded-full h-40 w-40 object-cover z-10'
-                                            src={img}
-                                            // src="https://images.unsplash.com/photo-1612531822780-ce3193485c08?w=900"
-                                            alt="logo"
-                                            width={200}
-                                            height={200}
-                                        />
+                                    <svg
+                                        version="1.1"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        x="0px" y="0px"
+                                        width="300px" height="300px"
+                                        viewBox="0 0 300 300" enableBackground="new 0 0 300 300"
+                                        className='z-10 scale-80'>
+                                        <defs>
+                                            <path id="criclePath" d=" M 150, 150 m -120, 0 a 120,120 0 0,1 240,0 a 120,120 0 0,1 -240,0 " />
+                                        </defs>
+
+                                        {/* <!-- <circle cx="150" cy="150" r="150" fill="#000" /> --> */}
+                                        <g>
+                                            <use href="#criclePath" fill="none" />
+                                            <text fill={textsColorFeature.hex} className={cn(shadowText && 'shadowText')}>
+                                                <textPath href="#criclePath">{text}</textPath>
+                                            </text>
+                                        </g>
+                                    </svg>
+                                    <div
+                                        className={cn('absolute w-full h-full rounded-sm flex justify-center items-center', background)}
+                                        style={{
+                                            backgroundColor: bgColorFeature.hex
+                                        }}
+                                    >
+                                        <div className={cn('h-40 w-40 box-content relative flex justify-center items-center rounded-full border-transparent border-[5px]', border, shadowImg && 'shadowFilter')}>
+                                            <Image
+                                                className='absolute rounded-full h-full w-full object-cover z-10'
+                                                src={img}
+                                                // src="https://images.unsplash.com/photo-1612531822780-ce3193485c08?w=900"
+                                                alt="logo"
+                                                width={200}
+                                                height={200}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

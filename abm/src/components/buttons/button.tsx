@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+
 import { Button as Btn, ButtonProps } from '../ui/button'
 import LoaderSpinner from '../loader-spinner'
 import { SpinnersColors } from '../types';
@@ -15,16 +16,24 @@ const Button: FC<ButtonInterface> = ({ isLoading, spinnerColor, leftIconName, ri
     return (
         <Btn
             {...props}
-            className='flex gap-2'
+            className='flex w-40'
         >
             {
-                leftIconName && <Icon name={leftIconName} />
+                leftIconName && !isLoading &&
+                <div>
+                    <Icon name={leftIconName} iconProps={{ size: 20 }} />
+                </div>
             }
+            <div className='flex-1'>
+                {
+                    isLoading ? <LoaderSpinner color={spinnerColor} size='md' /> : children
+                }
+            </div>
             {
-                isLoading ? <LoaderSpinner color={spinnerColor} /> : children
-            }
-            {
-                rightIconName && <Icon name={rightIconName} />
+                rightIconName && !isLoading &&
+                <div>
+                    <Icon name={rightIconName} iconProps={{ size: 20 }} />
+                </div>
             }
         </Btn>
     )
