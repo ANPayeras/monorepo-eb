@@ -48,7 +48,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
         backgroundColor: !isVideo ? layout.bgColor : '',
         backgroundImage: `url(${layout.backgroundImg?.localImg || layout.backgroundImg.uploadImgUrl})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
+        backgroundSize: '100% 100%',
     }
 
     const renderLayout = () => {
@@ -82,7 +82,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                     isVideo && <BgVideoPlayer src={isVideo} />
                 }
                 <div
-                    className='absolute w-full flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm border-gray-500 border'
+                    className='absolute w-full flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm'
                     style={{ ...style, backgroundColor: !isVideo ? layout.bgColor : '', }}
                 >
                     {renderLayout()}
@@ -114,7 +114,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                     className='w-full h-full'
                 >
                     <SwiperSlide
-                        className='flex-col gap-10 py-10 items-center overflow-y-auto rounded-sm border-gray-500 border'
+                        className='flex-col gap-10 py-10 items-center overflow-y-auto rounded-sm'
                         style={{
                             ...style,
                             visibility,
