@@ -1,98 +1,56 @@
-import React, { useRef } from 'react'
-import { IconEdit, IconTrash, IconUpload } from '@tabler/icons-react'
-import { Input } from './ui/input'
+import React from 'react'
+
 import useUploadFile from '@/hooks/use-upload-file';
 import { useDataStore } from '@/providers/data-store-providers';
-import { Id } from '../../convex/_generated/dataModel';
-import LoaderSpinner from './loader-spinner';
-import { checkAsset } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
+import UpdateAssetTool from './update-img-tool';
 
 const ChangeBgImgFeature = () => {
     const { layout: { backgroundImg }, handleOnChangeBgLayoutImg, deleteBgLayoutImg } = useDataStore(state => state)
-    const imageRef = useRef<HTMLInputElement>(null);
-    const { uploadFile, deleteFile, isUploading } = useUploadFile()
-    const { toast } = useToast()
+    const { getLocalUrls, onAccept, isUploading, isSuccess, files, deleteFileCloudinary, uploadFileCloudinary } = useUploadFile()
 
-    const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const { files } = e.target
-        if (!files || !files?.length) return;
-
-        try {
-            const file = files[0];
-            const reader = new FileReader();
-            checkAsset(file)
-            reader.addEventListener("load", async () => {
-                if (backgroundImg.localImg || backgroundImg.uploadImgUrl) {
-                    await deleteImg()
-                }
-                handleOnChangeBgLayoutImg(reader.result as string)
-                const data = await uploadFile(file)
-                handleOnChangeBgLayoutImg('', data.url!, data.storageId)
-            });
-            reader.readAsDataURL(file);
-        } catch (error) {
-            const err = error as Error
-            toast({
-                title: "Error al subir",
-                description: err.message,
-                variant: 'destructive',
-                duration: 5000,
-            })
-            console.log(error)
-        }
+    const uploadImage = async (file: File) => {
+        if (backgroundImg.uploadImgUrl) await deleteImg()
+        const { url, storageId } = await uploadFileCloudinary(file)
+        handleOnChangeBgLayoutImg('', url!, storageId)
     }
+
+    // const uploadImage = async (reader: FileReader, file: File) => {
+    //     if (backgroundImg.localImg || backgroundImg.uploadImgUrl) {
+    //         await deleteImg()
+    //     }
+    //     // handleOnChangeBgLayoutImg(reader.result as string)
+    //     const data = await uploadFile(file)
+    //     handleOnChangeBgLayoutImg('', data.url!, data.storageId)
+    // }
 
     const deleteImg = async () => {
-        await deleteFile(backgroundImg.storageId as Id<"_storage">)
-        imageRef.current!.value = ''
+        await deleteFileCloudinary(backgroundImg.storageId, 'image')
         deleteBgLayoutImg()
     }
-
-    const isImage = backgroundImg?.localImg || backgroundImg?.uploadImgUrl
 
     return (
         <div className='flex justify-between items-center h-8'>
             <div className='flex flex-col text-sm md:text-medium'>
                 <span>Imagen de Fondo:</span>
-                <span className='text-xs text-slate-700'>Formato: jpg, jpeg, png / Max: 25MB</span>
             </div>
-            <div className='flex gap-2'>
-                {
-                    isUploading ?
-                        <LoaderSpinner size='sm' /> :
-                        <>
-                            <span
-                                className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
-                                onClick={() => imageRef.current?.click()}
-                            >
-                                {
-
-                                    isImage ?
-                                        <IconEdit size={18} className='text-gray-500' /> :
-                                        <IconUpload size={18} className='text-gray-500' />
-                                }
-                            </span>
-                            {
-                                isImage &&
-                                <span
-                                    className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
-                                    onClick={deleteImg}
-                                >
-                                    <IconTrash size={18} className='text-red-500' />
-                                </span>
-                            }
-                        </>
-                }
-            </div>
-            <Input
-                className='hidden'
-                ref={imageRef}
-                onChange={(e) => uploadImage(e)}
-                name='layoutBgImg'
-                type='file'
-                accept=".jpg, .jpeg, .png"
+            <UpdateAssetTool
+                isAsset={backgroundImg?.uploadImgUrl}
+                deleteAsset={deleteImg}
+                onChangeFiles={getLocalUrls}
+                onAccept={() => onAccept(uploadImage)}
+                isUploading={isUploading}
+                isSuccess={isSuccess}
+                dropzoneOptions={{
+                    accept: {
+                        'image/jpeg': [],
+                        'image/png': []
+                    },
+                    maxFiles: 1,
+                    disabled: files.length === 1,
+                }}
+                modalTexts={{
+                    description: 'Formato: jpg, jpeg, png / Max: 25 MB / Max: 1'
+                }}
             />
         </div>
     )

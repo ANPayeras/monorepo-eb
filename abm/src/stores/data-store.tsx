@@ -3,7 +3,7 @@ import { createStore } from 'zustand/vanilla'
 import { Id } from '../../convex/_generated/dataModel'
 import { v4 as uuidv4 } from 'uuid';
 
-type Items = {
+export type Items = {
     name: string;
     price: string | null;
     id: string;
@@ -163,6 +163,10 @@ export type DataActions = {
     handleOnChangeBgLayoutVideo: (localVideo?: string, uploadVideoUrl?: string, storageId?: Id<"_storage">) => void;
     deleteBgLayoutImg: () => void;
     deleteBgLayoutVideo: () => void;
+    //
+    handleOnChangeImgHeader: (uploadImgUrl: string, storageId: Id<"_storage">) => void;
+    handleOnChangeImgItems: (uploadImgUrl: string, storageId: Id<"_storage">, section: string, item: number) => void;
+    deleteImgItem: (section: string, item: number) => void;
 }
 
 export type DataStore = DataState & DataActions
@@ -304,6 +308,13 @@ export const createDataStore = (
             }
             return { ...state }
         }),
+        handleOnChangeImgItems: (uploadImgUrl: string, storageId: Id<"_storage">, section: string, item: number) => set((state) => {
+            let pos = state.sections.map(e => e.name).indexOf(section)
+            state.sections[pos].items[item].itemImage.localImg = ''
+            state.sections[pos].items[item].itemImage.uploadImgUrl = uploadImgUrl
+            state.sections[pos].items[item].itemImage.storageId = storageId
+            return { ...state }
+        }),
         handleOnChangeHeader: (event: ChangeEvent<HTMLInputElement>, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => set((state) => {
             let { value, name } = event.target
             if (name === 'imgUrl') {
@@ -318,6 +329,12 @@ export const createDataStore = (
             }
             return { ...state }
             // return { ...state, header: { ...state.header, [name]: value } } No modifica template
+        }),
+        handleOnChangeImgHeader: (uploadImgUrl: string, storageId: Id<"_storage">) => set((state) => {
+            state.header.imgUrl.localImg = ''
+            state.header.imgUrl.uploadImgUrl = uploadImgUrl
+            state.header.imgUrl.storageId = storageId
+            return { ...state }
         }),
         handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number, imgUrl?: string, imgUrlPos?: number, storageId?: Id<"_storage"> | string) => set((state) => {
             let { value, name } = event.target
@@ -481,6 +498,13 @@ export const createDataStore = (
         }),
         deleteImgHeader: () => set((state) => {
             return { ...state, header: { ...state.header, imgUrl: { localImg: '', uploadImgUrl: '', storageId: '' } } }
+        }),
+        deleteImgItem: (section: string, item: number) => set((state) => {
+            let pos = state.sections.map(e => e.name).indexOf(section)
+            state.sections[pos].items[item].itemImage.localImg = ''
+            state.sections[pos].items[item].itemImage.storageId = ''
+            state.sections[pos].items[item].itemImage.uploadImgUrl = ''
+            return { ...state }
         }),
         deleteImgCombo: (combo: number, imgPos: number) => set((state) => {
             state.combos[combo].imgUrl.splice(imgPos, 1)
