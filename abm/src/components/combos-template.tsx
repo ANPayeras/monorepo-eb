@@ -1,65 +1,37 @@
-import React, { FC, useRef, useState } from 'react'
+import React, { FC } from 'react'
+
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { useDataStore } from '@/providers/data-store-providers'
-import { IconEdit, IconTrash, IconUpload } from '@tabler/icons-react'
-import { useUploadFiles } from '@xixixao/uploadstuff/react';
-import { useMutation } from 'convex/react'
-import { api } from '../../convex/_generated/api'
-import { Id } from '../../convex/_generated/dataModel'
+import useUploadFile from '@/hooks/use-upload-file'
+import UpdateAssetTool from './update-img-tool'
 
 const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
-    const { combos, handleOnChangeCombos, deleteImgCombo } = useDataStore(state => state)
+    const { combos, handleOnChangeCombos, deleteImgCombo, handleOnChangeImgCombos } = useDataStore(state => state)
     const { description, price, title, imgUrl } = combos[combo]
-    const [imgPos, setImgPos] = useState<number>(0)
-    const imageRef = useRef<HTMLInputElement>(null);
-    const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-    const deleteUrl = useMutation(api.templates.deleteUrl);
-    const { startUpload } = useUploadFiles(generateUploadUrl)
-    const getImageUrl = useMutation(api.templates.getUrl);
 
-    const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        const { files } = e.target
-        if (!files || !files?.length) return;
+    const { isUploading, isSuccess, files, onAccept, getLocalUrls, uploadFileCloudinary, deleteFileCloudinary } = useUploadFile()
 
+    const uploadImage = async (file: File, _storageId: string, pos: number) => {
         try {
-            const file = files[0];
-            // formatBytes(file.size)
-            const reader = new FileReader();
-            reader.addEventListener("load", async () => {
-                handleOnChangeCombos(e, combo, reader.result as string, imgPos)
-                const uploaded = await startUpload([file]);
-                const storageId = (uploaded[0].response as any).storageId;
-                const imageUrl = await getImageUrl({ storageId });
-                handleOnChangeCombos(e, combo, imageUrl!, imgPos, storageId)
-            });
-            reader.readAsDataURL(file);
-            // const uploaded = await startUpload([file]);
-            // const storageId = (uploaded[0].response as any).storageId;
-            // const imageUrl = await getImageUrl({ storageId });
-            // handleOnChangeCombos(e, combo, imageUrl!, imgPos, storageId)
+            if (_storageId) await deleteFileCloudinary(imgUrl[pos].storageId, 'image')
+            const { url, storageId } = await uploadFileCloudinary(file)
+            handleOnChangeImgCombos(combo, pos, url, storageId)
         } catch (error) {
             console.log(error)
-            //   toast({ title: 'Error uploading image', variant: 'destructive'})
         }
     }
 
-    const clickInputFile = (imgPos: number) => {
-        setImgPos(imgPos)
-        imageRef?.current?.click()
-    }
-
-    const deleteImg = (pos: number) => {
-        deleteUrl({ storageId: imgUrl[pos].storageId as Id<"_storage"> })
+    const deleteImg = async (pos: number) => {
+        await deleteFileCloudinary(imgUrl[pos].storageId, 'image')
         deleteImgCombo(combo, pos)
     }
 
     return (
         <section className='flex w-full h-full p-4 gap-1'>
-            <div className='flex justify-center w-full'>
-                <div className='flex flex-1 p-2 h-fit'>
-                    <div className='flex flex-col items-center bg-slate-50 rounded-md text-sm sm:text-medium py-2'>
+            <div className='flex flex-col justify-center w-full'>
+                <div className='flex p-2 h-fit'>
+                    <div className='flex flex-col items-center bg-slate-50 rounded-md text-sm sm:text-medium py-2 w-full'>
                         <span className='text-center mb-8'>Podes agregar hasta 4 imagenes</span>
                         <div className='flex flex-col w-full gap-4 px-3'>
                             {
@@ -68,43 +40,33 @@ const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
                                         <span>
                                             Imagen {i + 1}
                                         </span>
-                                        {
-                                            img.url ?
-                                                <div className='flex'>
-                                                    <span
-                                                        className='cursor-pointer hover:scale-110 flex justify-center items-center'
-                                                        onClick={() => deleteImg(i)}
-                                                    >
-                                                        <IconTrash size={18} className='text-red-500' />
-                                                    </span>
-                                                    <span
-                                                        className='cursor-pointer hover:scale-110 flex justify-center items-center'
-                                                        onClick={() => clickInputFile(i)}
-                                                    >
-                                                        <IconEdit size={18} className='text-gray-500' />
-                                                    </span>
-                                                </div>
-                                                :
-                                                <span
-                                                    className='cursor-pointer hover:scale-110 flex justify-center items-center'
-                                                    onClick={() => clickInputFile(i)}
-                                                >
-                                                    <IconUpload size={18} className='text-gray-500' />
-                                                </span>
-                                        }
+                                        <UpdateAssetTool
+                                            isAsset={img.url}
+                                            deleteAsset={() => deleteImg(i)}
+                                            onChangeFiles={getLocalUrls}
+                                            onAccept={() => onAccept((file) => uploadImage(file, img.storageId, i))}
+                                            isUploading={isUploading}
+                                            isSuccess={isSuccess}
+                                            dropzoneOptions={{
+                                                accept: {
+                                                    'image/jpeg': [],
+                                                    'image/png': []
+                                                },
+                                                maxFiles: 1,
+                                                disabled: files.length === 1,
+                                            }}
+                                            modalTexts={{
+                                                description: 'Formato: jpg, jpeg, png / Max: 25 MB / Max: 1'
+                                            }}
+                                        />
                                     </div>
                                 ))
                             }
                         </div>
-                        <Input
-                            className='h-6 hidden'
-                            ref={imageRef}
-                            onChange={(e) => uploadImage(e)}
-                            name='imgUrl'
-                            type='file' />
                     </div>
                 </div>
                 <div className='flex flex-1 flex-col p-2 gap-4'>
+                    <span className='text-sm'>Título:</span>
                     <div className='flex justify-between'>
                         <Input
                             placeholder='Titulo'
@@ -115,6 +77,7 @@ const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
                             maxLength={30}
                         />
                     </div>
+                    <span className='text-sm'>Descripción:</span>
                     <div className='h-auto'>
                         <Textarea
                             placeholder='Descripcion'
@@ -126,6 +89,7 @@ const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
                             onChange={(e) => handleOnChangeCombos(e, combo)}
                         />
                     </div>
+                    <span className='text-sm'>Precio:</span>
                     <div className='flex justify-start gap-4'>
                         <span>$</span>
                         <Input

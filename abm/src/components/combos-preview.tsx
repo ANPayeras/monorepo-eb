@@ -1,9 +1,11 @@
 import React, { FC } from 'react'
+
 import { useDataStore } from '@/providers/data-store-providers'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel'
 import Image from 'next/image'
 import { IconMinus, IconPlus, IconShoppingCartPlus } from '@tabler/icons-react'
 import { amountToCurrency } from '@/lib/utils'
+import Icon from './Icon'
 
 const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
     const { combos, layout, cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
@@ -21,8 +23,8 @@ const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
                                         imgUrl.length > 1 && imgUrl.slice(0, imgUrl.length - 1).map((img, i) => (
                                             <CarouselItem key={i} className='w-full relative h-[400px] flex justify-center items-center'>
                                                 <Image
-                                                    alt="image"
-                                                    className="max-w-full max-h-full"
+                                                    alt="combo-image"
+                                                    className="max-w-full max-h-full object-contain"
                                                     width={1000}
                                                     height={1000}
                                                     src={img.url}
@@ -32,16 +34,15 @@ const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
                                     }
                                 </CarouselContent>
                                 {
-                                    imgUrl[1].url &&
+                                    imgUrl[1]?.url &&
                                     <>
                                         <CarouselPrevious className='left-0' />
                                         <CarouselNext className='right-0' />
                                     </>
                                 }
                             </Carousel> :
-                            <span className='text-slate-50 text-center'>Aqui veras las imagenes que agregues</span>
+                            <Icon name='emptyImg' iconProps={{ className: 'text-white', size: 40 }} />
                     }
-
                 </div>
                 <div className='flex flex-1 flex-col p-2 gap-4'>
                     <div className='h-6 border-b-[1px] relative'>

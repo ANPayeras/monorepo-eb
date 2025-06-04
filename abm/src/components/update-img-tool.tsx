@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
 import { UpdateImgToolProps } from '@/interfaces'
-import LoaderSpinner from './loader-spinner'
 import { FileUpload } from './ui/file-upload'
 import Button from './buttons/button'
 import Icon from './Icon'
@@ -24,31 +23,24 @@ const UpdateAssetTool = ({ isAsset, deleteAsset, isUploading, modalTexts, dropzo
     return (
         <>
             <div className='flex gap-1'>
+                <span
+                    className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
+                    onClick={uploadClick}
+                >
+                    {
+                        isAsset ?
+                            <Icon name='edit' iconProps={{ size: 18, className: 'text-gray-500' }} /> :
+                            <Icon name='upload' iconProps={{ size: 18, className: 'text-gray-500' }} />
+                    }
+                </span>
                 {
-                    isUploading ?
-                        <LoaderSpinner size='sm' /> :
-                        <>
-
-                            <span
-                                className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
-                                onClick={uploadClick}
-                            >
-                                {
-                                    isAsset ?
-                                        <Icon name='edit' iconProps={{ size: 18, className: 'text-gray-500' }} /> :
-                                        <Icon name='upload' iconProps={{ size: 18, className: 'text-gray-500' }} />
-                                }
-                            </span>
-                            {
-                                isAsset &&
-                                <span
-                                    className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
-                                    onClick={deleteAsset}
-                                >
-                                    <Icon name='trash' iconProps={{ size: 18, className: 'text-red-500' }} />
-                                </span>
-                            }
-                        </>
+                    isAsset &&
+                    <span
+                        className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
+                        onClick={deleteAsset}
+                    >
+                        <Icon name='trash' iconProps={{ size: 18, className: 'text-red-500' }} />
+                    </span>
                 }
             </div>
             {

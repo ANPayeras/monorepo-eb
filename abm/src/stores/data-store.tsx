@@ -167,6 +167,7 @@ export type DataActions = {
     handleOnChangeImgHeader: (uploadImgUrl: string, storageId: Id<"_storage">) => void;
     handleOnChangeImgItems: (uploadImgUrl: string, storageId: Id<"_storage">, section: string, item: number) => void;
     deleteImgItem: (section: string, item: number) => void;
+    handleOnChangeImgCombos: (combo: number, imgUrlPos: number, uploadImgUrl: string, storageId: Id<"_storage"> | string) => void;
 }
 
 export type DataStore = DataState & DataActions
@@ -350,6 +351,16 @@ export const createDataStore = (
                 }
             } else {
                 state.combos[combo][name as keyof Omit<Combos, "imgUrl">] = value
+            }
+            return { ...state }
+        }),
+        handleOnChangeImgCombos: (combo: number, imgUrlPos: number, uploadImgUrl: string, storageId: Id<"_storage"> | string) => set((state) => {
+            const { imgUrl: _imgUrl } = state.combos[combo]
+            const existImg = _imgUrl[imgUrlPos].url
+            _imgUrl[imgUrlPos].url = uploadImgUrl
+            _imgUrl[imgUrlPos].storageId = storageId
+            if (_imgUrl.length < 5 && !existImg) {
+                _imgUrl.splice(imgUrlPos + 1, 0, { url: '', storageId: '' })
             }
             return { ...state }
         }),

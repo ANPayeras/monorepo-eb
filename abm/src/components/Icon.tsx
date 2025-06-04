@@ -1,5 +1,5 @@
 import React from 'react'
-import { IconClockFilled, IconCopy, IconCopyCheck, IconProps, IconEdit, IconUpload, IconTrash } from '@tabler/icons-react'
+import { IconClockFilled, IconCopy, IconCopyCheck, IconProps, IconEdit, IconUpload, IconTrash, IconPhotoScan } from '@tabler/icons-react'
 
 const IconsName = {
     copy: IconCopy,
@@ -7,7 +7,8 @@ const IconsName = {
     clockFilled: IconClockFilled,
     edit: IconEdit,
     upload: IconUpload,
-    trash: IconTrash
+    trash: IconTrash,
+    emptyImg: IconPhotoScan,
 }
 
 export type KeyTextIcons = keyof typeof IconsName;
