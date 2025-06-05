@@ -80,7 +80,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     }, [saveChanges])
 
     return (
-        <div className='flex-1 flex p-4'>
+        <div className='flex-1 flex p-0 sm:p-4'>
             <div className='w-full h-full overflow-hidden bg-slate-300 rounded-sm'>
                 {
                     !editSection.section &&

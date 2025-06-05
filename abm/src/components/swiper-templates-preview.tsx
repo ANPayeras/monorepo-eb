@@ -77,7 +77,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
 
     if (layout.templateLayout === 'empty') {
         return (
-            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden shadow-lg'>
+            <div className='relative w-full h-full overflow-hidden shadow-lg'>
                 {
                     isVideo && <BgVideoPlayer src={isVideo} />
                 }
@@ -91,7 +91,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
         )
     } else {
         return (
-            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden shadow-lg'>
+            <div className='relative w-full h-full overflow-hidden shadow-lg'>
                 {
                     isVideo && <BgVideoPlayer src={isVideo} />
                 }
@@ -123,7 +123,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                         {renderLayout()}
                     </SwiperSlide>
                     <SwiperSlide
-                        className='flex justify-center p-4 rounded-sm border border-slate-400'
+                        className='justify-center p-4 py-10 rounded-sm border border-slate-400 overflow-y-auto'
                         style={{ ...style }}>
                         <div className='flex flex-col justify-start items-center w-full gap-4'>
                             <div className='w-full h-10 border-b-2 flex items-center justify-end'>
