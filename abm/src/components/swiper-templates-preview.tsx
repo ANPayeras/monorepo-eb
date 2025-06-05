@@ -46,7 +46,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
         display: 'flex',
         color: layout.textsColor,
         backgroundColor: !isVideo ? layout.bgColor : '',
-        backgroundImage: `url(${layout.backgroundImg?.localImg || layout.backgroundImg.uploadImgUrl})`,
+        backgroundImage: !isVideo ? `url(${layout.backgroundImg.uploadImgUrl})` : '',
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100% 100%',
     }
@@ -77,13 +77,13 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
 
     if (layout.templateLayout === 'empty') {
         return (
-            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden'>
+            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden shadow-lg'>
                 {
                     isVideo && <BgVideoPlayer src={isVideo} />
                 }
                 <div
-                    className='absolute w-full flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm'
-                    style={{ ...style, backgroundColor: !isVideo ? layout.bgColor : '', }}
+                    className='absolute w-full flex-col h-full gap-10 py-10 items-center overflow-y-auto rounded-sm border border-slate-400'
+                    style={{ ...style }}
                 >
                     {renderLayout()}
                 </div>
@@ -91,7 +91,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
         )
     } else {
         return (
-            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden'>
+            <div className='relative w-full min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-full overflow-hidden shadow-lg'>
                 {
                     isVideo && <BgVideoPlayer src={isVideo} />
                 }
@@ -114,7 +114,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                     className='w-full h-full'
                 >
                     <SwiperSlide
-                        className='flex-col gap-10 py-10 items-center overflow-y-auto rounded-sm'
+                        className='flex-col gap-10 py-10 items-center overflow-y-auto rounded-sm border border-slate-400'
                         style={{
                             ...style,
                             visibility,
@@ -123,7 +123,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                         {renderLayout()}
                     </SwiperSlide>
                     <SwiperSlide
-                        className='flex justify-center p-4 rounded-sm'
+                        className='flex justify-center p-4 rounded-sm border border-slate-400'
                         style={{ ...style }}>
                         <div className='flex flex-col justify-start items-center w-full gap-4'>
                             <div className='w-full h-10 border-b-2 flex items-center justify-end'>

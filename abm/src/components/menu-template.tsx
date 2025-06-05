@@ -9,6 +9,7 @@ import { Id } from '../../convex/_generated/dataModel'
 import UpdateAssetTool from './update-img-tool'
 import { useToast } from '@/hooks/use-toast'
 import { Items } from '@/stores/data-store'
+import Icon from './Icon'
 
 const MenuTemplate = () => {
     const { sections, header, addItem, addSection, deleteItem, deleteSection, handleOnChangeItems, handleOnChangeSections, handleOnChangeHeader, deleteImgHeader, handleOnChangeImgHeader, handleOnChangeImgItems, deleteImgItem } = useDataStore(state => state)
@@ -185,7 +186,7 @@ const MenuTemplate = () => {
                                                             className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
                                                             onClick={() => onDeleteItem(it, s.name, i)}
                                                         >
-                                                            <IconTrash className='text-red-500 size-[18px]' />
+                                                            <Icon name='xFilled' iconProps={{ className: 'text-red-500 size-[18px]' }} />
                                                         </span>
                                                     </div>
                                                     <div className='flex w-full justify-between px-1 bg-slate-50 rounded-b'>

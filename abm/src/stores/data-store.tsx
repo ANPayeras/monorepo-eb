@@ -66,7 +66,7 @@ export type Layout = {
         uploadImgUrl: string;
         storageId: Id<"_storage"> | string;
     };
-    backgroundVideo: {
+    backgroundVideo?: {
         localVideo?: string;
         uploadVideoUrl: string;
         storageId: Id<"_storage"> | string;
@@ -579,11 +579,12 @@ export const createDataStore = (
             return { ...state }
         }),
         handleOnChangeBgLayoutVideo: (localVideo?: string, uploadVideoUrl?: string, storageId?: Id<"_storage">) => set((state) => {
-            if (localVideo) state.layout.backgroundVideo.localVideo = localVideo
+            const { layout } = state
+            if (localVideo) layout.backgroundVideo!.localVideo = localVideo
             if (uploadVideoUrl && storageId) {
-                state.layout.backgroundVideo.localVideo = ''
-                state.layout.backgroundVideo.uploadVideoUrl = uploadVideoUrl
-                state.layout.backgroundVideo.storageId = storageId
+                layout.backgroundVideo!.localVideo = ''
+                layout.backgroundVideo!.uploadVideoUrl = uploadVideoUrl
+                layout.backgroundVideo!.storageId = storageId
             }
             return { ...state }
         }),
@@ -594,9 +595,10 @@ export const createDataStore = (
             return { ...state }
         }),
         deleteBgLayoutVideo: () => set((state) => {
-            state.layout.backgroundVideo.localVideo = ''
-            state.layout.backgroundVideo.uploadVideoUrl = ''
-            state.layout.backgroundVideo.storageId = ''
+            const { layout } = state
+            layout.backgroundVideo!.localVideo = ''
+            layout.backgroundVideo!.uploadVideoUrl = ''
+            layout.backgroundVideo!.storageId = ''
             return { ...state }
         }),
     }))
