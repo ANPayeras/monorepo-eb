@@ -5,19 +5,25 @@ import { Separator } from "./ui/separator"
 import ContentResizeWidget from "./content-resize-widget"
 import { useCallback } from "react"
 import useUploadFile from "@/hooks/use-upload-file"
-import { Id } from "../../convex/_generated/dataModel"
 import WidgetBaseCard from "./widget-base-card"
 
 export function ResizableWidget({ widget, selectSection, editWidget, layout, props }: ResizableWidgetInterface) {
     const deleteWidget = useDataStore(state => state.deleteWidget)
     const isEditing = widget.id === editWidget?.id
-    const { bulkDeleteFiles } = useUploadFile()
+    const { bulkDeleteFilesCloudinary } = useUploadFile()
 
     const _deleteWidget = () => {
-        selectSection('', 0, {})
-        const storageIds = widget.data?.resizables?.filter(p => p?.img?.storageId).map(p => p?.img?.storageId)
-        if (storageIds?.length) bulkDeleteFiles(storageIds as Id<"_storage">[])
-        deleteWidget(widget)
+        try {
+            selectSection('', 0, {})
+            const storageIds = widget.data?.resizables?.filter(p => p?.img?.storageId).map(p => p?.img?.storageId)
+            if (storageIds?.length) {
+                const dataToDelete = Array.from(storageIds, (sId, _i) => ({ publicId: sId!, resourceType: 'image' }))
+                bulkDeleteFilesCloudinary(dataToDelete)
+            }
+            deleteWidget(widget)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const sizes = widget?.data?.resizables

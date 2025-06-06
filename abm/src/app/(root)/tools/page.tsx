@@ -302,7 +302,7 @@ const Page = () => {
                 <div className='w-full flex justify-between'>
                     <span>Imagen:</span>
                     <UpdateAssetTool
-                        isAsset={img}
+                        isAsset={!!img}
                         isSuccess={isSuccess}
                         deleteAsset={deleteImg}
                         onChangeFiles={getLocalUrl}

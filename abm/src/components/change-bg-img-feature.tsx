@@ -34,7 +34,7 @@ const ChangeBgImgFeature = () => {
                 <span>Imagen de Fondo:</span>
             </div>
             <UpdateAssetTool
-                isAsset={backgroundImg?.uploadImgUrl}
+                isAsset={!!backgroundImg?.uploadImgUrl}
                 deleteAsset={deleteImg}
                 onChangeFiles={getLocalUrls}
                 onAccept={() => onAccept(uploadImage)}

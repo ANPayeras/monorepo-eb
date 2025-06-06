@@ -9,7 +9,7 @@ const ChangeBgVideoFeature = () => {
     const { isUploading, getLocalUrls, onAccept, isSuccess, files, uploadFileCloudinary, deleteFileCloudinary } = useUploadFile()
 
     const uploadVideo = async (file: File) => {
-        if (backgroundVideo.uploadVideoUrl) await deleteVideo()
+        if (backgroundVideo?.uploadVideoUrl) await deleteVideo()
         const { url, storageId } = await uploadFileCloudinary(file)
         handleOnChangeBgLayoutVideo('', url!, storageId)
     }
@@ -24,7 +24,7 @@ const ChangeBgVideoFeature = () => {
     // }
 
     const deleteVideo = async () => {
-        await deleteFileCloudinary(backgroundVideo.storageId, 'video')
+        await deleteFileCloudinary(backgroundVideo?.storageId!, 'video')
         deleteBgLayoutVideo()
     }
 
@@ -34,7 +34,7 @@ const ChangeBgVideoFeature = () => {
                 <span>Video de Fondo:</span>
             </div>
             <UpdateAssetTool
-                isAsset={backgroundVideo?.uploadVideoUrl}
+                isAsset={!!backgroundVideo?.uploadVideoUrl}
                 deleteAsset={deleteVideo}
                 onAccept={() => onAccept(uploadVideo)}
                 onChangeFiles={getLocalUrls}

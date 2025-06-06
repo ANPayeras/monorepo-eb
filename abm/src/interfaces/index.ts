@@ -97,7 +97,7 @@ export type MpBrickInterface = {
 };
 
 export type UpdateImgToolProps = {
-  isAsset: string;
+  isAsset: boolean;
   deleteAsset: () => void;
   onChangeFiles: (file: File[]) => void;
   onAccept: () => void;

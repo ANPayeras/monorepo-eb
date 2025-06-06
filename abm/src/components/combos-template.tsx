@@ -41,7 +41,7 @@ const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
                                             Imagen {i + 1}
                                         </span>
                                         <UpdateAssetTool
-                                            isAsset={img.url}
+                                            isAsset={!!img.url}
                                             deleteAsset={() => deleteImg(i)}
                                             onChangeFiles={getLocalUrls}
                                             onAccept={() => onAccept((file) => uploadImage(file, img.storageId, i))}

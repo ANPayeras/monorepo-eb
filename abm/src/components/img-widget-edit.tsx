@@ -56,7 +56,7 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
             <div className='flex justify-between'>
                 <span>Subir imagen:</span>
                 <UpdateAssetTool
-                    isAsset={getImage()}
+                    isAsset={!!getImage()}
                     isSuccess={isSuccess}
                     deleteAsset={deleteImg}
                     onChangeFiles={getLocalUrls}

@@ -116,7 +116,7 @@ const MenuTemplate = () => {
                         <span>Imagen de cabecera: </span>
                     </div>
                     <UpdateAssetTool
-                        isAsset={header.imgUrl.uploadImgUrl}
+                        isAsset={!!header.imgUrl.uploadImgUrl}
                         deleteAsset={() => deleteImg('header', header.imgUrl.storageId as Id<"_storage">)}
                         onChangeFiles={getLocalUrls}
                         onAccept={() => onAccept((file) => uploadImage(file, 'header', header.imgUrl.storageId as Id<"_storage">))}
@@ -232,7 +232,7 @@ const MenuTemplate = () => {
                                                             Imagen:
                                                         </span>
                                                         <UpdateAssetTool
-                                                            isAsset={it.itemImage.uploadImgUrl}
+                                                            isAsset={!!it.itemImage.uploadImgUrl}
                                                             deleteAsset={() => deleteImg('itemImage', it.itemImage.storageId as Id<"_storage">, s.name, i)}
                                                             onChangeFiles={getLocalUrls}
                                                             onAccept={() => onAccept((file) => uploadImage(file, 'itemImage', it.itemImage.storageId as Id<"_storage">, s.name, i,))}
