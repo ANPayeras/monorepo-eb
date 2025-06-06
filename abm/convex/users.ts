@@ -144,7 +144,7 @@ export const updateUserWh = internalMutation({
   },
 });
 
-export const checkIsUserPremiun = query({
+export const checkIsUserPremium = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 

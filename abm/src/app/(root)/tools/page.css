@@ -1,0 +1,87 @@
+:root {
+    --border_img_edit: 10px;
+    --color1_img_edit: #6be89b;
+    --color2_img_edit: #0076a5;
+    --from_img_edit: 30deg;
+    --distance_img_edit: 40%;
+}
+
+.shadowFilter {
+    filter: drop-shadow(2px 2px 5px #040404);
+}
+
+.shadowText {
+    -webkit-filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, .7));
+    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, .7));
+}
+
+img {
+    aspect-ratio: 2/calc(2 + var(--dir));
+}
+
+.border1 {
+    background: linear-gradient(purple, darkorange) round border-box;
+}
+
+.border2 {
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.07) 50%, transparent 0), linear-gradient(90deg, rgba(255, 255, 255, 0.13) 50%, transparent 0), linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.17) 0), linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.19) 0), linear-gradient(#ff8a00, #da1b60);
+    background-size: 13px, 29px, 37px, 53px, 100%;
+}
+
+.border3 {
+    position: relative;
+}
+
+.border3::after {
+    content: '';
+    border-radius: 999px;
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    height: calc(100% + 10px);
+    width: calc(100% + 10px);
+    background: conic-gradient(from var(--from_img_edit),
+            var(--color1_img_edit),
+            var(--color2_img_edit) var(--distance_img_edit),
+            transparent var(--distance_img_edit));
+    -webkit-mask: radial-gradient(farthest-side,
+            transparent calc(100% - var(--border_img_edit)),
+            #fff calc(100% - var(--border_img_edit) + 1px));
+    mask: radial-gradient(farthest-side,
+            transparent calc(100% - var(--border_img_edit)),
+            #fff calc(100% - var(--border_img_edit) + 1px));
+}
+
+.border4 {
+    border-color: black;
+    border-style: dashed;
+}
+
+.border5 {
+    border-color: black;
+    border-style: double;
+}
+
+.border6 {
+    border-color: black;
+    border-style: groove;
+}
+
+.background1 {
+    background-size: 1.875em 1.875em;
+    --sl: 29.2893218813%,
+        currentcolor calc(21.966991411% + -.5px),
+        transparent calc(21.966991411% + .5px);
+    background-image: radial-gradient(circle at 34.466991411% var(--sl)), conic-gradient(from -45deg at 50% 31.066017178%, currentcolor 90deg, transparent 0%), radial-gradient(circle at 65.533008589% var(--sl));
+    background-position: 0 0.28125em, 0 calc(1.1216686963em + -1px);
+    color: #da1b60;
+}
+
+.background2 {
+    background-size: 1.875em 1.875em;
+    --sl: currentcolor 36deg, transparent 0%;
+    background-image: conic-gradient(from 18deg at 27.958053039% 41.9262745781%, var(--sl)), conic-gradient(from 162deg at 50% 62.5%, var(--sl)), conic-gradient(from -54deg at 72.041946961% 41.9262745781%, var(--sl));
+    background-position: 0 0.7202224258em, 0 0.9375em;
+    color: gold;
+}

@@ -3,7 +3,7 @@ import { createStore } from 'zustand/vanilla'
 import { Id } from '../../convex/_generated/dataModel'
 import { v4 as uuidv4 } from 'uuid';
 
-type Items = {
+export type Items = {
     name: string;
     price: string | null;
     id: string;
@@ -64,6 +64,11 @@ export type Layout = {
     backgroundImg: {
         localImg?: string;
         uploadImgUrl: string;
+        storageId: Id<"_storage"> | string;
+    };
+    backgroundVideo?: {
+        localVideo?: string;
+        uploadVideoUrl: string;
         storageId: Id<"_storage"> | string;
     };
 }
@@ -155,7 +160,14 @@ export type DataActions = {
     addTemplateBuild: (id: Id<"templates">) => void;
     //
     handleOnChangeBgLayoutImg: (localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => void;
+    handleOnChangeBgLayoutVideo: (localVideo?: string, uploadVideoUrl?: string, storageId?: Id<"_storage">) => void;
     deleteBgLayoutImg: () => void;
+    deleteBgLayoutVideo: () => void;
+    //
+    handleOnChangeImgHeader: (uploadImgUrl: string, storageId: Id<"_storage">) => void;
+    handleOnChangeImgItems: (uploadImgUrl: string, storageId: Id<"_storage">, section: string, item: number) => void;
+    deleteImgItem: (section: string, item: number) => void;
+    handleOnChangeImgCombos: (combo: number, imgUrlPos: number, uploadImgUrl: string, storageId: Id<"_storage"> | string) => void;
 }
 
 export type DataStore = DataState & DataActions
@@ -180,6 +192,11 @@ export const defaultInitialState: DataState = {
             localImg: '',
             uploadImgUrl: '',
             storageId: '',
+        },
+        backgroundVideo: {
+            localVideo: '',
+            uploadVideoUrl: '',
+            storageId: ''
         },
     },
     paymentMethods: [],
@@ -209,6 +226,11 @@ const iState: DataState = {
             localImg: '',
             uploadImgUrl: '',
             storageId: '',
+        },
+        backgroundVideo: {
+            localVideo: '',
+            uploadVideoUrl: '',
+            storageId: ''
         },
     },
     paymentMethods: [],
@@ -287,6 +309,13 @@ export const createDataStore = (
             }
             return { ...state }
         }),
+        handleOnChangeImgItems: (uploadImgUrl: string, storageId: Id<"_storage">, section: string, item: number) => set((state) => {
+            let pos = state.sections.map(e => e.name).indexOf(section)
+            state.sections[pos].items[item].itemImage.localImg = ''
+            state.sections[pos].items[item].itemImage.uploadImgUrl = uploadImgUrl
+            state.sections[pos].items[item].itemImage.storageId = storageId
+            return { ...state }
+        }),
         handleOnChangeHeader: (event: ChangeEvent<HTMLInputElement>, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => set((state) => {
             let { value, name } = event.target
             if (name === 'imgUrl') {
@@ -302,6 +331,12 @@ export const createDataStore = (
             return { ...state }
             // return { ...state, header: { ...state.header, [name]: value } } No modifica template
         }),
+        handleOnChangeImgHeader: (uploadImgUrl: string, storageId: Id<"_storage">) => set((state) => {
+            state.header.imgUrl.localImg = ''
+            state.header.imgUrl.uploadImgUrl = uploadImgUrl
+            state.header.imgUrl.storageId = storageId
+            return { ...state }
+        }),
         handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number, imgUrl?: string, imgUrlPos?: number, storageId?: Id<"_storage"> | string) => set((state) => {
             let { value, name } = event.target
             const { imgUrl: _imgUrl } = state.combos[combo]
@@ -316,6 +351,16 @@ export const createDataStore = (
                 }
             } else {
                 state.combos[combo][name as keyof Omit<Combos, "imgUrl">] = value
+            }
+            return { ...state }
+        }),
+        handleOnChangeImgCombos: (combo: number, imgUrlPos: number, uploadImgUrl: string, storageId: Id<"_storage"> | string) => set((state) => {
+            const { imgUrl: _imgUrl } = state.combos[combo]
+            const existImg = _imgUrl[imgUrlPos].url
+            _imgUrl[imgUrlPos].url = uploadImgUrl
+            _imgUrl[imgUrlPos].storageId = storageId
+            if (_imgUrl.length < 5 && !existImg) {
+                _imgUrl.splice(imgUrlPos + 1, 0, { url: '', storageId: '' })
             }
             return { ...state }
         }),
@@ -360,7 +405,7 @@ export const createDataStore = (
             return { ...state, layout: { ...state.layout, textsColor } }
         }),
         handleOnChangeLayout: (color: string, type: Layout['textsColor'] | Layout['bgColor']) => set((state) => {
-            state.layout[type as keyof Omit<Layout, "backgroundImg">] = color
+            state.layout[type as keyof Omit<Layout, "backgroundImg" | "backgroundVideo">] = color
             return { ...state }
         }),
         handleOnChangePM: (event: ChangeEvent<HTMLInputElement>, label: string) => set((state) => {
@@ -465,6 +510,13 @@ export const createDataStore = (
         deleteImgHeader: () => set((state) => {
             return { ...state, header: { ...state.header, imgUrl: { localImg: '', uploadImgUrl: '', storageId: '' } } }
         }),
+        deleteImgItem: (section: string, item: number) => set((state) => {
+            let pos = state.sections.map(e => e.name).indexOf(section)
+            state.sections[pos].items[item].itemImage.localImg = ''
+            state.sections[pos].items[item].itemImage.storageId = ''
+            state.sections[pos].items[item].itemImage.uploadImgUrl = ''
+            return { ...state }
+        }),
         deleteImgCombo: (combo: number, imgPos: number) => set((state) => {
             state.combos[combo].imgUrl.splice(imgPos, 1)
             return { ...state }
@@ -526,10 +578,27 @@ export const createDataStore = (
             }
             return { ...state }
         }),
+        handleOnChangeBgLayoutVideo: (localVideo?: string, uploadVideoUrl?: string, storageId?: Id<"_storage">) => set((state) => {
+            const { layout } = state
+            if (localVideo) layout.backgroundVideo!.localVideo = localVideo
+            if (uploadVideoUrl && storageId) {
+                layout.backgroundVideo!.localVideo = ''
+                layout.backgroundVideo!.uploadVideoUrl = uploadVideoUrl
+                layout.backgroundVideo!.storageId = storageId
+            }
+            return { ...state }
+        }),
         deleteBgLayoutImg: () => set((state) => {
             state.layout.backgroundImg.localImg = ''
             state.layout.backgroundImg.uploadImgUrl = ''
             state.layout.backgroundImg.storageId = ''
+            return { ...state }
+        }),
+        deleteBgLayoutVideo: () => set((state) => {
+            const { layout } = state
+            layout.backgroundVideo!.localVideo = ''
+            layout.backgroundVideo!.uploadVideoUrl = ''
+            layout.backgroundVideo!.storageId = ''
             return { ...state }
         }),
     }))

@@ -1,4 +1,10 @@
-import { HTMLAttributeAnchorTarget, ReactNode } from "react";
+import {
+  CSSProperties,
+  DetailedHTMLProps,
+  HTMLAttributeAnchorTarget,
+  ReactNode,
+  VideoHTMLAttributes,
+} from "react";
 
 export type AlertDialogProps = {
   open: boolean;
@@ -42,3 +48,18 @@ export type LoaderSpinnerProps = {
 };
 
 export type RowProps = { title: string; description: string };
+
+export type BgVideoPlayerProps = {
+  src: string;
+  videoProps?: DetailedHTMLProps<
+    VideoHTMLAttributes<HTMLVideoElement>,
+    HTMLVideoElement
+  >;
+  className?: string;
+  style?: CSSProperties;
+};
+
+export type RowPlanLimitsProps = {
+  quantity: number;
+  limit: number;
+};

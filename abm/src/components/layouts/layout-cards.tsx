@@ -4,18 +4,23 @@ import Image from "next/image";
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useRouter } from "next/navigation";
 import CloseIcon from "./close-icon";
 import { cardsData } from "./cards";
+import { AlertDialogComponent } from "../dialog";
+import useCheckPremium from "@/hooks/use-check-premium";
 
 export default function LayoutCards() {
+  const { limit } = useCheckPremium('templates')
   const createTemplate = useMutation(api.templates.createTemplate)
+  const listTemplates = useQuery(api.templates.listTemplates)
   const router = useRouter()
   const [active, setActive] = useState<(typeof cardsData)[number] | boolean | null>(
     null
   );
+  const [openAlert, setOpenAlert] = useState(false)
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -36,11 +41,15 @@ export default function LayoutCards() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [active]);
 
-  useOutsideClick(ref, () => setActive(null));
+  useOutsideClick(ref, () => !openAlert && setActive(null));
 
   const redirectBuild = async (layout: string) => {
-    const id = await createTemplate({ layout })
-    router.push(`/build/${id}`)
+    if (listTemplates?.length! >= limit) {
+      setOpenAlert(true)
+    } else {
+      const id = await createTemplate({ layout })
+      router.push(`/build/${id}`)
+    }
   }
 
   return (
@@ -184,6 +193,14 @@ export default function LayoutCards() {
         ))
         }
       </ul >
+      <AlertDialogComponent
+        open={openAlert}
+        title="Ups!!"
+        description={`Llegaste al limite permitido de plantillas para tu plan, por favor borra alguna. Max ${listTemplates?.length}`}
+        onOpenChange={() => setOpenAlert(false)}
+        onConfirm={() => router.push('/templates')}
+        acceptText="Ver plantillas"
+      />
     </>
   );
 }

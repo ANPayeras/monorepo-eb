@@ -1,14 +1,24 @@
-import React from 'react'
-import { IconEdit, IconTrash, IconUpload } from '@tabler/icons-react'
-import { Input } from './ui/input'
-import { UpdateImgToolProps } from '@/interfaces'
+import React, { useEffect, useState } from 'react'
 
-const UpdateImgTool = ({ imageRef, isImage, deleteImg, uploadImage, widget, panel }: UpdateImgToolProps) => {
+import { UpdateImgToolProps } from '@/interfaces'
+import { FileUpload } from './ui/file-upload'
+import Button from './buttons/button'
+import Icon from './Icon'
+
+const UpdateAssetTool = ({ isAsset, deleteAsset, isUploading, modalTexts, dropzoneOptions, onChangeFiles, onAccept, isSuccess }: UpdateImgToolProps) => {
+    const [openModal, setOpenModal] = useState(false)
+
     const uploadClick = () => {
-        panel ?
-            imageRef.current[panel.id].current?.click() :
-            imageRef.current?.click()
+        setOpenModal(true)
     }
+
+    const _onAccept = () => {
+        onAccept()
+    }
+
+    useEffect(() => {
+        if (isSuccess) setOpenModal(false)
+    }, [isSuccess])
 
     return (
         <>
@@ -18,40 +28,42 @@ const UpdateImgTool = ({ imageRef, isImage, deleteImg, uploadImage, widget, pane
                     onClick={uploadClick}
                 >
                     {
-                        isImage ?
-                            <IconEdit size={18} className='text-gray-500' /> :
-                            <IconUpload size={18} className='text-gray-500' />
+                        isAsset ?
+                            <Icon name='edit' iconProps={{ size: 18, className: 'text-gray-500' }} /> :
+                            <Icon name='upload' iconProps={{ size: 18, className: 'text-gray-500' }} />
                     }
                 </span>
                 {
-                    isImage &&
+                    isAsset &&
                     <span
                         className='cursor-pointer transition-all hover:scale-110 flex justify-center items-center'
-                        onClick={deleteImg}
+                        onClick={deleteAsset}
                     >
-                        <IconTrash size={18} className='text-red-500' />
+                        <Icon name='trash' iconProps={{ size: 18, className: 'text-red-500' }} />
                     </span>
                 }
             </div>
             {
-                widget?.data?.resizables?.length ? widget?.data?.resizables?.map((_, i) => (
-                    <Input
-                        key={i}
-                        className='hidden'
-                        ref={imageRef.current[i]}
-                        onChange={(e) => uploadImage(e)}
-                        name={`panel-${i}`}
-                        type='file' />
-                )) :
-                    <Input
-                        className='hidden'
-                        ref={imageRef}
-                        onChange={(e) => uploadImage(e)}
-                        name='layoutBgImg'
-                        type='file' />
+                openModal &&
+                <div className='absolute top-0 left-0 bg-black w-full h-full bg-opacity-50 z-[100] flex flex-col gap-2 items-center justify-center'>
+                    <FileUpload
+                        containerClassName='w-[90%] md:w-[80%] max-w-[700px]'
+                        dropzoneOptions={{ ...dropzoneOptions }}
+                        onChange={onChangeFiles}
+                        {...modalTexts}
+                    />
+                    <Button
+                        onClick={_onAccept}
+                        disabled={isUploading}
+                        isLoading={isUploading}
+                        spinnerColor='current'
+                    >
+                        Aceptar
+                    </Button>
+                </div >
             }
         </>
     )
 }
 
-export default UpdateImgTool
+export default UpdateAssetTool

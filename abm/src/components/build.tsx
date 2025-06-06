@@ -103,8 +103,8 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
     )
 
     return (
-        <section className='size-full flex max-w-[1000px] m-auto flex-col sm:flex-row'>
-            <div className='flex-1 flex flex-col p-4 gap-1 w-full sm:w-1/2'>
+        <section className='w-full h-auto sm:h-full flex max-w-[1000px] m-auto flex-col sm:flex-row gap-4 sm:gap-0'>
+            <div className='flex h-[80vh] sm:h-auto flex-col p-0 sm:p-4 gap-1 w-full sm:w-1/2'>
                 <NavBuild
                     leftIconFunction={backButton}
                     leftIcon={!!editSection.section}

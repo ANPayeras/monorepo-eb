@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Doc } from '../../../convex/_generated/dataModel'
+
 import PaymentMethodsWidget from '../payment-methods-preview'
 import DeliverMethodsWidget from '../deliver-preview'
 import ContactInfoWidget from '../contact-info'
@@ -8,8 +8,9 @@ import Link from 'next/link'
 import { BlurImage } from '../blur-image'
 import useSentEvent from '@/hooks/use-sent-events'
 import { IconPhotoScan } from '@tabler/icons-react'
+import { ClassicViewProps } from '@/types'
 
-const ClassicView = ({ template, user }: { template: Doc<"templates">, user: Doc<"users"> }) => {
+const ClassicView = ({ template, userData }: ClassicViewProps) => {
     const { sentEvent } = useSentEvent()
     const { header, combos, paymentMethods, contact, deliverMethods } = template
     return (
@@ -24,7 +25,7 @@ const ClassicView = ({ template, user }: { template: Doc<"templates">, user: Doc
                             title: header.title
                         })}
                         className='h-full w-full relative bg-gray-900 border border-slate-700'
-                        href={`${user.username}/list/all`}
+                        href={`${userData.username}/all`}
                     >
                         {
                             header.imgUrl.uploadImgUrl ?
@@ -58,7 +59,7 @@ const ClassicView = ({ template, user }: { template: Doc<"templates">, user: Doc
                                         comboNumber: c.id,
                                     })}
                                     className='h-full w-full relative bg-gray-900'
-                                    href={`${user.username}/list/combo/${c.id}`}
+                                    href={`${userData.username}/combo/${c.id}`}
                                 >
                                     {
                                         c.imgUrl[0].url ?
@@ -79,7 +80,7 @@ const ClassicView = ({ template, user }: { template: Doc<"templates">, user: Doc
                     ))
                 }
             </div>
-            <CartWidget {...{ user: user.username! }} />
+            <CartWidget {...{ user: userData.username! }} />
             {
                 paymentMethods.length ? <PaymentMethodsWidget {...{ template }} /> : <></>
             }

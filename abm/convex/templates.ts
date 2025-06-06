@@ -63,6 +63,11 @@ export const createTemplate = mutation({
           uploadImgUrl: "",
           storageId: "",
         },
+        backgroundVideo: {
+          localVideo: "",
+          uploadVideoUrl: "",
+          storageId: "",
+        },
       },
       paymentMethods: [],
       active: false,
@@ -234,6 +239,10 @@ export const updateTemplate = mutation({
             storageId: args.layout.backgroundImg.storageId,
             uploadImgUrl: args.layout.backgroundImg.uploadImgUrl,
           },
+          backgroundVideo: {
+            storageId: args.layout.backgroundVideo?.storageId || "",
+            uploadVideoUrl: args.layout.backgroundVideo?.uploadVideoUrl || "",
+          },
         },
       });
     } else {
@@ -245,6 +254,10 @@ export const updateTemplate = mutation({
           backgroundImg: {
             storageId: args.layout.backgroundImg.storageId,
             uploadImgUrl: args.layout.backgroundImg.uploadImgUrl,
+          },
+          backgroundVideo: {
+            storageId: args.layout.backgroundVideo?.storageId || "",
+            uploadVideoUrl: args.layout.backgroundVideo?.uploadVideoUrl || "",
           },
         },
       });

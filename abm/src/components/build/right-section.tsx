@@ -15,6 +15,7 @@ import { RightSectionInterface } from '@/interfaces'
 import { Doc } from '../../../convex/_generated/dataModel'
 import ChangeBgImgFeature from '../change-bg-img-feature'
 import AllPageLoader from '../all-page-loader'
+import ChangeBgVideoFeature from '../features/change-bg-video-feature'
 
 const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, swiperRef, template }) => {
     const handleOnChangeLayout = useDataStore(state => state.handleOnChangeLayout)
@@ -79,7 +80,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     }, [saveChanges])
 
     return (
-        <div className='flex-1 flex p-4'>
+        <div className='flex-1 flex p-0 sm:p-4'>
             <div className='w-full h-full overflow-hidden bg-slate-300 rounded-sm'>
                 {
                     !editSection.section &&
@@ -108,6 +109,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
                                         color={textsColor}
                                         onChange={handleChangeColor} />
                                     <ChangeBgImgFeature />
+                                    <ChangeBgVideoFeature />
                                 </div>
                             </div>
                             {

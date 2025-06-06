@@ -1,4 +1,5 @@
 "use client"
+
 import { useDataStore } from '@/providers/data-store-providers'
 import React from 'react'
 import AnimateIcon from './animate-icon'
@@ -12,7 +13,7 @@ const CartWidget = ({ user }: { user: string }) => {
             {
                 cart.length ?
                     <Link
-                        href={`${user}/list/confirmation`}>
+                        href={`${user}/confirmation`}>
                         <AnimateIcon
                             active={true}
                             className='flex justify-between border p-2 rounded-full fixed bottom-1 right-1 md:bottom-4 md:right-4 bg-slate-800 hover:opacity-50 transition-all'

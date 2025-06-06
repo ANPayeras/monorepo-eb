@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { SidebarBody, SidebarLink, Sidebar } from './ui/sidebar'
-import { IconArrowLeft, IconBrandTabler, IconChartBarPopular, IconLayout, IconTemplate, IconTool, IconUserCircle } from '@tabler/icons-react';
+import { IconArrowLeft, IconBrandTabler, IconBrush, IconChartBarPopular, IconLayout, IconTemplate, IconTool, IconUserCircle } from '@tabler/icons-react';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
@@ -39,6 +39,13 @@ const links = [
         href: "/layouts",
         icon: (
             <IconLayout className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+        ),
+    },
+    {
+        label: "Editar imagen",
+        href: "/tools",
+        icon: (
+            <IconBrush className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
         ),
     }
 ];

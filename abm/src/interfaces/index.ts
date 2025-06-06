@@ -11,6 +11,7 @@ import { Doc } from "../../convex/_generated/dataModel";
 import { MutableRefObject } from "react";
 import { Swiper as SwiperType } from "swiper/types";
 import { IColor } from "react-color-palette";
+import { DropzoneOptions } from "react-dropzone";
 
 declare global {
   interface Window {
@@ -82,7 +83,7 @@ export type RightSectionInterface = {
 
 export type ChangeColorFeatureInterface = {
   title: string;
-  type: keyof Omit<Layout, "backgroundImg">;
+  type: keyof Omit<Layout, "backgroundImg" | "backgroundVideo">;
   color: IColor;
   onChange: (color: IColor, type: string) => void;
 };
@@ -96,12 +97,18 @@ export type MpBrickInterface = {
 };
 
 export type UpdateImgToolProps = {
-  imageRef: any;
-  isImage: string;
-  deleteImg: () => void;
-  uploadImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  widget?: Widget;
-  panel?: resizableItem;
+  isAsset: boolean;
+  deleteAsset: () => void;
+  onChangeFiles: (file: File[]) => void;
+  onAccept: () => void;
+  isUploading?: boolean;
+  isSuccess?: boolean;
+  dropzoneOptions?: DropzoneOptions;
+  modalTexts?: {
+    title?: string;
+    subTitle?: string;
+    description?: string;
+  };
 };
 
 // Widgets

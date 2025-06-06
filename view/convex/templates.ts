@@ -1,7 +1,7 @@
-import { ConvexError, v } from "convex/values";
+import { v } from "convex/values";
 import { query } from "./_generated/server";
 
-export const getTemplate = query({
+export const getTemplateView = query({
   args: {
     user: v.string(),
     test: v.boolean(),
@@ -12,15 +12,11 @@ export const getTemplate = query({
       .filter((q) => q.eq(q.field("username"), args.user))
       .first();
 
-    if (!user) {
-      throw new ConvexError("User not found");
-    }
-
     const template = await ctx.db
       .query("templates")
       .filter((q) =>
         q.and(
-          q.eq(q.field("user"), user._id),
+          q.eq(q.field("user"), user?._id),
           q.field(args.test ? "test" : "active"),
           true
         )

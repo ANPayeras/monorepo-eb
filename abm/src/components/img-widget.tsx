@@ -1,26 +1,30 @@
 import React from 'react'
+
 import ToolsWidget from './tools-widget'
 import { useDataStore } from '@/providers/data-store-providers'
 import Image from 'next/image'
 import { ImgWidgetInterface } from '@/interfaces'
 import { IconPhotoScan } from '@tabler/icons-react'
 import useUploadFile from '@/hooks/use-upload-file'
-import { Id } from '../../convex/_generated/dataModel'
 import WidgetBaseCard from './widget-base-card'
 
 const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterface) => {
     const deleteWidget = useDataStore(state => state.deleteWidget)
     const isEditing = widget.id === editWidget?.id
-    const { deleteFile } = useUploadFile()
+    const { deleteFileCloudinary } = useUploadFile()
 
     const _deleteWidget = async () => {
-        selectSection('', 0, {})
-        const storageId = widget.data?.img?.storageId
-        if (storageId) await deleteFile(storageId as Id<"_storage">)
-        deleteWidget(widget)
+        try {
+            selectSection('', 0, {})
+            const storageId = widget.data?.img?.storageId
+            if (storageId) await deleteFileCloudinary(storageId, 'image')
+            deleteWidget(widget)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    const image = widget.data?.img?.localImg || widget.data?.img?.uploadImgUrl
+    const image = widget.data?.img?.uploadImgUrl
 
     return (
         <WidgetBaseCard>

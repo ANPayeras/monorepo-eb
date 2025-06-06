@@ -1,4 +1,5 @@
-import { Id } from "../../convex/_generated/dataModel";
+import { CSSProperties, DetailedHTMLProps, VideoHTMLAttributes } from "react";
+import { Doc, Id } from "../../convex/_generated/dataModel";
 
 type Items = {
   name: string;
@@ -104,3 +105,32 @@ type WidgetData = {
     storageId?: Id<"_storage"> | string;
   };
 };
+
+export type BgVideoPlayerProps = {
+  src: string;
+  videoProps?: DetailedHTMLProps<
+    VideoHTMLAttributes<HTMLVideoElement>,
+    HTMLVideoElement
+  >;
+  className?: string;
+  style?: CSSProperties;
+};
+
+export type ReactiveTemplateProps = {
+  user: string;
+  component: string;
+  combo: string;
+  test?: boolean;
+};
+
+export type MainPageProps = {
+  params: { user: string; path?: string[] };
+  searchParams: { [key: string]: string };
+};
+
+export type TemplateProps = {
+  template: Doc<"templates">;
+  userData: Doc<"users">;
+};
+
+export type ClassicViewProps = TemplateProps;
