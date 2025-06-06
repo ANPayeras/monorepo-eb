@@ -25,7 +25,7 @@ export function AlertDialogComponent({
     useOutsideClick(ref, onOpenChange)
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
-            <AlertDialogContent ref={ref} className="w-[90%] rounded-lg">
+            <AlertDialogContent ref={ref} className="w-[90%] rounded-lg z-[999999999]">
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                     <AlertDialogDescription className="whitespace-pre-line">

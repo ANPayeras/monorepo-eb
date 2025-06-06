@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion'
 import { Input } from "@/components/ui/input"
-import { IconCurrencyDollar, IconTrash } from '@tabler/icons-react'
+import { IconCurrencyDollar } from '@tabler/icons-react'
 import { useDataStore } from '@/providers/data-store-providers'
 import useUploadFile from '@/hooks/use-upload-file'
 import { Id } from '../../convex/_generated/dataModel'
@@ -10,11 +10,21 @@ import UpdateAssetTool from './update-img-tool'
 import { useToast } from '@/hooks/use-toast'
 import { Items } from '@/stores/data-store'
 import Icon from './Icon'
+import useCheckPremium from '@/hooks/use-check-premium'
+import RowPlanLimits from './row-plan-limits'
 
 const MenuTemplate = () => {
     const { sections, header, addItem, addSection, deleteItem, deleteSection, handleOnChangeItems, handleOnChangeSections, handleOnChangeHeader, deleteImgHeader, handleOnChangeImgHeader, handleOnChangeImgItems, deleteImgItem } = useDataStore(state => state)
     const { isUploading, isSuccess, files, onAccept, getLocalUrls, uploadFileCloudinary, deleteFileCloudinary, bulkDeleteFilesCloudinary } = useUploadFile()
     const { toast } = useToast()
+    const { limit: categoriesLimit } = useCheckPremium('categories')
+    const { limit: itemsLimit } = useCheckPremium('items')
+
+    const isBtnCategoriesDisabled = useMemo(() => sections.length >= categoriesLimit!, [sections.length, categoriesLimit])
+
+    const isBtnItemsDisabled = useCallback((quantity: number) => {
+        return quantity >= itemsLimit!
+    }, [itemsLimit])
 
     const uploadImage = async (file: File, type: string, _storageId?: Id<"_storage">, section?: string, item?: number) => {
         try {
@@ -87,6 +97,17 @@ const MenuTemplate = () => {
         deleteSection(section)
     }
 
+    const _addSection = () => {
+        if (isBtnCategoriesDisabled) return
+        addSection()
+    }
+
+    const _addItem = (sectionName: string, quantity: number) => {
+        const isDisabled = isBtnItemsDisabled(quantity)
+        if (isDisabled) return
+        addItem(sectionName)
+    }
+
     return (
         <section className='flex flex-col w-full h-full justify-start p-4 gap-2'>
             <div className='h-32 flex flex-col justify-around rounded-sm border p-4'>
@@ -126,12 +147,19 @@ const MenuTemplate = () => {
                 </div>
             </div>
             <div className="w-full h-full overflow-scroll sm:p-4">
-                <button
-                    className='bg-slate-400 p-2 rounded-sm text-slate-100 hover:text-black w-40'
-                    onClick={addSection}
-                >
-                    Añadir categoria
-                </button>
+                <div className='flex justify-between'>
+                    <button
+                        className='bg-slate-400 p-2 rounded-sm text-slate-100 hover:text-black w-40 text-sm md:text-medium'
+                        onClick={_addSection}
+                        disabled={isBtnCategoriesDisabled}
+                    >
+                        Añadir categoria
+                    </button>
+                    <RowPlanLimits
+                        quantity={sections.length}
+                        limit={categoriesLimit}
+                    />
+                </div>
                 <div className='flex flex-col gap-1 mt-5'>
                     {sections.map((s, i) => (
                         <Accordion key={s.name}
@@ -148,19 +176,29 @@ const MenuTemplate = () => {
                                         placeholder='Categoria' />
                                     <div className='flex justify-center items-center gap-2'>
                                         <AccordionTrigger className='hover:text-gray-500' />
-                                        <span
-                                            className='cursor-pointer transition-all hover:scale-110'
+                                        <button
+                                            className='transition-all hover:scale-110'
                                             onClick={() => _deleteSection(s.name)}
                                         >
-                                            <IconTrash className='text-red-500 size-[18px]' />
-                                        </span>
-                                        <div className='cursor-pointer hover:text-gray-500 text-sm sm:text-medium' onClick={() => addItem(s.name)}>
+                                            <Icon name='trash' iconProps={{ size: 18, className: 'text-red-500' }} />
+                                        </button>
+                                        <button
+                                            className='hover:text-gray-500 text-sm sm:text-medium'
+                                            onClick={() => _addItem(s.name, s.items.length)}
+                                            disabled={isBtnItemsDisabled(s.items.length)}
+                                        >
                                             Añadir item
-                                        </div>
+                                        </button>
                                     </div>
                                 </div>
                                 <AccordionContent className='pt-4'>
                                     <div className='flex flex-col gap-3 justify-start'>
+                                        <div className='flex justify-end'>
+                                            <RowPlanLimits
+                                                quantity={s.items.length}
+                                                limit={itemsLimit}
+                                            />
+                                        </div>
                                         {s?.items &&
                                             s?.items?.map((it, i) => (
                                                 <div key={`${s.name}${i}`} className='justify-center items-center flex flex-col ml-1 gap-1'>

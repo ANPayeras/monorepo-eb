@@ -58,3 +58,8 @@ export type BgVideoPlayerProps = {
   className?: string;
   style?: CSSProperties;
 };
+
+export type RowPlanLimitsProps = {
+  quantity: number;
+  limit: number;
+};
