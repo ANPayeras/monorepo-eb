@@ -48,7 +48,6 @@ const links = [
 ];
 
 export function DockMenu() {
-    console.log('test DockMenu')
     return (
         <FloatingDock
             mobileClassName="fixed bottom-5 right-2 z-50 bg-opacity-50"
