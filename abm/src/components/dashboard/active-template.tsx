@@ -14,7 +14,7 @@ const ActiveTemplate = () => {
     const { user } = useUser()
     const template = useQuery(api.templates.getActiveTemplate, !user ? 'skip' : undefined)
 
-    const viewUrl = `${VIEW_URL}/t/${user?.username}`
+    const viewUrl = `${VIEW_URL}/${user?.username}`
 
     return (
         <div className='h-full w-full max-w-[400px] flex flex-col gap-2 flex-1'>

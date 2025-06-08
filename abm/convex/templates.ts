@@ -320,6 +320,8 @@ export const activeTemplate = mutation({
       )
       .first();
 
+    console.log("currentActiveTemplate", currentActiveTemplate);
+
     if (currentActiveTemplate) {
       if (currentActiveTemplate._id === args.templateId) {
         return await ctx.db.patch(currentActiveTemplate._id, { active: false });
