@@ -6,7 +6,7 @@ import DeliverMethodsWidget from '../deliver-methods-widget'
 import ContactInfoWidget from '../contact-info-widget'
 
 const ClassicView = ({ template: { layout, header, combos, paymentMethods, contact, deliverMethods } }: { template: Doc<"templates"> }) => {
-    const isheaderImg = header.imgUrl?.localImg || header.imgUrl.uploadImgUrl
+    const isheaderImg = header.imgUrl.uploadImgUrl
     return (
         <div className="w-[90%] flex flex-col gap-4 items-center overflow-y-visible">
             {

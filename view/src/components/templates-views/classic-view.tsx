@@ -9,13 +9,14 @@ import { BlurImage } from '../blur-image'
 import useSentEvent from '@/hooks/use-sent-events'
 import { IconPhotoScan } from '@tabler/icons-react'
 import { ClassicViewProps } from '@/types'
+import { DirectionAwareHover } from '../ui/direction-aware-hover'
 
 const ClassicView = ({ template, userData }: ClassicViewProps) => {
     const { sentEvent } = useSentEvent()
     const { header, combos, paymentMethods, contact, deliverMethods } = template
     return (
         <>
-            <div className='w-full h-20 flex justify-center items-center relative overflow-hidden rounded-lg'>
+            <div className='w-full min-h-20 h-20 flex justify-center items-center relative overflow-hidden rounded-lg'>
                 {
                     header.imgUrl.uploadImgUrl &&
                     <Link
@@ -24,23 +25,12 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                             imgUrl: header.imgUrl || '',
                             title: header.title
                         })}
-                        className='h-full w-full relative bg-gray-900 border border-slate-700'
+                        className='h-full w-full relative bg-gray-900 rounded-lg'
                         href={`${userData.username}/all`}
                     >
-                        {
-                            header.imgUrl.uploadImgUrl ?
-                                <BlurImage
-                                    alt='header-img'
-                                    width='100'
-                                    height='100'
-                                    className='h-full w-full object-cover hover:scale-110 transition-all'
-                                    src={header.imgUrl.uploadImgUrl}
-                                /> :
-                                <div className='w-full h-full flex items-center justify-center'>
-                                    <IconPhotoScan size={40} className='text-slate-200' />
-                                </div>
-                        }
-                        <p className="font-bold text-xl absolute bottom-4 left-4 z-40">{header.title}</p>
+                        <DirectionAwareHover imageUrl={header.imgUrl.uploadImgUrl}>
+                            <p className="font-bold text-xl">{header.title}</p>
+                        </DirectionAwareHover>
                     </Link>
                 }
             </div>

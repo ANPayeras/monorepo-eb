@@ -26,7 +26,7 @@ const Header = ({ iconUrl }: { iconUrl: string }) => {
     }, [cart.length])
 
     return (
-        <div className='flex bg-slate-800 text-white justify-between p-1 rounded-sm'>
+        <div className='flex w-full bg-slate-800 text-white justify-between p-1 rounded-sm'>
             <BackButton />
             {
                 !isConfirmation && cart.length ?

@@ -13,8 +13,9 @@ const ChangeColorFeature: FC<ChangeColorFeatureInterface> = ({ title, type, colo
             <div className='flex gap-4 text-sm md:text-medium'>
                 <span>{title}</span>
                 <span
-                    style={{ color: color.hex || layout[type], fontWeight: '700' }}>
-                    {color.hex || layout[type]}
+                    className='contrast-[0.2]'
+                    style={{ color: layout[type] || color.hex, fontWeight: '700' }}>
+                    {layout[type] || color.hex}
                 </span>
             </div>
             <Popover>

@@ -16,13 +16,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Fragment, ReactNode } from "react"
+import { CSSProperties, Fragment, ReactNode } from "react"
 
 interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
-    data: TData[],
-    renderSubComponent?: (props: { row: Row<TData> }) => ReactNode
-    getRowCanExpand?: (row: Row<TData>) => boolean
+    columns: ColumnDef<TData, TValue>[];
+    data: TData[];
+    renderSubComponent?: (props: { row: Row<TData> }) => ReactNode;
+    getRowCanExpand?: (row: Row<TData>) => boolean;
+    style: CSSProperties;
 }
 
 export function DataTable<TData, TValue>({
@@ -30,6 +31,7 @@ export function DataTable<TData, TValue>({
     data,
     getRowCanExpand,
     renderSubComponent,
+    style,
 }: DataTableProps<TData, TValue>) {
     const table = useReactTable({
         defaultColumn: {
@@ -54,7 +56,6 @@ export function DataTable<TData, TValue>({
                                         minWidth: header.column.columnDef.size,
                                         maxWidth: header.column.columnDef.size,
                                     }}
-                                    className="text-slate-50"
                                 >
                                     {header.isPlaceholder
                                         ? null
@@ -83,7 +84,8 @@ export function DataTable<TData, TValue>({
                                         style={{
                                             minWidth: cell.column.columnDef.size,
                                             maxWidth: cell.column.columnDef.size,
-                                            backdropFilter: 'brightness(0.8)'
+                                            backdropFilter: 'brightness(0.8)',
+                                            ...style,
                                         }}
                                         onClick={() => row.toggleExpanded()}
                                     >

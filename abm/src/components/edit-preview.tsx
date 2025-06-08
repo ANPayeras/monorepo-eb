@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { DirectionAwareHover } from './ui/direction-aware-hover'
 import { TableCell, TableRow } from './ui/table'
 import { useDataStore } from '@/providers/data-store-providers'
@@ -78,8 +79,8 @@ const EditPreview = () => {
 
     return (
         <div className='flex flex-col w-full h-full justify-start p-4 gap-4'        >
-            <div className='h-20 flex justify-center items-center rounded-sm relative'>
-                <DirectionAwareHover imageUrl={header.imgUrl?.localImg || header.imgUrl.uploadImgUrl}>
+            <div className='min-h-20 h-20 flex justify-center items-center rounded-sm relative'>
+                <DirectionAwareHover imageUrl={header.imgUrl.uploadImgUrl}>
                     <p className="font-bold text-xl">{header.title}</p>
                 </DirectionAwareHover>
             </div>

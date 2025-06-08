@@ -8,8 +8,8 @@ import { columns } from './table/columns'
 import { DataTable } from './custom-table'
 import { useDataStore } from '@/providers/data-store-providers'
 import { Doc } from '../../convex/_generated/dataModel'
-import { BlurImage } from './blur-image'
 import useSentEvent from '@/hooks/use-sent-events'
+import { DirectionAwareHover } from './ui/direction-aware-hover'
 
 const All = ({ template }: { template: Doc<"templates"> }) => {
     const { cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
@@ -91,22 +91,11 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
 
     return (
         <div className='flex flex-col w-full h-full justify-start gap-4 py-5'>
-            <div className='h-20 flex justify-center items-center rounded-lg relative overflow-hidden'>
+            <div className='min-h-20 h-20 flex justify-center items-center rounded-lg relative overflow-hidden'>
                 <div className="h-full w-full relative bg-gray-900">
-                    {
-                        template.header.imgUrl.uploadImgUrl ?
-                            <BlurImage
-                                alt='header-img'
-                                width='100'
-                                height='100'
-                                className='h-full w-full object-cover hover:scale-110 transition-all'
-                                src={template.header.imgUrl.uploadImgUrl}
-                            /> :
-                            <div className='w-full h-full flex items-center justify-center'>
-                                <IconPhotoScan size={40} className='text-slate-200' />
-                            </div>
-                    }
-                    <p className="font-bold text-xl text-white absolute bottom-4 left-4 z-40">{template.header.title}</p>
+                    <DirectionAwareHover imageUrl={template.header.imgUrl.uploadImgUrl}>
+                        <p className="font-bold text-xl">{template.header.title}</p>
+                    </DirectionAwareHover>
                 </div>
             </div>
             {
@@ -117,6 +106,9 @@ const All = ({ template }: { template: Doc<"templates"> }) => {
                             data={[...template.sections]}
                             getRowCanExpand={() => true}
                             renderSubComponent={renderSubComponent}
+                            style={{
+                                color: template.layout.textsColor,
+                            }}
                         />
                     </div> :
                     <div className='text-center text-black font-bold mt-5'>

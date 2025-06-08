@@ -52,7 +52,7 @@ const ReactiveTemplate = ({ user, component = '', combo = '', test = false }: Re
         color: textsColor,
         backgroundImage: backgroundVideo?.uploadVideoUrl ? '' : `url(${backgroundImg.uploadImgUrl || ''})`,
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
+        backgroundSize: '100% 100%',
       }}
     >
       {
@@ -65,9 +65,11 @@ const ReactiveTemplate = ({ user, component = '', combo = '', test = false }: Re
       {
         !component || templateLayout === 'empty' ?
           <Template template={template[0]} userData={userData!} /> :
-          <div className='absolute w-full min-h-screen max-w-[400px] md:max-w-[600px] pt-10 p-4'>
-            <Header iconUrl={`${user}/confirmation`} />
-            {Component[component]}
+          <div className='absolute w-full flex flex-col items-center py-10 max-h-screen overflow-hidden overflow-y-visible'>
+            <div className="w-[90%] max-w-[400px] md:max-w-[600px] flex flex-col items-center">
+              <Header iconUrl={`/${user}/confirmation`} />
+              {Component[component]}
+            </div>
           </div>
       }
       <BrandLink />

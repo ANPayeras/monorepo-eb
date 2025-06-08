@@ -1,4 +1,5 @@
 "use client"
+
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import SectionsEdit from '../sections-edit'
 import { SheetQR } from '../sheet-qr'
@@ -23,8 +24,8 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     const updateTemplate = useMutation(api.templates.updateTemplate)
     const [openGenerateQr, setOpenGenerateQr] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [bgColor, setBgColor] = useColor("#561ecb");
-    const [textsColor, setTextsColor] = useColor("#561ecb");
+    const [bgColor, setBgColor] = useColor("#ffffff");
+    const [textsColor, setTextsColor] = useColor("#000000");
     const { toast } = useToast()
 
     const handleChangeColor = (color: IColor, type: string) => {

@@ -508,7 +508,10 @@ export const createDataStore = (
             return { ...state }
         }),
         deleteImgHeader: () => set((state) => {
-            return { ...state, header: { ...state.header, imgUrl: { localImg: '', uploadImgUrl: '', storageId: '' } } }
+            state.header.imgUrl.localImg = ''
+            state.header.imgUrl.storageId = ''
+            state.header.imgUrl.uploadImgUrl = ''
+            return { ...state }
         }),
         deleteImgItem: (section: string, item: number) => set((state) => {
             let pos = state.sections.map(e => e.name).indexOf(section)
