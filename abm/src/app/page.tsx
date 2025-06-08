@@ -7,7 +7,6 @@ import FeaturesSection from "@/components/home/features-section";
 import Plans from "@/components/home/plans";
 
 const page = () => {
-    console.log('test')
     return (
         <main className="absolute w-full top-0 left-0 bg-slate-600">
             <DockMenu />
