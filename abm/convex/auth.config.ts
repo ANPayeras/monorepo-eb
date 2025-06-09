@@ -1,7 +1,7 @@
 const authConfig = {
   providers: [
     {
-      domain: "https://golden-herring-12.clerk.accounts.dev",
+      domain: process.env.CLERK_FRONTEND_API_URL,
       applicationID: "convex",
     },
   ],
