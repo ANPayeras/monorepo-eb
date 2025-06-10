@@ -24,8 +24,8 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     const updateTemplate = useMutation(api.templates.updateTemplate)
     const [openGenerateQr, setOpenGenerateQr] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [bgColor, setBgColor] = useColor("#ffffff");
-    const [textsColor, setTextsColor] = useColor("#000000");
+    const [bgColor, setBgColor] = useColor(template.layout.bgColor || "#ffffff");
+    const [textsColor, setTextsColor] = useColor(template.layout.textsColor || "#000000");
     const { toast } = useToast()
 
     const handleChangeColor = (color: IColor, type: string) => {
@@ -43,9 +43,14 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
     }
 
     const generatePreview = async () => {
-        const testData = await createTemplateTest({ templateId: template._id })
-        await saveChanges({ feedback: false, data: { ...template, ...testData } })
-        setOpenGenerateQr(true)
+        setIsLoading(true)
+        try {
+            await createTemplateTest({ templateId: template._id })
+            setOpenGenerateQr(true)
+        } catch (error) {
+            console.log(error)
+        }
+        setIsLoading(false)
     }
 
     const saveChanges = useCallback(async ({ feedback, data }: { feedback: boolean, data?: Doc<"templates"> }) => {
