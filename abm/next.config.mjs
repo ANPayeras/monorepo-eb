@@ -30,12 +30,12 @@ const nextConfig = {
         destination: `${process.env.REWRITES_VIEW_URL}/:user/:path?combo=:combo`,
       },
       {
-        source: "/test/:user((?!build|templates|layout)[^/]+)",
+        source: "/test/:user",
         destination: `${process.env.REWRITES_VIEW_URL}/test/:user`,
       },
       {
         source:
-          "/test/:user((?!build|templates|layout)[^/]+)/:path(all|combo|confirmation)/:combo(1|2|3|4)?",
+          "/test/:user/:path(all|combo|confirmation)/:combo(1|2|3|4)?",
         destination: `${process.env.REWRITES_VIEW_URL}/test/:user/:path?combo=:combo`,
       },
       {

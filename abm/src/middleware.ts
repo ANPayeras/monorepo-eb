@@ -5,6 +5,10 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/",
   "/api/(.*)",
+  process.env.PUBLIC_VIEW_URL_1!,
+  process.env.PUBLIC_VIEW_URL_2!,
+  "/test/:user",
+  "/test/:user/:path(all|combo|confirmation)/:combo(1|2|3|4)?",
 ]);
 
 export default clerkMiddleware((auth, request) => {
