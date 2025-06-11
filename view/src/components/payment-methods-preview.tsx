@@ -14,7 +14,7 @@ const PaymentMethodsWidget: FC<{ template: Doc<"templates"> }> = ({ template }) 
                             style={{ color: layout?.textsColor }}
                         >
                             <div className='flex justify-between items-center gap-4'>
-                                <span>Metodos de Pago</span>
+                                <span>Métodos de Pago</span>
                             </div>
                             <div className='flex flex-col'>
                                 {

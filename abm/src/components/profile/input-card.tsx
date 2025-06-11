@@ -61,7 +61,7 @@ const InputCard = ({ type, title = '', description = '', handleAccept, textButto
                             transition={{ delay: 0.05 }}
                         >
                             <button
-                                className='p-1 rounded-sm border bg-slate-100 hover:scale-90 transition-all hover:bg-slate-300'
+                                className='p-1 rounded-sm border bg-slate-100 hover:shadow-lg hover:scale-[1.01] transition-all hover:bg-slate-300'
                                 onClick={() => setOpen(true)}
                             >
                                 {textButton}

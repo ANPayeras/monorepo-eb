@@ -16,7 +16,7 @@ const NavBuild: FC<NavBuildParams> = ({ leftIcon, leftIconFunction, iconRefreshF
             </button>
             <div className='flex items-center justify-between w-full'>
                 <span className='text-center'>
-                    Vista Previa
+                    Vista previa
                 </span>
                 {
                     !leftIcon &&

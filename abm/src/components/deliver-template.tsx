@@ -9,7 +9,7 @@ const DeliverMethodsTemplate = () => {
     return (
         <div className='flex flex-col gap-4 p-4'>
             <span className='text-center'>
-                Habilita o deshabilita los metodos de entrega:
+                Habilita o deshabilita medios de entrega:
             </span>
             {
                 deliverMethodsLabel.map((dm, i) => {

@@ -31,7 +31,7 @@ const ChangeBgVideoFeature = () => {
     return (
         <div className='flex justify-between items-center h-8'>
             <div className='flex flex-col text-sm md:text-medium'>
-                <span>Video de Fondo:</span>
+                <span>Video de fondo:</span>
             </div>
             <UpdateAssetTool
                 isAsset={!!backgroundVideo?.uploadVideoUrl}

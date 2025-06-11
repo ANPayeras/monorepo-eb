@@ -61,7 +61,7 @@ const DesktopMobileUsers = async ({ clerkId }: { clerkId: string }) => {
     return (
         <BarChartComponent
             title={'Total de visitas por dispositivo'}
-            description={'Ultimos 3 meses'}
+            description={'Últimos 3 meses'}
             chartConfig={chartConfig}
             chartData={chartData}
             tabs={["desktop", "mobile"]}

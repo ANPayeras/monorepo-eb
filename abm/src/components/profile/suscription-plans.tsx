@@ -191,13 +191,13 @@ const SuscriptionPlans = () => {
             <SuscriptionPlansFooter>
                 {
                     activeSucription ?
-                        <LinkWord link={activeSucription?.adminUrl || ''} text='Ver suscripcion' /> :
+                        <LinkWord link={activeSucription?.adminUrl || ''} text='Ver suscripción' /> :
                         <Button
                             onClick={!hasFreeTrial ? () => setOpenDialog(true) : () => setOpenSheet(true)}
                             disabled={!selectedPlan || selectedPlan?.type === 'free' || !!pendingSucription}
                             leftIconName={pendingSucription ? 'clockFilled' : undefined}
                         >
-                            {pendingSucription ? 'Validando suscripcion' : primaryActionText[freeTrialStatus || '']}
+                            {pendingSucription ? 'Validando suscripción' : primaryActionText[freeTrialStatus || '']}
                         </Button>
                 }
             </SuscriptionPlansFooter>

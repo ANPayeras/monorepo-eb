@@ -172,7 +172,7 @@ const Profile = () => {
                             </div>
                             <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14 border-b'>
                                 <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
-                                    <span>Direccion de email:</span>
+                                    <span>Dirección de email:</span>
                                     <div className='flex gap-1'>
                                         <span className='font-bold'>{user?.primaryEmailAddress?.emailAddress}</span>
                                         <span className='text-xs px-1 rounded-sm flex items-center bg-slate-200'>{statusClerk[user?.primaryEmailAddress?.verification.status || 'failed']}</span>
@@ -181,14 +181,14 @@ const Profile = () => {
                             </div>
                             <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14'>
                                 <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
-                                    <span>Numero de telefono:</span>
+                                    <span>Número de teléfono:</span>
                                     <span className='font-bold'>{userConvex?.phone ? userConvex?.phone : 'No hay número de teléfono'}</span>
                                 </div>
                                 <InputCard
                                     type='phone'
-                                    title={userConvex?.phone ? 'Modificar numero de telefono' : 'Agregar numero de telefono'}
+                                    title={userConvex?.phone ? 'Modificar número de teléfono' : 'Agregar número de teléfono'}
                                     handleAccept={handlePhone}
-                                    textButton={userConvex?.phone ? 'Modificar numero de telefono' : 'Agregar numero de telefono'}
+                                    textButton={userConvex?.phone ? 'Modificar número de teléfono' : 'Agregar número de teléfono'}
                                 />
                             </div>
                         </div>

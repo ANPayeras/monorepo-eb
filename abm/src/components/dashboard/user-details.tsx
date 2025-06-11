@@ -11,7 +11,7 @@ const UserDetails = async () => {
             {
                 !user ? <LoaderSpinner size='sm' /> :
                     <>
-                        <span className='text-sm md:text-lg'>Bienvenid@ <span className='text-blue-800 font-bold'>{user?.username}</span>, como has estado?</span>
+                        <span className='text-sm md:text-lg'>Bienvenid@ <span className='text-blue-800 font-bold'>{user?.username}</span>, como estas?</span>
                         <PlanDescription />
                     </>
 

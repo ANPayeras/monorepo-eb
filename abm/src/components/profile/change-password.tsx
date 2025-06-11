@@ -165,7 +165,7 @@ const ChangePassword = ({ setOpen, handleAccept, isPassword }: { setOpen: Dispat
                                 />
                             </FormControl>
                             <FormDescription className='text-sm'>
-                                Cerrar sesion en otros dispositivos en los que haya iniciado sesion
+                                Cerrar sesión en otros dispositivos en los que haya iniciado sesión
                             </FormDescription>
                         </FormItem>
                     )}

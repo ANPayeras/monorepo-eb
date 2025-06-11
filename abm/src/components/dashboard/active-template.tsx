@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { useQuery } from 'convex/react'
+import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
 import Link from 'next/link'
 import CopyLink from '../copy-link'
@@ -9,12 +9,25 @@ import LoaderSpinner from '../loader-spinner'
 import Template from '../template'
 import { useUser } from '@clerk/nextjs'
 import { VIEW_URL } from '@/constants/envs'
+import { useRouter } from 'next/navigation'
+import Icon from '../Icon'
 
 const ActiveTemplate = () => {
     const { user } = useUser()
     const template = useQuery(api.templates.getActiveTemplate, !user ? 'skip' : undefined)
+    const changeLastBuild = useMutation(api.templates.changeLastBuild)
+    const router = useRouter()
 
     const viewUrl = `${VIEW_URL}/${user?.username}`
+
+    const editTemplate = async () => {
+        try {
+            await changeLastBuild({ _id: template![0]._id })
+            router.push(`/build/${template![0]._id}`)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <div className='h-full w-full max-w-[400px] flex flex-col gap-2 flex-1'>
@@ -26,11 +39,12 @@ const ActiveTemplate = () => {
                                 <span>Plantilla activa</span>
                                 {
                                     template?.length ?
-                                        <Link href={`/build/${template[0]?._id}`} className='bg-slate-300 p-1 rounded-sm text-slate-900 hover:text-slate-50 hover:bg-slate-800'>
-                                            <span>
-                                                Modificar
-                                            </span>
-                                        </Link> : <></>
+                                        <button
+                                            className='hover:scale-105 transition-all'
+                                            onClick={editTemplate}
+                                        >
+                                            <Icon name='edit' iconProps={{ size: 18 }} />
+                                        </button> : <></>
                                 }
                             </div>
                             {

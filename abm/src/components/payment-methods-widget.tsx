@@ -22,7 +22,7 @@ const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSect
                 style={{ color: layout?.textsColor }}
                 {...props}>
                 <div className='flex justify-between items-center gap-4'>
-                    <span>Metodos de Pago</span>
+                    <span>Métodos de Pago</span>
                 </div>
                 <div className='flex flex-col'>
                     {
