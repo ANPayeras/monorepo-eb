@@ -25,10 +25,10 @@ const ReactiveTemplate = ({ user, component = '', combo = '', test = false }: Re
   const userData = data?.user
 
   useEffect(() => {
-    if (template?.length && !test) {
-      init(template[0])
+    if (template?.length && userData && !test) {
+      init(template[0], userData)
     }
-  }, [init, template, test])
+  }, [init, template, test, userData])
 
   if (!template) return <Loader />
 

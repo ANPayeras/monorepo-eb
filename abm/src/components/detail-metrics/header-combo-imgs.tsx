@@ -14,7 +14,7 @@ const HeaderComboImgs = async ({ clerkId, queryDinamic }: { clerkId: string, que
             query: `select properties.imgUrl, properties.title, count() as t_count  from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} group by properties.imgUrl, properties.title order by t_count desc limit 5`,
             clerkId
         })
-    // const detailWidgets = [['https://necessary-tapir-611.convex.cloud/api/storage/d6720f98-ecb2-4048-aafc-c4bec81beb1a', 'Titulo', 45], ['https://necessary-tapir-611.convex.cloud/api/storage/59ec32c9-4cce-4d78-9bfc-1d87156dc141', 'Titulo 2', 60]]
+    // const detailWidgets = [['https://res.cloudinary.com/dvf8cxl3e/image/upload/v1749409111/dphgl2kctkbbo4lgmewu.png', 'Titulo', 45], ['https://res.cloudinary.com/dvf8cxl3e/image/upload/v1749409111/dphgl2kctkbbo4lgmewu.png', 'Titulo 2', 60]]
     return (
         <BaseCard containerClassName='w-full flex flex-col gap-2 justify-center items-center h-full bg-slate-900'>
             <CardTitle className='text-slate-50 border-b w-full pb-2 text-center'>Imágenes más vistas</CardTitle>

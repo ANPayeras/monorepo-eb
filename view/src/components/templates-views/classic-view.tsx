@@ -22,7 +22,7 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                     <Link
                         onClick={() => sentEvent('widget_click', {
                             type: 'header',
-                            imgUrl: header.imgUrl || '',
+                            imgUrl: header.imgUrl.uploadImgUrl || '',
                             title: header.title
                         })}
                         className='h-full w-full relative bg-gray-900 rounded-lg'
@@ -49,7 +49,7 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                                         comboNumber: c.id,
                                     })}
                                     className='h-full w-full relative bg-gray-900'
-                                    href={`${userData.username}/combo/${c.id}`}
+                                    href={`${userData.username}/combo?combo=${c.id.split('combo ')[1]}`}
                                 >
                                     {
                                         c.imgUrl[0].url ?
