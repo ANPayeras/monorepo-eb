@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { internal } from "./_generated/api";
 
 export const createUser = internalMutation({
   args: {
@@ -188,8 +189,8 @@ export const checkFreeTrial = query({
 export const updateFreeTrial = mutation({
   args: {
     active: v.boolean(),
-    endDate: v.optional(v.string()),
-    startDate: v.optional(v.string()),
+    endDate: v.string(),
+    startDate: v.string(),
   },
   handler: async (ctx, args) => {
     const { active, endDate, startDate } = args;
@@ -204,12 +205,22 @@ export const updateFreeTrial = mutation({
       .filter((q) => q.eq(q.field("email"), identity.email))
       .first();
 
+    const scheduleId: Id<"_scheduled_functions"> = await ctx.scheduler.runAt(
+      new Date(endDate),
+      internal.users.checkHasFreeTrial,
+      {
+        reference: user!._id,
+        isPremium: false,
+      }
+    );
+
     return await ctx.db.patch(user?._id!, {
       isPremium: true,
       freeTrial: {
         active,
-        endDate: user?.freeTrial?.endDate || endDate || "",
-        startDate: user?.freeTrial?.startDate || startDate || "",
+        endDate,
+        startDate,
+        scheduleId,
       },
     });
   },
@@ -218,6 +229,7 @@ export const updateFreeTrial = mutation({
 export const checkHasFreeTrial = internalMutation({
   args: {
     reference: v.id("users"),
+    isPremium: v.boolean(),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db
@@ -226,11 +238,18 @@ export const checkHasFreeTrial = internalMutation({
       .first();
 
     if (!!user?.freeTrial?.active) {
+      if (user.freeTrial.scheduleId) {
+        await ctx.scheduler.cancel(
+          user.freeTrial.scheduleId as Id<"_scheduled_functions">
+        );
+      }
       await ctx.db.patch(user._id, {
+        isPremium: args.isPremium,
         freeTrial: {
           active: false,
           endDate: user.freeTrial.endDate,
           startDate: user.freeTrial.startDate,
+          scheduleId: "",
         },
       });
     }

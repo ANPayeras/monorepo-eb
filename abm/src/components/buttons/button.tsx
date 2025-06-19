@@ -16,7 +16,7 @@ const Button: FC<ButtonInterface> = ({ isLoading, spinnerColor, leftIconName, ri
     return (
         <Btn
             {...props}
-            className='flex w-40'
+            className='flex min-w-40'
         >
             {
                 leftIconName && !isLoading &&

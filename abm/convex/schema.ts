@@ -60,11 +60,13 @@ export default defineSchema({
         uploadImgUrl: v.string(),
         storageId: v.union(v.id("_storage"), v.string()),
       }),
-      backgroundVideo: v.optional(v.object({
-        localVideo: v.optional(v.string()),
-        uploadVideoUrl: v.string(),
-        storageId: v.union(v.id("_storage"), v.string()),
-      })),
+      backgroundVideo: v.optional(
+        v.object({
+          localVideo: v.optional(v.string()),
+          uploadVideoUrl: v.string(),
+          storageId: v.union(v.id("_storage"), v.string()),
+        })
+      ),
     }),
     paymentMethods: v.array(
       v.object({
@@ -140,6 +142,7 @@ export default defineSchema({
         active: v.boolean(),
         startDate: v.string(),
         endDate: v.string(),
+        scheduleId: v.union(v.id("_scheduled_functions"), v.string()),
       })
     ),
   }),

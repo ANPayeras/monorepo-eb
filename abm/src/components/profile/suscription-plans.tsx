@@ -108,7 +108,7 @@ const SuscriptionPlans = () => {
             <MpBrick
                 email={user?.email!}
                 amount={Number(selectedRecurring?.price)}
-                description={'El pago se procesara por Mercado Pago, una vez realizado podras ver la suscripcion ahi. \n\n El pago puede demorar hasta 24hs en acreditarse'}
+                description={'El pago se procesará por Mercado Pago, una vez realizado podrás ver la suscripción ahí. \n\n El pago puede demorar hasta 24 hs en acreditarse'}
                 onReady={onReady}
                 onUnmount={onUnmount}
             />,
@@ -205,7 +205,7 @@ const SuscriptionPlans = () => {
                 open={openSheet}
                 handleChange={handleChangeSheet}
                 title={activeSucription ? '' : selectedPlan?.title || ''}
-                description={isFreeTrialActive ? 'Dejaras de tener la prueba gratuita.' : ''}
+                description={isFreeTrialActive ? 'Dejarás de tener la prueba gratuita.' : ''}
                 descriptionClassName='text-red-500'
             >
                 <div className='flex flex-col'>
@@ -233,8 +233,8 @@ const SuscriptionPlans = () => {
                 open={openDialog}
                 onOpenChange={() => setOpenDialog(false)}
                 onConfirm={confirmFreeTrial}
-                title={'Activar prueba gratuita?'}
-                description={'\nAl activarla, tendras 7 dias para usar todas las funciones sin nigun costo. Pasado ese tiempo deberas suscribirte para poder seguir usando las mismas. \n\nSi cancelas en algun momento la prueba, ya no podras volver a activarla.'}
+                title={'¿Activar prueba gratuita?'}
+                description={'\nAl activarla, tendrás 7 días para usar todas las funciones sin ningún costo. Pasado ese tiempo deberás suscribirte para poder seguir usando las mismas. \n\nSi cancelas en algún momento la prueba, ya no podrás volver a activarla.'}
                 acceptText='Si'
             />
         </div>
