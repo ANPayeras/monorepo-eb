@@ -1,8 +1,25 @@
+import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 const page = () => {
     return (
         <section className='flex flex-col gap-5'>
+            <div className='flex flex-col gap-5 border-b'>
+                <div className='flex justify-start items-center gap-2'>
+                    <Link href={'/'} className='rounded-full'>
+                        <Image src={'/logo.png'}
+                            alt='logo-terms'
+                            width={40}
+                            height={40}
+                            className='rounded-full'
+                        />
+                    </Link>
+                    <h1 className='font-bold'>POLÍTICA DE PRIVACIDAD</h1>
+                </div>
+                <p><strong>Última actualización:</strong> 16 de junio de 2025</p>
+            </div>
+
             <section className='flex flex-col gap-2'>
                 <h2 className='font-semibold text-slate-300 underline'>1. ¿Cómo se aplica esta Política de Privacidad a mí?</h2>
                 <p>Esta Política de Privacidad se aplica únicamente a la información personal que recopilamos como responsables del tratamiento sobre:</p>
@@ -17,9 +34,9 @@ const page = () => {
                         Personas que siguen, se suscriben, compran a otros usuarios de estoy.link y/o se comunican con ellos.
                     </li>
                 </ul>
-                <p>En esta Política de Privacidad nos referimos colectivamente a todas estas personas como <strong>"Usuarios de estoy.link".</strong></p>
+                <p>En esta Política de Privacidad nos referimos colectivamente a todas estas personas como <strong>&quot;Usuarios de estoy.link&quot;.</strong></p>
                 <p>
-                    Esta Política de Privacidad se aplica al tratamiento de datos personales por parte de estoy.link en calidad de responsable. Cuando hablamos de que estoy.link actúa como "responsable", significa que determinamos el propósito y los medios del procesamiento (es decir, tomamos decisiones sobre por qué y cómo manejamos tu información personal). Si te suscribís o compartís información con un Usuario de estoy.link y querés saber cómo maneja tu información, te recomendamos contactar directamente con ese Usuario de estoy.link y/o consultar cualquier aviso de privacidad que haya publicado en su perfil.
+                    Esta Política de Privacidad se aplica al tratamiento de datos personales por parte de estoy.link en calidad de responsable. Cuando hablamos de que estoy.link actúa como &quot;responsable&quot;, significa que determinamos el propósito y los medios del procesamiento (es decir, tomamos decisiones sobre por qué y cómo manejamos tu información personal). Si te suscribís o compartís información con un Usuario de estoy.link y querés saber cómo maneja tu información, te recomendamos contactar directamente con ese Usuario de estoy.link y/o consultar cualquier aviso de privacidad que haya publicado en su perfil.
                 </p>
                 <p>
                     Si nos proporcionás información sobre otra persona (por ejemplo, si actuás en representación de alguien), debés proporcionarle una copia de esta Política de Privacidad e informarle que utilizamos su información de acuerdo con lo aquí establecido.</p>

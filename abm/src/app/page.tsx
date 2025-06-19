@@ -5,6 +5,7 @@ import { CardsCarrousel } from "@/components/home/cardsCarrousel";
 import Contact from "@/components/home/contact";
 import FeaturesSection from "@/components/home/features-section";
 import Plans from "@/components/home/plans";
+import About from "@/components/home/about";
 
 const page = () => {
     return (
@@ -12,6 +13,9 @@ const page = () => {
             <DockMenu />
             <section id="home">
                 <Hero />
+            </section>
+            <section id="about">
+                <About />
             </section>
             <section id="explore">
                 <CardsCarrousel />

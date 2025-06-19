@@ -18,13 +18,13 @@ const Hero = () => {
                     duration: 0.8,
                     ease: "easeInOut",
                 }}
-                className="relative flex flex-col gap-4 items-center justify-center px-4 z-0"
+                className="relative flex flex-col gap-10 items-center justify-center px-4 z-0"
             >
-                <div className="text-3xl md:text-6xl font-bold dark:text-white text-center">
-                    Digitlizá tus ideas con folletos electrónicos fáciles de hacer
+                <div className="text-3xl md:text-6xl font-bold text-slate-200 text-center">
+                    Te damos la bienvenida a Estoy.link
                 </div>
-                <div className="font-extralight text-base md:text-4xl dark:text-neutral-200 py-4">
-                    ¡De encerio, es muy fácil!
+                <div className="font-extralight text-base md:text-4xl text-slate-900 py-4">
+                    Tu identidad, tu espacio, tus reglas.
                 </div>
                 <div className='flex gap-4'>
                     <Link href='/sign-up'>

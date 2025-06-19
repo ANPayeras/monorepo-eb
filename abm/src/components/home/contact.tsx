@@ -44,8 +44,6 @@ const Contact = () => {
                                     oficial.estoy.link@gmail.com
                                 </Link>
                             </li>
-                            {/* <li>Instagram</li>
-                        <li>Linkedin</li> */}
                         </ul>
                     </div>
                 </div>
@@ -55,6 +53,15 @@ const Contact = () => {
                     <Image src={'/qr-afip.jpg'} width={30} height={30} alt="qr-afip" />
                 </Link>
             </div> */}
+            <div className='flex items-center gap-2 text-slate-900 absolute bottom-0 right-0 px-4 py-4'>
+                <Link href={'/terms'} className='text-xs hover:text-slate-700'>
+                    Terminos y Condiciones
+                </Link>
+                <span className='w-1 h-1 bg-slate-900 rounded-full'/>
+                <Link href={'/privacy'} className='text-xs hover:text-slate-700'>
+                    Politica de Privacidad
+                </Link>
+            </div>
         </motion.div>
     )
 }

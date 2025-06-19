@@ -1,10 +1,26 @@
 import React from 'react'
 
 import Link from 'next/link'
+import Image from 'next/image'
 
 const page = () => {
     return (
         <section className='flex flex-col gap-5'>
+            <div className='flex flex-col gap-5 border-b'>
+                <div className='flex justify-start items-center gap-2'>
+                    <Link href={'/'} className='rounded-full'>
+                        <Image src={'/logo.png'}
+                            alt='logo-terms'
+                            width={40}
+                            height={40}
+                            className='rounded-full'
+                        />
+                    </Link>
+                    <h1 className='font-bold'>TÉRMINOS Y CONDICIONES</h1>
+                </div>
+                <p><strong>Última actualización:</strong> 16 de junio de 2025</p>
+            </div>
+
             <section className='flex flex-col gap-2'>
                 <h2 className='font-semibold text-slate-300 underline'>1. ¡Bienvenido a estoy.link!</h2>
                 <p>
