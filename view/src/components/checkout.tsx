@@ -71,24 +71,24 @@ const Checkout = ({ user }: { user: Doc<"users"> }) => {
                 </span>
             </div>
             <div className='flex flex-col gap-4 w-full text-sm'>
-                <div className='flex w-full justify-between'>
-                    <span>Copia el detalle y enviáselo al comercio:</span>
-                    <button onClick={() => handleSendOrder('copy')}>
-                        {
-                            isCopy ? <IconCopyCheck size={18} className='cursor-pointer hover:scale-110' /> :
-                                <IconCopy size={18} className='cursor-pointer hover:scale-110' />
-                        }
-                    </button>
-                </div>
                 {
                     user.phone ?
                         <div className='flex w-full justify-between'>
-                            <span>Envíale el detalle al comercio por Whatsapp:</span>
+                            <span>Enviar el pedido por Whatsapp:</span>
                             <button onClick={() => handleSendOrder('whatsapp')}>
-                                <IconBrandWhatsapp size={18} className='cursor-pointer hover:scale-110' />
+                                <IconBrandWhatsapp size={18} className='cursor-pointer hover:scale-105' />
                             </button>
                         </div> : <></>
                 }
+                <div className='flex w-full justify-between'>
+                    <span>Copiar el pedido:</span>
+                    <button onClick={() => handleSendOrder('copy')}>
+                        {
+                            isCopy ? <IconCopyCheck size={18} className='cursor-pointer hover:scale-105' /> :
+                                <IconCopy size={18} className='cursor-pointer hover:scale-105' />
+                        }
+                    </button>
+                </div>
             </div>
         </section>
     )
