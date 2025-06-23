@@ -21,6 +21,7 @@ import { statusClerk } from '@/constants';
 import SuscriptionPlans from './profile/suscription-plans';
 import useFlag from '@/hooks/use-flag';
 import AnimatedText from './animated-text';
+import { revalidatePathAction } from '@/actions/actions';
 
 const Profile = () => {
     const { profile } = useParams()
@@ -53,6 +54,7 @@ const Profile = () => {
         const { value, setOpen } = data
         try {
             await user?.update({ username: value })
+            revalidatePathAction('/dashboard')
             setOpen(false)
         } catch (error) {
             const _err = error as { errors: ClerkAPIError[] }

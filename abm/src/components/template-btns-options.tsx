@@ -90,7 +90,7 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
                                 scale: 1.1
                             }}
                             onClick={editTemplate}
-                            className='h-full px-5 py-1 bg-black text-white rounded-tl-sm font-bold text-sm sm:text-medium flex justify-center items-center'
+                            className='px-5 py-1 bg-black text-white rounded-tl-sm font-bold text-sm sm:text-medium flex justify-center items-center'
                         >
                             Editar
                         </motion.button>

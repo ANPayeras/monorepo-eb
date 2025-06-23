@@ -95,7 +95,7 @@ const RightSection: FC<RightSectionInterface> = ({ editSection, templateLayout, 
                             <div className='flex flex-col'>
                                 {
                                     templateLayout?.tabs.length ?
-                                        <div className='flex items-center mb-10 h-10'>
+                                        <div className='flex items-center mb-10 pb-1 border-b'>
                                             <Tabs
                                                 containerClassName='justify-around'
                                                 tabs={templateLayout.tabs}

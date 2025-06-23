@@ -1,27 +1,21 @@
 import React, { FC } from 'react'
+
 import { deliverMethodsLabel } from '@/constants'
-import { DeliverMethods, Layout } from '@/stores/data-store'
 import { cn } from '@/lib/utils'
 import ToolsWidget from './tools-widget'
-import { SelectSection } from '@/interfaces'
 import WidgetBaseCard from './widget-base-card'
-
-type DeliverPreviewProps = {
-    selectSection?: (type: string) => void;
-    deliverMethods: DeliverMethods[];
-    containerClassName?: string;
-    editSection?: SelectSection;
-    props?: any
-    layout?: Layout;
-}
+import { DeliverPreviewProps } from './types'
+import { useIsSmall } from '@/hooks/use-media.query'
 
 const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSection, deliverMethods, containerClassName, layout, props }) => {
+    const isSmall = useIsSmall()
     return (
         <WidgetBaseCard>
             <div
-                className={cn(`w-full flex flex-col space-y-1 p-2 rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`, containerClassName)}
+                className={cn(`w-full min-h-16 flex flex-col space-y-1 p-2 rounded-md ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`, containerClassName)}
                 style={{ color: layout?.textsColor }}
-                {...props}>
+                {...!isSmall && props}
+            >
                 <div className='flex justify-between items-center gap-4'>
                     <span>Medios de entrega</span>
                 </div>
@@ -44,11 +38,12 @@ const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSect
                 </div>
             </div >
             {
-                selectSection ?
-                    <ToolsWidget
-                        editFunc={() => selectSection('deliverMethods')}
-                        isEditing={editSection?.section === 'deliverMethods'} />
-                    : <></>
+                selectSection &&
+                <ToolsWidget
+                    editFunc={() => selectSection('deliverMethods')}
+                    isEditing={editSection?.section === 'deliverMethods'}
+                    {...isSmall && { props }}
+                />
             }
         </WidgetBaseCard>
     )

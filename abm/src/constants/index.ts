@@ -56,7 +56,7 @@ export const layoutFeatures: {
         value: "0",
       },
       {
-        title: "Confirmacion",
+        title: "Confirmación",
         value: "1",
       },
     ],

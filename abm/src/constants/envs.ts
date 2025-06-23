@@ -7,3 +7,4 @@ export const CLOUDINARY_URL = process.env.CLOUDINARY_URL;
 export const CLOUDINARY_SECRET = process.env.CLOUDINARY_SECRET;
 export const CLOUDINARY_CLOUD = process.env.CLOUDINARY_CLOUD;
 export const CLOUDINARY_KEY = process.env.CLOUDINARY_KEY;
+export const VERSION = process.env.version;

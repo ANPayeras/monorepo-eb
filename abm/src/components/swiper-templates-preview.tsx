@@ -172,12 +172,12 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                                                 {
                                                     !userData.phone ?
                                                         <>
-                                                            <span>Agrege un numero para reicibr el detalle por Whatsapp:</span>
+                                                            <span className='text-sm md:text-medium'>Agrege un numero para reicibr el detalle por Whatsapp:</span>
                                                             <Link href={'/profile'}>
                                                                 <IconPhonePlus className='cursor-pointer transition-all hover:scale-105' />
                                                             </Link>
                                                         </> : <>
-                                                            <span>Enviale el detalle al comercio por Whatsapp:</span>
+                                                            <span className='text-sm md:text-medium'>Enviar el pedido por Whatsapp:</span>
                                                             <button onClick={() => handleSendOrder('whatsapp')}>
                                                                 <IconBrandWhatsapp className='cursor-pointer transition-all hover:scale-105' />
                                                             </button>
@@ -187,7 +187,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                                     }
                                 </div>
                                 <div className='flex w-full justify-between'>
-                                    <span>Copia el detalle y enviaselo al vendedor</span>
+                                    <span className='text-sm md:text-medium'>Copiar el pedido:</span>
                                     <CopyLink iconSize={24} onClick={() => handleSendOrder('copy')} />
                                 </div>
                             </div>

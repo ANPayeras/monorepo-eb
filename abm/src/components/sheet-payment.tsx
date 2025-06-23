@@ -1,4 +1,5 @@
-import { FC, ReactNode } from "react"
+import { FC } from "react"
+
 import {
     Sheet,
     SheetContent,
@@ -8,7 +9,7 @@ import {
 } from "@/components/ui/sheet"
 import { SheetPaymentProps } from "./types"
 
-export const SheetPayment: FC<SheetPaymentProps> = ({ open, handleChange, children, title, description, descriptionClassName }) => {
+export const SheetPayment: FC<SheetPaymentProps> = ({ open, handleChange, children, title, description, descriptionClassName, subTitle }) => {
     return (
         <Sheet open={open} onOpenChange={() => handleChange()}>
             <SheetContent className="w-full xs:w-3/4 overflow-y-scroll">
@@ -16,6 +17,9 @@ export const SheetPayment: FC<SheetPaymentProps> = ({ open, handleChange, childr
                     <SheetTitle>{title}</SheetTitle>
                     <SheetDescription className={descriptionClassName}>
                         {description}
+                    </SheetDescription>
+                    <SheetDescription>
+                        {subTitle}
                     </SheetDescription>
                 </SheetHeader>
                 {children}

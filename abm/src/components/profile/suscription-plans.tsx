@@ -207,6 +207,7 @@ const SuscriptionPlans = () => {
                 title={activeSucription ? '' : selectedPlan?.title || ''}
                 description={isFreeTrialActive ? 'Dejarás de tener la prueba gratuita.' : ''}
                 descriptionClassName='text-red-500'
+                subTitle={`Vas a pagar $${selectedRecurring?.price} por ${isAnual ? 'un año' : 'mes'}`}
             >
                 <div className='flex flex-col'>
                     {
