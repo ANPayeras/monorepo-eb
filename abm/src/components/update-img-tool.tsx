@@ -45,7 +45,7 @@ const UpdateAssetTool = ({ isAsset, deleteAsset, isUploading, modalTexts, dropzo
             </div>
             {
                 openModal &&
-                <div className='absolute top-0 left-0 bg-black w-full h-full bg-opacity-50 z-[100] flex flex-col gap-2 items-center justify-center'>
+                <div className='absolute top-0 left-0 bg-black w-full h-dvh bg-opacity-50 z-[100] flex flex-col gap-2 items-center justify-center'>
                     <FileUpload
                         containerClassName='w-[90%] md:w-[80%] max-w-[700px]'
                         dropzoneOptions={{ ...dropzoneOptions }}
