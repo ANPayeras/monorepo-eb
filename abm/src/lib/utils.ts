@@ -10,7 +10,7 @@ export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const addDaysToDate = (startDate: Date, days: number) => {
+export const changeDaysToDate = (startDate: Date, days: number) => {
   let _startDate = new Date(startDate.valueOf());
   _startDate.setDate(_startDate.getDate() + days);
 

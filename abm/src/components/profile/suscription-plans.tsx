@@ -11,7 +11,7 @@ import MpBrick from '../mp-brick'
 import Button from '../buttons/button'
 import Error from '../feedbacks/error'
 import { AlertDialogComponent } from '../dialog'
-import { addDaysToDate } from '@/lib/utils'
+import { changeDaysToDate } from '@/lib/utils'
 import LinkWord from '../link-word'
 import { feedbacksReferencess } from '@/constants'
 import { PreApprovalResponse } from 'mercadopago/dist/clients/preApproval/commonTypes'
@@ -142,7 +142,7 @@ const SuscriptionPlans = () => {
 
     const confirmFreeTrial = async () => {
         const startDate = new Date()
-        const endDate = addDaysToDate(startDate, 7)
+        const endDate = changeDaysToDate(startDate, 7)
         await activeFreeTrial({ active: true, startDate: startDate.toISOString(), endDate: endDate.toISOString() })
     }
 

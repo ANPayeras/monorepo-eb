@@ -3,6 +3,7 @@ import { httpRouter } from "convex/server";
 import { Webhook } from "svix";
 import { api, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
+import { emailsTemplates } from "./utils";
 
 const handleClerkWebhook = httpAction(async (ctx, request) => {
   const event = await validateRequest(request);
@@ -18,6 +19,14 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
         name: event.data.first_name || "",
         username: event.data.username || `user${event.data.id}`,
         isPremiun: false,
+      });
+      await ctx.runAction(api.emails.sendEmail, {
+        body: [
+          {
+            ...emailsTemplates.welcome,
+            to: event.data.email_addresses[0].email_address,
+          },
+        ],
       });
       break;
     case "user.updated":

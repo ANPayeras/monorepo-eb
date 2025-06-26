@@ -1,7 +1,9 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
+import { emailsTemplates } from "./utils";
+import { changeDaysToDate } from "@/lib/utils";
 
 export const createUser = internalMutation({
   args: {
@@ -214,6 +216,18 @@ export const updateFreeTrial = mutation({
       }
     );
 
+    const sendEmailDate = changeDaysToDate(new Date(startDate), 5);
+
+    const scheduleEmailId: Id<"_scheduled_functions"> =
+      await ctx.scheduler.runAt(sendEmailDate, api.emails.sendEmail, {
+        body: [
+          {
+            ...emailsTemplates.endFreeTrial,
+            to: identity.email!,
+          },
+        ],
+      });
+
     return await ctx.db.patch(user?._id!, {
       isPremium: true,
       freeTrial: {
@@ -221,6 +235,7 @@ export const updateFreeTrial = mutation({
         endDate,
         startDate,
         scheduleId,
+        scheduleEmailId,
       },
     });
   },
@@ -243,6 +258,11 @@ export const checkHasFreeTrial = internalMutation({
           user.freeTrial.scheduleId as Id<"_scheduled_functions">
         );
       }
+      if (user.freeTrial.scheduleEmailId) {
+        await ctx.scheduler.cancel(
+          user.freeTrial.scheduleEmailId as Id<"_scheduled_functions">
+        );
+      }
       await ctx.db.patch(user._id, {
         isPremium: args.isPremium,
         freeTrial: {
@@ -250,6 +270,7 @@ export const checkHasFreeTrial = internalMutation({
           endDate: user.freeTrial.endDate,
           startDate: user.freeTrial.startDate,
           scheduleId: "",
+          scheduleEmailId: "",
         },
       });
     }

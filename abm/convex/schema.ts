@@ -143,6 +143,9 @@ export default defineSchema({
         startDate: v.string(),
         endDate: v.string(),
         scheduleId: v.union(v.id("_scheduled_functions"), v.string()),
+        scheduleEmailId: v.optional(
+          v.union(v.id("_scheduled_functions"), v.string())
+        ),
       })
     ),
   }),
