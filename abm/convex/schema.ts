@@ -20,7 +20,7 @@ export default defineSchema({
           v.object({
             id: v.string(),
             name: v.string(),
-            price: v.union(v.string(), v.null()),
+            price: v.string(),
             itemImage: v.object({
               localImg: v.optional(v.string()),
               uploadImgUrl: v.string(),
@@ -40,7 +40,7 @@ export default defineSchema({
             storageId: v.union(v.id("_storage"), v.string()),
           })
         ),
-        price: v.union(v.string(), v.null()),
+        price: v.string(),
         id: v.string(),
       })
     ),

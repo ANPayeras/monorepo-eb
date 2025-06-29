@@ -15,7 +15,7 @@ export const SheetQR: FC<{ open: boolean, handleChange: (open: boolean) => void 
                 <SheetHeader>
                     <SheetTitle>Vista previa</SheetTitle>
                     <SheetDescription>
-                        Se va a generar un QR y un link donde tendras una vista previa para poder probar el funcionamiento.
+                        Se va a generar un QR y un link donde tendrás una vista previa para poder probar el funcionamiento.
                         <br /><br />
                         Tanto el QR como el link tienen una validez de una hora.
                     </SheetDescription>

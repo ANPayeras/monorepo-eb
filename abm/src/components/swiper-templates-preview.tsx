@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { Doc } from '../../convex/_generated/dataModel';
 import CopyLink from './copy-link';
 import BgVideoPlayer from './bg-video';
+import { amountToCurrency } from '@/lib/utils';
 
 type SwiperTemplatesPreviewProps = {
     swiperRef: MutableRefObject<SwiperType | undefined>;
@@ -30,12 +31,12 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
     const handleSendOrder = (type: string) => {
         let orderString = ''
         cart.forEach((it) => {
-            orderString += `${it.label} - x${it.quantity} $${it.price}\n`
+            orderString += `${it.title} - x${it.quantity} ${amountToCurrency(Number(it.price))}\n`
         })
-        orderString += `\nTotal: $${cart.reduce((acc, curV) => acc + (curV.price * curV.quantity), 0)}`
+        orderString += `\nTotal: ${amountToCurrency(cart.reduce((acc, curV) => acc + (Number(curV.price) * curV.quantity), 0))}`
 
         if (type === 'copy') navigator.clipboard.writeText(orderString)
-        if (type === 'whatsapp') window.open(`https://web.whatsapp.com/send?phone=${userData?.phone}&text=${encodeURI(orderString)}&app_absent=0`)
+        if (type === 'whatsapp') window.open(`https://wa.me/${userData?.phone}?text=${encodeURIComponent(orderString)}`)
     }
 
     const isVideo = useMemo(() => {
@@ -129,36 +130,36 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                             <div className='w-full h-10 border-b-2 flex items-center justify-end'>
                                 <span>Detalle del pedido:</span>
                             </div>
-                            <div className='w-full grid grid-cols-[1.5fr,0.5fr,0.5fr,0.5fr] pr-3'>
+                            <div className='w-full grid grid-cols-[1.5fr,0.5fr,0.5fr,0.5fr]'>
                                 <div></div>
-                                <div className='flex justify-end border-b-1'>P/U</div>
-                                <div className='flex justify-end border-b-1'>Cant.</div>
-                                <div className='flex justify-end border-b-1'>Total</div>
+                                <div className='flex border-b-1'>P/U</div>
+                                <div className='flex border-b-1'>Cant.</div>
+                                <div className='flex border-b-1'>Total</div>
                             </div>
-                            <div className='w-full max-h-[400px] pr-3 overflow-y-scroll'>
+                            <div className='w-full max-h-[400px] overflow-y-scroll'>
                                 {
                                     cart.map((it, i) => (
                                         <div key={i} className='grid grid-cols-[1.5fr,0.5fr,0.5fr,0.5fr] border-b-[1px]'>
-                                            <span>
-                                                {it.label}
+                                            <span className='text-ellipsis overflow-hidden'>
+                                                {it.title}
                                             </span>
-                                            <span className='flex justify-end'>
-                                                ${it.price}
+                                            <span className='text-ellipsis overflow-hidden'>
+                                                {amountToCurrency(Number(it.price))}
                                             </span>
-                                            <span className='flex justify-end'>
+                                            <span className='text-ellipsis overflow-hidden'>
                                                 {it.quantity}
                                             </span>
-                                            <span className='flex justify-end'>
-                                                ${it.price * it.quantity}
+                                            <span className='text-ellipsis overflow-hidden'>
+                                                {amountToCurrency(Number(it.price) * it.quantity)}
                                             </span>
                                         </div>
                                     ))
                                 }
                             </div>
-                            <div className='flex items-center justify-between w-full border-b-2 pr-3'>
+                            <div className='flex items-center justify-between w-full border-b-2'>
                                 <span>Total:</span>
                                 <span>
-                                    ${cart.reduce((acc, curV) => acc + (curV.price * curV.quantity), 0)}
+                                    {amountToCurrency(cart.reduce((acc, curV) => acc + (Number(curV.price) * curV.quantity), 0))}
                                 </span>
                             </div>
                             <div className='flex flex-col  gap-4 w-full'>
@@ -172,14 +173,14 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                                                 {
                                                     !userData.phone ?
                                                         <>
-                                                            <span className='text-sm md:text-medium'>Agrege un numero para reicibr el detalle por Whatsapp:</span>
-                                                            <Link href={'/profile'}>
-                                                                <IconPhonePlus className='cursor-pointer transition-all hover:scale-105' />
+                                                            <span className='text-sm md:text-medium'>Agregá un número para recibir el detalle por WhatsApp:</span>
+                                                            <Link href={'/profile'} className='flex items-center'>
+                                                                <IconPhonePlus size={18} className='cursor-pointer transition-all hover:scale-105' />
                                                             </Link>
                                                         </> : <>
-                                                            <span className='text-sm md:text-medium'>Enviar el pedido por Whatsapp:</span>
+                                                            <span className='text-sm md:text-medium'>Enviar el pedido por WhatsApp:</span>
                                                             <button onClick={() => handleSendOrder('whatsapp')}>
-                                                                <IconBrandWhatsapp className='cursor-pointer transition-all hover:scale-105' />
+                                                                <IconBrandWhatsapp size={18} className='cursor-pointer transition-all hover:scale-105' />
                                                             </button>
                                                         </>
                                                 }
@@ -188,7 +189,7 @@ const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, us
                                 </div>
                                 <div className='flex w-full justify-between'>
                                     <span className='text-sm md:text-medium'>Copiar el pedido:</span>
-                                    <CopyLink iconSize={24} onClick={() => handleSendOrder('copy')} />
+                                    <CopyLink iconSize={18} onClick={() => handleSendOrder('copy')} />
                                 </div>
                             </div>
                         </div>

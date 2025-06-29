@@ -13,8 +13,8 @@ import { VerificationStatus } from "@clerk/types/dist/index";
 
 export const paymentMethodsLabel = [
   "Efectivo",
-  "Debito",
-  "Credito",
+  "Débito",
+  "Crédito",
   "Transferencia",
   "Crypto",
 ];

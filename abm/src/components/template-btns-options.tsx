@@ -48,6 +48,11 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
         }
     }
 
+    const onActiveTemplate = async () => {
+        await activeTemplate({ templateId: t._id })
+        await revalidatePathAction(`/build/${t._id}`)
+    }
+
     return (
         <motion.div
             initial={false}
@@ -110,7 +115,7 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
                             <Switch
                                 className='data-[state=checked]:bg-green-400 scale-90 sm:scale-100'
                                 name='enabled'
-                                onClick={() => activeTemplate({ templateId: t._id })}
+                                onClick={onActiveTemplate}
                                 checked={t.active}
                             />
                         </motion.div>

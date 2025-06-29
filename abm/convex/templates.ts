@@ -49,7 +49,7 @@ export const createTemplate = mutation({
       combos: Array.from({ length: 4 }, (_, i) => ({
         description: "",
         imgUrl: [{ url: "", storageId: "" }],
-        price: null,
+        price: '',
         title: "",
         id: `combo ${i + 1}`,
       })),

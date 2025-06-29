@@ -72,7 +72,7 @@ const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
                                     <IconShoppingCartPlus
                                         size={18}
                                         className='cursor-pointer hover:scale-110'
-                                        onClick={() => handleOnChangeCart({ price: Number(price), label: title, quantity: 1, category: `combo ${combo + 1}`, id })}
+                                        onClick={() => handleOnChangeCart({ price, title, quantity: 1, category: `combo ${combo + 1}`, id })}
                                     />
                             }
                         </div>

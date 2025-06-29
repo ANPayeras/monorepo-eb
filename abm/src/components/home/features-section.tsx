@@ -15,15 +15,15 @@ import { Feature } from './feature';
 const FeaturesSection = () => {
     const features = [
         {
-            title: "Hecho para emprendedores",
+            title: "Para quienes crean y emprenden",
             description:
-                "Una herramienta facil de usar.",
+                "Una herramienta fácil de usar.",
             icon: <IconBulb color='white' />,
         },
         {
             title: "Bajos costos",
             description:
-                "Apalanca tu negocio con costos bajos.",
+                "Apalanca tus ideas con costos bajos.",
             icon: <IconRecharging color='white' />,
         },
         {
@@ -33,29 +33,29 @@ const FeaturesSection = () => {
             icon: <IconPerspective color='white' />,
         },
         {
-            title: "Metricas",
-            description: "Visualiza metricas sobre el uso de tus plantillas.",
+            title: "Métricas",
+            description: "Visualiza métricas sobre el uso de tus plantillas.",
             icon: <IconChartLine color='white' />,
         },
         {
-            title: "Soporte personlaizado",
+            title: "Soporte personalizado",
             description:
-                "Te acompañamos durante el todo el proceso.",
+                "Te acompañamos durante todo el proceso.",
             icon: <IconHelp color='white' />,
         },
         {
-            title: "I.A. (Proximamente)",
-            description: "Con el poder de la I.A. conoce cuales son las tendencias de los usuarios.",
+            title: "I.A. (Próximamente)",
+            description: "Con el poder de la I.A. conoce cuáles son las tendencias de los usuarios.",
             icon: <IconInputAi color='white' />,
         },
         {
-            title: "Gamificacion (Proximamente)",
+            title: "Gamificación (Próximamente)",
             description:
                 "Consigue logros por usar la plataforma.",
             icon: <IconDeviceGamepad color='white' />,
         },
         {
-            title: "Esto recien empieza",
+            title: "Esto recién empieza",
             description: "Muchas ideas en desarrollo...",
             icon: <IconArrowNarrowRightDashed color='white' />,
         },

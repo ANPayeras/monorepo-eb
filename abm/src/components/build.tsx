@@ -97,7 +97,7 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
 
     if (!listTemplates?.length) return (
         <EmptyTemplates
-            mainTitle={'Todavia no creaste ninguna plantilla seleccioná un diseño y comenzá a crear'}
+            mainTitle={'Todavía no creaste ninguna plantilla seleccioná un diseño y comenzá a crear'}
             linkTitle={'Ver diseños'}
             linkUrl={'/layouts'} />
     )

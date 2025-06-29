@@ -4,6 +4,7 @@ import React from 'react'
 import { motion } from "framer-motion";
 import Image from 'next/image';
 import Link from 'next/link';
+import Icon from '../Icon';
 
 const Contact = () => {
     return (
@@ -37,11 +38,18 @@ const Contact = () => {
                     </ul>
                 </div> */}
                     <div className='flex flex-col'>
-                        <p className='hover:text-slate-300 font-bold'>Contacto:</p>
+                        <p className='hover:text-slate-300 font-bold text-sm md:text-medium'>Contacto:</p>
                         <ul className='children:mt-2 children:text-sm hover:children:text-slate-300 children:cursor-pointer'>
                             <li>
-                                <Link href={'mailto:oficial.estoy.link@gmail.com'}>
-                                    oficial.estoy.link@gmail.com
+                                <Link target='_blank' href={'mailto:oficial.estoy.link@gmail.com'} className='flex gap-2 items-center'>
+                                    <Icon name='mail' iconProps={{ size: 18 }} />
+                                    <span>oficial.estoy.link@gmail.com</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link target='_blank' href='https://www.instagram.com/estoy.link?igsh=MW5nZzhoeDg5MHF1cQ==' className='flex gap-2 items-center'>
+                                    <Icon name='instagram' iconProps={{ size: 18 }} />
+                                    <span>estoy.link</span>
                                 </Link>
                             </li>
                         </ul>
@@ -57,7 +65,7 @@ const Contact = () => {
                 <Link href={'/terms'} className='text-xs hover:text-slate-700'>
                     Terminos y Condiciones
                 </Link>
-                <span className='w-1 h-1 bg-slate-900 rounded-full'/>
+                <span className='w-1 h-1 bg-slate-900 rounded-full' />
                 <Link href={'/privacy'} className='text-xs hover:text-slate-700'>
                     Politica de Privacidad
                 </Link>
