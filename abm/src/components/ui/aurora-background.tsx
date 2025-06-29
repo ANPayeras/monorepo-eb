@@ -17,12 +17,12 @@ export const AuroraBackground = ({
     <main>
       <div
         className={cn(
-          "transition-bg relative flex h-[100vh] flex-col items-center justify-center bg-zinc-50 text-slate-950 dark:bg-zinc-900",
+          "relative flex h-[100vh] flex-col items-center justify-center bg-zinc-50 text-slate-950 dark:bg-zinc-900",
           className,
         )}
         {...props}
       >
-        <div
+        {/* <div
           className="absolute inset-0 overflow-hidden"
           style={
             {
@@ -53,7 +53,7 @@ export const AuroraBackground = ({
                 `[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`,
             )}
           ></div>
-        </div>
+        </div> */}
         {children}
       </div>
     </main>
