@@ -91,7 +91,7 @@ const config = {
         },
         aurora: {
           from: {
-            backgroundPosition: "50% 50%, 50% 50%",
+            // backgroundPosition: "50% 50%, 50% 50%",
           },
           to: {
             backgroundPosition: "350% 50%, 350% 50%",
