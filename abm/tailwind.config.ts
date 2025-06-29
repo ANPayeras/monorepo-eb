@@ -90,12 +90,8 @@ const config = {
           to: { height: "0" },
         },
         aurora: {
-          from: {
-            // backgroundPosition: "50% 50%, 50% 50%",
-          },
-          to: {
-            backgroundPosition: "350% 50%, 350% 50%",
-          },
+          "0%": { backgroundPosition: "0% 50%" },
+          "100%": { backgroundPosition: "100% 50%" },
         },
       },
       animation: {
@@ -104,8 +100,8 @@ const config = {
         aurora: "aurora 60s linear infinite",
       },
       screens: {
-        'xs': '481px'
-      }
+        xs: "481px",
+      },
     },
   },
   plugins: [

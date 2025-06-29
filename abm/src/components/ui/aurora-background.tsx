@@ -27,19 +27,15 @@ export const AuroraBackground = ({
             //   I'm sorry but this is what peak developer performance looks like // trigger warning
             className={cn(
               `
-            [--white-gradient:repeating-linear-gradient(100deg,var(--white)_0%,var(--white)_7%,var(--transparent)_10%)]
-            [--aurora:repeating-linear-gradient(100deg,var(--blue-200)_10%,var(--blue-300)_20%)]
-            [background-image:var(--white-gradient),var(--aurora)]
-            blur-[10px] invert
-            after:content-[""] after:absolute after:inset-0 after:[background-image:var(--white-gradient),var(--aurora)] 
-            after:dark:[background-image:var(--dark-gradient),var(--aurora)]
-            after:[background-size:200%,_100%] 
-            after:animate-aurora after:mix-blend-difference
-            pointer-events-none
-            absolute -inset-[10px] opacity-50 will-change-transform`,
-
+              relative w-full h-full overflow-hidden
+              [--aurora-gradient:repeating-linear-gradient(110deg,#ffffff_0%,#ffffff_1%,transparent_3%,#93c5fd_5%,#93c5fd_6%,_transparent_8%,var(--slate-700)_10%,var(--slate-900)_11%,transparent_13%)]
+              bg-[image:var(--aurora-gradient)]
+              bg-[length:200%_100%]
+              animate-aurora
+              blur-[10px] opacity-60 pointer-events-none
+              `,
               showRadialGradient &&
-                `[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`
+              `[mask-image:radial-gradient(ellipse_at_100%_0%,black_0%,var(--transparent)_70%)]`
             )}
           ></div>
         </div>
@@ -48,3 +44,4 @@ export const AuroraBackground = ({
     </main>
   );
 };
+
