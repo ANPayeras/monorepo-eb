@@ -10,8 +10,9 @@ import useCheckPremium from '@/hooks/use-check-premium'
 
 const WidgetsDashboard = () => {
     const user = useUser()
+    console.log(user)
     const { isPremium } = useCheckPremium('', !!user.user)
-    const activeTemplate = useQuery(api.templates.getActiveTemplate)
+    const activeTemplate = useQuery(api.templates.getActiveTemplate, !!user.user ? undefined : 'skip')
 
     if (!user.isLoaded || !activeTemplate) return (
         <div className='flex-1 w-full h-full flex'>
