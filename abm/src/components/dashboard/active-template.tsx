@@ -60,9 +60,9 @@ const ActiveTemplate = () => {
                         {
                             template?.length ?
                                 <Template {...{ template: template[0], username: user?.username || '' }} /> :
-                                <div className='bg-slate-50 border rounded-sm p-2 text-center text-medium flex flex-col gap-4 h-full justify-center'>
-                                    <p>Ups, parece que todavia no tienes una plantilla activa</p>
-                                    <p>Agrega una para comenzar a usar EBrochure</p>
+                                <div className='bg-slate-50 border rounded-sm p-2 text-center text-medium flex flex-col gap-4 min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-[95%] justify-center'>
+                                    <p>Ups, parece que todavía no tenés una plantilla activa</p>
+                                    <p>Agregá una para comenzar a usar Estoy.Link</p>
                                     <Link href='/templates' className='bg-slate-300 p-1 rounded-sm text-slate-900 hover:text-slate-50 hover:bg-slate-800'>
                                         <span>
                                             Activar plantilla

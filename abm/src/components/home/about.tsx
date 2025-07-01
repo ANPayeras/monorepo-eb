@@ -14,8 +14,8 @@ const About = () => {
                     Ya sea que crees contenido, emprendas o simplemente quieras compartir tus ideas, hacelo de una manera fácil y sencilla.
                 </h3>
                 <h4 className='text-medium md:text-xl mt-5 bg-gradient-to-bl from-slate-100 to-slate-200 bg-clip-text text-transparent hover:bg-gradient-to-br transition-all'>Contá tu historia...</h4>
-            </div >
-        </div >
+            </div>
+        </div>
     )
 }
 

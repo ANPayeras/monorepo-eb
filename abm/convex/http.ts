@@ -46,31 +46,31 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
   });
 });
 
-const handleSuscriptionWebhook = httpAction(async (ctx, request) => {
-  const xSignature = request.headers.get("x-signature")!;
-  const xRequestId = request.headers.get("x-request-id")!;
-  const body: { data: { id: string }; type: string; action: string } =
-    await request.json();
-  const validation = await ctx.runAction(
-    api.payment.validateRequestSuscription,
-    {
-      headers: { xSignature, xRequestId },
-      body,
-    }
-  );
+// const handleSuscriptionWebhook = httpAction(async (ctx, request) => {
+//   const xSignature = request.headers.get("x-signature")!;
+//   const xRequestId = request.headers.get("x-request-id")!;
+//   const body: { data: { id: string }; type: string; action: string } =
+//     await request.json();
+//   const validation = await ctx.runAction(
+//     api.payment.validateRequestSuscription,
+//     {
+//       headers: { xSignature, xRequestId },
+//       body,
+//     }
+//   );
 
-  if (!validation) {
-    return new Response("Unauthorized", { status: 400 });
-  }
+//   if (!validation) {
+//     return new Response("Unauthorized", { status: 400 });
+//   }
 
-  await ctx.runMutation(internal.users.createUsertest, {
-    username: JSON.stringify(body),
-  });
+//   await ctx.runMutation(internal.users.createUsertest, {
+//     username: JSON.stringify(body),
+//   });
 
-  return new Response(null, {
-    status: 200,
-  });
-});
+//   return new Response(null, {
+//     status: 200,
+//   });
+// });
 
 const http = httpRouter();
 
@@ -80,11 +80,11 @@ http.route({
   handler: handleClerkWebhook,
 });
 
-http.route({
-  path: "/suscription",
-  method: "POST",
-  handler: handleSuscriptionWebhook,
-});
+// http.route({
+//   path: "/suscription",
+//   method: "POST",
+//   handler: handleSuscriptionWebhook,
+// });
 
 const validateRequest = async (
   req: Request

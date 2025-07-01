@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from 'react'
-import { useUser, } from '@clerk/nextjs'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useUser, useAuth } from '@clerk/nextjs'
 import { Tabs } from './ui/tabs'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -14,7 +14,7 @@ import { formSchema } from './profile/change-password';
 import { z } from 'zod';
 import { ClerkAPIError } from '@clerk/types/dist/index'
 import LoaderSpinner from './loader-spinner';
-import { useMutation, useQuery } from 'convex/react';
+import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { useParams } from 'next/navigation';
 import { statusClerk } from '@/constants';
@@ -22,15 +22,17 @@ import SuscriptionPlans from './profile/suscription-plans';
 import useFlag from '@/hooks/use-flag';
 import AnimatedText from './animated-text';
 import { revalidatePathAction } from '@/actions/actions';
+import { cn } from '@/lib/utils';
 
 const Profile = () => {
     const { profile } = useParams()
     const { user } = useUser()
+    const { signOut } = useAuth()
     const userConvex = useQuery(api.users.getCurrentUser, !user ? 'skip' : undefined)
-    const updateUser = useMutation(api.users.updateUser)
     const swiperRef = useRef<SwiperType>()
     const isPaymentActive = useFlag('payment')
     const [moveTabIdx, setMoveTabIdx] = useState<number>(0)
+    const [inputType, setInputType] = useState('')
 
     useEffect(() => {
         if (profile?.length && user && userConvex) {
@@ -48,14 +50,16 @@ const Profile = () => {
         }
     }, [profile, user, userConvex])
 
+    const phoneNumber = useMemo(() => user?.phoneNumbers[0], [user?.phoneNumbers])
+    const primaryEmail = useMemo(() => user?.primaryEmailAddress, [user?.primaryEmailAddress])
+
     if (!user || !userConvex) return <LoaderSpinner />
 
     const changeUsername = async (data: any) => {
-        const { value, setOpen } = data
+        const { value } = data
         try {
             await user?.update({ username: value })
             revalidatePathAction('/dashboard')
-            setOpen(false)
         } catch (error) {
             const _err = error as { errors: ClerkAPIError[] }
             const err = _err.errors[0] as ClerkAPIError
@@ -97,12 +101,35 @@ const Profile = () => {
     // }
 
     const handlePhone = async (data: any) => {
-        const { value, setOpen } = data
+        const { value, verification } = data
         try {
-            await updateUser({ phone: `+54${value}` })
-            setOpen(false)
+            switch (verification) {
+                case true:
+                    await phoneNumber?.attemptVerification({ code: value })
+                    setInputType('')
+                    break;
+                default:
+                    if (phoneNumber?.phoneNumber) phoneNumber.destroy()
+                    const phoneResource = await user.createPhoneNumber({ phoneNumber: `+54${value}` })
+                    await phoneResource.prepareVerification()
+                    setInputType('verification-phone')
+                    break;
+            }
         } catch (error) {
             console.log(error)
+            throw new Error(JSON.stringify(error))
+        }
+    }
+
+    const deleteAccount = async (data: any) => {
+        const { value } = data
+        try {
+            if (value !== 'Eliminar cuenta') return
+            user.delete()
+            await signOut()
+        } catch (error) {
+            console.log(error)
+            throw new Error(JSON.stringify(error))
         }
     }
 
@@ -176,26 +203,55 @@ const Profile = () => {
                                 <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
                                     <span>Dirección de email:</span>
                                     <div className='flex gap-1'>
-                                        <span className='font-bold'>{user?.primaryEmailAddress?.emailAddress}</span>
-                                        <span className='text-xs px-1 rounded-sm flex items-center bg-slate-200'>{statusClerk[user?.primaryEmailAddress?.verification.status || 'failed']}</span>
+                                        <span className='font-bold'>{primaryEmail?.emailAddress}</span>
+                                        {
+                                            primaryEmail?.verification.status &&
+                                            <span
+                                                className={cn('text-xs px-1 rounded-sm flex items-center', 'bg-slate-300')}>
+                                                {statusClerk[primaryEmail.verification.status]}
+                                            </span>
+                                        }
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14'>
+                            <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14 border-b'>
                                 <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
                                     <span>Número de teléfono:</span>
-                                    <span className='font-bold'>{userConvex?.phone ? userConvex?.phone : 'No hay número de teléfono'}</span>
+                                    <div className='flex gap-1'>
+                                        <span className='font-bold'>{phoneNumber?.phoneNumber ?? 'No hay número de teléfono'}</span>
+                                        {
+                                            phoneNumber?.verification.status &&
+                                            <span
+                                                className='text-xs px-1 rounded-sm flex items-center bg-slate-300'>
+                                                {statusClerk[phoneNumber.verification.status]}
+                                            </span>
+                                        }
+                                    </div>
                                 </div>
                                 <InputCard
-                                    type='phone'
-                                    title={userConvex?.phone ? 'Modificar número de teléfono' : 'Agregar número de teléfono'}
+                                    type={inputType || 'phone'}
+                                    title={phoneNumber?.phoneNumber ? 'Modificar número de teléfono' : 'Agregar número de teléfono'}
                                     handleAccept={handlePhone}
-                                    textButton={userConvex?.phone ? 'Modificar número de teléfono' : 'Agregar número de teléfono'}
+                                    textButton={phoneNumber?.phoneNumber ? 'Modificar número de teléfono' : 'Agregar número de teléfono'}
+                                    inputValue={phoneNumber?.phoneNumber.split('+54')[1]}
+                                    onCancel={inputType === 'verification-phone' ? () => setInputType('') : undefined}
+                                />
+                            </div>
+                            <div className='flex flex-col text-sm xs:text-medium md:flex-row p-2 gap-5 md:justify-between items-start min:h-14'>
+                                <div className='flex flex-1 flex-col xs:flex-row xs:gap-5 xs:items-center'>
+                                    <span className='text-red-500'>Eliminar cuenta:</span>
+                                </div>
+                                <InputCard
+                                    type={'delete'}
+                                    title={'¿Eliminar cuenta?'}
+                                    description='Recordá que todos tus datos seran borrados y no podrás recuperarlos. Escriba "Eliminar cuenta"'
+                                    handleAccept={deleteAccount}
+                                    textButton={'Eliminar'}
                                 />
                             </div>
                         </div>
                     </SwiperSlide>
-                    {/* <SwiperSlide className='flex-col justify-around items-center overflow-hidden rounded-sm bg-slate-400'>
+                    {/* <SwiperSlide className='flex-col justify-center items-center overflow-hidden rounded-sm bg-slate-400'>
                         <UserProfile />
                     </SwiperSlide> */}
                     <SwiperSlide>

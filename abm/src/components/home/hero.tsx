@@ -21,15 +21,15 @@ const Hero = () => {
                 className="relative flex flex-col gap-10 items-center justify-center px-4 z-0"
             >
                 <div className="text-3xl md:text-6xl font-bold text-slate-200 text-center">
-                    Te damos la bienvenida a Estoy.link
+                    Te damos la bienvenida a Estoy.Link
                 </div>
-                <div className="font-extralight text-base md:text-4xl text-slate-900 py-4">
+                <div className="font-extralight text-base md:text-4xl text-slate-50 py-4 drop-shadow-xl">
                     Tu identidad, tu espacio, tus reglas.
                 </div>
                 <div className='flex gap-4'>
                     <Link href='/sign-up'>
                         <HoverBorderGradientButton>
-                            Comienza gratis
+                            Comenzá gratis
                         </HoverBorderGradientButton>
                     </Link>
                     <Link href='/sign-in'>

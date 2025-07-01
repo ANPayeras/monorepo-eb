@@ -360,6 +360,18 @@ export const cancellSuscriptionDB = action({
   },
 });
 
+export const cancellSuscriptionMP = internalAction({
+  args: {
+    subscriptionPreapprovalId: v.string(),
+  },
+  handler: async (_ctx, args) => {
+    await new PreApproval(MercadoPagoClient).update({
+      id: args.subscriptionPreapprovalId,
+      body: { status: "cancelled" },
+    });
+  },
+});
+
 // export const cronCheckSuscriptions = action({
 //   handler: async (ctx) => {
 //     const suscriptionsAnual = await new PreApproval(MercadoPagoClient).search({

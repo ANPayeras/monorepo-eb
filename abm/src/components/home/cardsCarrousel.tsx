@@ -4,7 +4,7 @@ import { Carousel, Card } from "@/components/ui/apple-cards-carousel";
 const data = [
     {
         category: "Creá",
-        title: "Seleccioná un diseño y comenzà a crear.",
+        title: "Seleccioná un diseño y comenzá a crear.",
         src: "/card-1.png",
         content: <></>,
     },

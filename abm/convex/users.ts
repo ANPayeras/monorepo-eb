@@ -37,6 +37,34 @@ export const deleteUser = internalMutation({
       .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .first();
 
+    const sus = await ctx.db
+      .query("suscriptions")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), user?._id),
+          q.eq(q.field("status"), "active")
+        )
+      )
+      .first();
+
+    const templates = await ctx.db
+      .query("templates")
+      .filter((q) => q.eq(q.field("user"), user?._id))
+      .collect();
+
+    if (sus?.subscriptionPreapprovalId) {
+      await ctx.scheduler.runAfter(0, internal.payment.cancellSuscriptionMP, {
+        subscriptionPreapprovalId: sus.subscriptionPreapprovalId,
+      });
+    }
+
+    if (templates.length) {
+      for (const template of templates) {
+        await ctx.db.delete(template._id);
+      }
+    }
+
+    console.log("user deleted", user);
     await ctx.db.delete(user?._id!);
   },
 });
@@ -56,9 +84,11 @@ export const updateInternalUser = internalMutation({
       throw new ConvexError("User not found");
     }
 
-    await ctx.db.patch(user._id, {
-      username: args.username,
-    });
+    if (user.username !== args.username) {
+      await ctx.db.patch(user._id, {
+        username: args.username,
+      });
+    }
   },
 });
 
@@ -279,19 +309,39 @@ export const checkHasFreeTrial = internalMutation({
   },
 });
 
-// Borrar
-export const createUsertest = internalMutation({
-  args: {
-    username: v.string(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.insert("users", {
-      clerkId: "args.clerkId",
-      email: "args.email",
-      imageUrl: "args.imageUrl",
-      name: "args.name",
-      username: args.username,
-      phone: "",
-    });
+export const checkPlanStatus = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("User not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), identity.email))
+      .first();
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    let planStatus = "";
+
+    switch (user.isPremium) {
+      case true:
+        if (user?.freeTrial?.active) {
+          planStatus = "freeTrial";
+        } else {
+          planStatus = "premium";
+        }
+        break;
+      case false:
+        planStatus = "free";
+        break;
+    }
+
+    return planStatus;
   },
 });

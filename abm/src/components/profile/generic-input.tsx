@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useMemo, useState } from 'react'
+
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { GenericInputProps } from '@/interfaces'
@@ -15,7 +16,7 @@ const errors: { [key: string]: { type: string, msg: string } } = {
     }
 }
 
-const GenericInput = ({ title, description, setOpen, handleAccept, inputValue = '', helperText, type }: GenericInputProps) => {
+const GenericInput = ({ title, description, onCancel, handleAccept, inputValue = '', helperText, type }: GenericInputProps) => {
     const [value, setValue] = useState<string>(inputValue)
     const [errMsg, setErrMsg] = useState<string>('')
 
@@ -32,8 +33,9 @@ const GenericInput = ({ title, description, setOpen, handleAccept, inputValue = 
 
     const onSubmit = async () => {
         try {
-            await handleAccept({ value, setOpen })
-            setOpen(false)
+            await handleAccept({ value })
+            if (type === 'phone') return
+            onCancel()
         } catch (error) {
             const _err = error as Error
             const err = JSON.parse(_err.message) as ClerkAPIError
@@ -41,6 +43,8 @@ const GenericInput = ({ title, description, setOpen, handleAccept, inputValue = 
             setErrMsg(errorFormatted?.msg || errors['generic'].msg)
         }
     }
+
+    const isBtnDisabled = useMemo(() => !value || value === inputValue || type === 'delete' && value !== 'Eliminar cuenta', [inputValue, type, value])
 
     return <>
         <div className='font-bold'>{title}</div>
@@ -66,10 +70,10 @@ const GenericInput = ({ title, description, setOpen, handleAccept, inputValue = 
             </span>
         </div>
         <div className='flex justify-end gap-2'>
-            <Button className='text-black bg-transparent hover:bg-slate-300' onClick={() => setOpen(false)}>Cancel</Button>
+            <Button className='text-black bg-transparent hover:bg-slate-300' onClick={onCancel}>Cancel</Button>
             <Button
                 onClick={onSubmit}
-                disabled={!value || value === inputValue}
+                disabled={isBtnDisabled}
             >
                 Aceptar
             </Button>

@@ -166,12 +166,16 @@ export const cancellSuscription = internalMutation({
       status: "cancelled",
     });
 
-    await ctx.db.patch(sus?.user!, {
-      isPremium: false,
-      suscriptionId: undefined,
-    });
+    if (sus) {
+      const user = await ctx.db.get(sus?.user);
 
-    return "";
+      if (user) {
+        await ctx.db.patch(user._id, {
+          isPremium: false,
+          suscriptionId: undefined,
+        });
+      }
+    }
   },
 });
 
