@@ -25,14 +25,14 @@ const Widgtes = [
     {
         type: 'pm',
         enabled: false,
-        title: 'Metodos de pago',
+        title: 'Métodos de pago',
         widgetHandler: 'unique',
         id: '',
     },
     {
         type: 'dm',
         enabled: false,
-        title: 'Metodos de entrega',
+        title: 'Medios de entrega',
         widgetHandler: 'unique',
         id: '',
     },

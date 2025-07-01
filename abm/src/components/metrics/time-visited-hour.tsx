@@ -34,8 +34,8 @@ const TimeVisitedHour = async ({ clerkId }: { clerkId: string }) => {
     return (
         <div className='flex flex-col gap-1'>
             <BarChartComponent
-                title={'Horas con mas visitas'}
-                description={'Ultimos 3 meses'}
+                title={'Horas con más visitas'}
+                description={'Últimos 3 meses'}
                 chartConfig={chartConfig}
                 chartData={chartData}
                 formatterType={'hour'}

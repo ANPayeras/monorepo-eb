@@ -26,49 +26,51 @@ const MetricsPage = async () => {
     )
 
     return (
-        <section className='size-full max-w-[2000px] m-auto flex flex-col gap-2 p-1 rounded-sm overflow-y-scroll'>
-            <div>
-                Solo se muestran las métricas de la pantilla que esta actualmente activa, si quieres ver metricas de otra{' '}
-                <Link href={'/templates'} className='text-blue-500 hover:underline transition-all'>actívala primero.</Link>
-            </div>
-            <RefetchSsrPage fromPages={['templates']} />
-            <div className='flex flex-col w-full h-fit gap-1'>
-                <BaseCard containerClassName='w-full'>
-                    <Suspense fallback={<LoaderSpinner size='sm' />}>
-                        <DesktopMobileUsers clerkId={user?.id!} />
-                    </Suspense>
-                </BaseCard>
-                <div className='flex flex-col md:flex-row w-full gap-1'>
-                    <BaseCard containerClassName='w-full h-auto'>
-                        <Suspense fallback={<LoaderSpinner size='sm' />}>
-                            <MostVisitedPathNames clerkId={user?.id!} />
-                        </Suspense>
-                    </BaseCard>
-                    <BaseCard containerClassName='w-full h-auto'>
-                        <Suspense fallback={<LoaderSpinner size='sm' />}>
-                            <UsersLocation clerkId={user?.id!} />
-                        </Suspense>
-                    </BaseCard>
-                    <BaseCard containerClassName='w-full h-auto'>
-                        <Suspense fallback={<LoaderSpinner size='sm' />}>
-                            <WidgetsMetrics clerkId={user?.id!} />
-                        </Suspense>
-                    </BaseCard>
+        <section className='size-full overflow-y-scroll'>
+            <div className='max-w-[1000px] m-auto flex flex-col gap-2 p-1'>
+                <div>
+                    Solo se muestran las métricas de la pantilla que esta actualmente activa, si quieres ver metricas de otra{' '}
+                    <Link href={'/templates'} className='text-blue-500 hover:underline transition-all'>actívala primero.</Link>
                 </div>
-                <div className='flex flex-col md:flex-row w-full gap-1 md:h-[400px]'>
-                    <BaseCard containerClassName='w-full md:h-full flex flex-col justify-between'>
+                <RefetchSsrPage fromPages={['templates']} />
+                <div className='flex flex-col w-full h-fit gap-1'>
+                    <BaseCard containerClassName='w-full'>
                         <Suspense fallback={<LoaderSpinner size='sm' />}>
-                            <TimeVisitedDay clerkId={user?.id!} />
+                            <DesktopMobileUsers clerkId={user?.id!} />
                         </Suspense>
                     </BaseCard>
-                    <BaseCard containerClassName='w-full md:h-full'>
-                        <Suspense fallback={<LoaderSpinner size='sm' />}>
-                            <TimeVisitedHour clerkId={user?.id!} />
-                        </Suspense>
-                    </BaseCard>
+                    <div className='flex flex-col md:flex-row w-full gap-1'>
+                        <BaseCard containerClassName='w-full h-auto'>
+                            <Suspense fallback={<LoaderSpinner size='sm' />}>
+                                <MostVisitedPathNames clerkId={user?.id!} />
+                            </Suspense>
+                        </BaseCard>
+                        <BaseCard containerClassName='w-full h-auto'>
+                            <Suspense fallback={<LoaderSpinner size='sm' />}>
+                                <UsersLocation clerkId={user?.id!} />
+                            </Suspense>
+                        </BaseCard>
+                        <BaseCard containerClassName='w-full h-auto'>
+                            <Suspense fallback={<LoaderSpinner size='sm' />}>
+                                <WidgetsMetrics clerkId={user?.id!} />
+                            </Suspense>
+                        </BaseCard>
+                    </div>
+                    <div className='flex flex-col md:flex-row w-full gap-1 md:h-[400px]'>
+                        <BaseCard containerClassName='w-full md:h-full flex flex-col justify-between'>
+                            <Suspense fallback={<LoaderSpinner size='sm' />}>
+                                <TimeVisitedDay clerkId={user?.id!} />
+                            </Suspense>
+                        </BaseCard>
+                        <BaseCard containerClassName='w-full md:h-full'>
+                            <Suspense fallback={<LoaderSpinner size='sm' />}>
+                                <TimeVisitedHour clerkId={user?.id!} />
+                            </Suspense>
+                        </BaseCard>
+                    </div>
                 </div>
             </div>
-        </section >
+        </section>
     )
 }
 

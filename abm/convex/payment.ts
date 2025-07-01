@@ -304,6 +304,7 @@ export const createSuscriptionDB = action({
     // Cancelamos periodo de prueba
     await ctx.runMutation(internal.users.checkHasFreeTrial, {
       reference: args.reference,
+      isPremium: true,
     });
 
     // Guardamos la suscripcion en la tabla
@@ -356,6 +357,18 @@ export const cancellSuscriptionDB = action({
     });
 
     return "";
+  },
+});
+
+export const cancellSuscriptionMP = internalAction({
+  args: {
+    subscriptionPreapprovalId: v.string(),
+  },
+  handler: async (_ctx, args) => {
+    await new PreApproval(MercadoPagoClient).update({
+      id: args.subscriptionPreapprovalId,
+      body: { status: "cancelled" },
+    });
   },
 });
 

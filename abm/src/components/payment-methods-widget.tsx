@@ -1,28 +1,22 @@
 import React, { FC } from 'react'
-import { Layout, PaymentMethods } from '@/stores/data-store'
+
 import { cn } from '@/lib/utils'
 import ToolsWidget from './tools-widget'
-import { SelectSection } from '@/interfaces'
 import WidgetBaseCard from './widget-base-card'
-
-type PaymentMethodsProps = {
-    selectSection?: (type: string) => void;
-    paymentMethods: PaymentMethods[];
-    containerClassName?: string;
-    editSection?: SelectSection;
-    props?: any;
-    layout?: Layout;
-}
+import { useIsSmall } from '@/hooks/use-media.query'
+import { PaymentMethodsProps } from './types'
 
 const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSection, paymentMethods, containerClassName, layout, props }) => {
+    const isSmall = useIsSmall()
     return (
         <WidgetBaseCard>
             <div
-                className={cn(`w-full flex flex-col space-y-1 p-2 rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`, containerClassName)}
+                className={cn(`w-full min-h-16 flex flex-col space-y-1 p-2 rounded-md ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`, containerClassName)}
                 style={{ color: layout?.textsColor }}
-                {...props}>
+                {...!isSmall && props}
+            >
                 <div className='flex justify-between items-center gap-4'>
-                    <span>Metodos de Pago</span>
+                    <span>Métodos de Pago</span>
                 </div>
                 <div className='flex flex-col'>
                     {
@@ -39,11 +33,12 @@ const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSect
                 </div>
             </div>
             {
-                selectSection ?
-                    <ToolsWidget
-                        editFunc={() => selectSection('paymentMethods')}
-                        isEditing={editSection?.section === 'paymentMethods'} />
-                    : <></>
+                selectSection &&
+                <ToolsWidget
+                    editFunc={() => selectSection('paymentMethods')}
+                    isEditing={editSection?.section === 'paymentMethods'}
+                    {...isSmall && { props }}
+                />
             }
         </WidgetBaseCard>
     )

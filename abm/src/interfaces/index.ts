@@ -26,6 +26,7 @@ export type InputCardProps = {
   title?: string;
   description?: string;
   handleAccept: (data: any) => Promise<any>;
+  onCancel?: () => void;
   textButton: string;
   inputValue?: string;
   isPassword?: boolean;
@@ -36,8 +37,8 @@ export type GenericInputProps = {
   title: string;
   description: string;
   handleAccept: (data: any) => Promise<any>;
+  onCancel: () => void;
   inputValue?: string;
-  setOpen: (data: boolean) => void;
   helperText: string;
 };
 

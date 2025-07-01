@@ -1,9 +1,12 @@
 import React from 'react'
+
 import { useDataStore } from '@/providers/data-store-providers'
 import ToolsWidget from './tools-widget'
 import { LinkWidgetInterface } from '@/interfaces'
 import WidgetBaseCard from './widget-base-card'
 import PlaceholdersWidgets from './widgets/placeholders-widgets'
+import { useIsSmall } from '@/hooks/use-media.query'
+import { cn } from '@/lib/utils'
 
 const LinkWidget = ({ widget, selectSection, editWidget, layout, props }: LinkWidgetInterface) => {
     const deleteWidget = useDataStore(state => state.deleteWidget)
@@ -12,9 +15,15 @@ const LinkWidget = ({ widget, selectSection, editWidget, layout, props }: LinkWi
         selectSection('', 0, {})
         deleteWidget(widget)
     }
+
+    const isSmall = useIsSmall()
+
     return (
         <WidgetBaseCard>
-            <div className={`flex w-full h-full p-2 relative flex-1 rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`} {...props}>
+            <div
+                className={cn('flex w-full h-full p-2 relative flex-1 rounded-md', `${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`)}
+                {...!isSmall && props}
+            >
                 <div
                     className='w-full min-h-[100px] max-h-[100px] text-center overflow-hidden break-words'
                     style={{ color: widget.data?.textColor || layout?.textsColor }}
@@ -24,7 +33,12 @@ const LinkWidget = ({ widget, selectSection, editWidget, layout, props }: LinkWi
             </div>
             {
                 selectSection &&
-                <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('linkWidget', 0, widget)} isEditing={isEditing} />
+                <ToolsWidget
+                    deleteFunc={_deleteWidget}
+                    editFunc={() => selectSection('linkWidget', 0, widget)}
+                    isEditing={isEditing}
+                    {...isSmall && { props }}
+                />
             }
         </WidgetBaseCard>
     )

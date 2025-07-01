@@ -25,8 +25,11 @@ const limits = [
   },
 ];
 
-const useCheckPremium = (feature?: string) => {
-  const isPremium = useQuery(api.users.checkIsUserPremium);
+const useCheckPremium = (feature?: string, enabled: boolean = true) => {
+  const isPremium = useQuery(
+    api.users.checkIsUserPremium,
+    enabled ? undefined : "skip"
+  );
   const [limit, setLimit] = useState<number>(0);
 
   const checkFeatureLimit = (feature: string, quantity: number) => {

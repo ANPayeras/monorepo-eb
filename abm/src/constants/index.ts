@@ -10,11 +10,12 @@ import {
   IconMotorbike,
 } from "@tabler/icons-react";
 import { VerificationStatus } from "@clerk/types/dist/index";
+import { BadgeProps } from "@/components/ui/badge";
 
 export const paymentMethodsLabel = [
   "Efectivo",
-  "Debito",
-  "Credito",
+  "Débito",
+  "Crédito",
   "Transferencia",
   "Crypto",
 ];
@@ -56,7 +57,7 @@ export const layoutFeatures: {
         value: "0",
       },
       {
-        title: "Confirmacion",
+        title: "Confirmación",
         value: "1",
       },
     ],
@@ -128,3 +129,20 @@ export const icons = [
 export const feedbacksReferencess = ["success", "error", "pending"];
 
 export const assetsTypesPermitted = ["video/mp4", "image/png", "image/jpeg"];
+
+export const planDescriptionTexts: {
+  [key: string]: { title: string; variant: BadgeProps["variant"] };
+} = {
+  free: {
+    title: "Gratuito",
+    variant: "destructive",
+  },
+  premium: {
+    title: "Premium",
+    variant: "success",
+  },
+  freeTrial: {
+    title: "Período de prueba",
+    variant: "success",
+  },
+};

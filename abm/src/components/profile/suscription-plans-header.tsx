@@ -36,7 +36,7 @@ const SuscriptionPlansHeader = ({
                 <div>
                     <Row title='Nombre del plan:' description={suscription?.reason || ''} />
                     <Row title='Precio:' description={`$ ${String(suscription?.auto_recurring?.transaction_amount || '')}`} />
-                    <Row title='Poxima fecha de pago:' description={getLocalDateAndTime(suscription?.next_payment_date || '').date} />
+                    <Row title='Próxima fecha de pago:' description={getLocalDateAndTime(suscription?.next_payment_date || '').date} />
                 </div>
             }
         </>

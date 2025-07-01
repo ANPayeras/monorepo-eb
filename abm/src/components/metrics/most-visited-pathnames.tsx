@@ -21,8 +21,8 @@ const MostVisitedPathNames = async ({ clerkId }: { clerkId: string }) => {
         <>
             <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
                 <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-                    <CardTitle>Paginas mas visitadas</CardTitle>
-                    <CardDescription>Ultimos 3 meses</CardDescription>
+                    <CardTitle>Páginas más visitadas</CardTitle>
+                    <CardDescription>Últimos 3 meses</CardDescription>
                 </div>
             </CardHeader>
             <CardContent className="px-2 py-2">

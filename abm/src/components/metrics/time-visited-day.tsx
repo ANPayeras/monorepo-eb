@@ -31,8 +31,8 @@ const TimeVisitedDay = async ({ clerkId }: { clerkId: string }) => {
 
     return (
         <PieChartComponent
-            title='Dias con mas visitas'
-            description='Ultimos 3 meses'
+            title='Días con más visitas'
+            description='Últimos 3 meses'
             chartConfig={chartConfig}
             chartData={chartData}
         />

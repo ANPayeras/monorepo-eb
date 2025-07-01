@@ -97,7 +97,7 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
 
     if (!listTemplates?.length) return (
         <EmptyTemplates
-            mainTitle={'Todavia no creaste ninguna plantilla seleccioná un diseño y comenzá a crear'}
+            mainTitle={'Todavía no creaste ninguna plantilla seleccioná un diseño y comenzá a crear'}
             linkTitle={'Ver diseños'}
             linkUrl={'/layouts'} />
     )
@@ -129,8 +129,8 @@ const Build = ({ template }: { template: Doc<"templates"> | null }) => {
                 open={openDialog}
                 onOpenChange={() => setOpenDialog(false)}
                 onConfirm={() => resetTemplate()}
-                title='Desea crear un nuevo template?'
-                description='Cualquier cambio no guardado se perdera'
+                title='¿Desea crear una nueva plantilla?'
+                description='Se creará una nueva plantilla en blanco con este mismo diseño. Cualquier cambio no guardado en la actual plantilla se perderá.'
             />
             <AllPageLoader isOpen={isLoading} />
         </section>

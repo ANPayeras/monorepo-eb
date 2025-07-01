@@ -9,7 +9,7 @@ export const cardsData = [
     ctaLink: layoutCardsTexts.ctaLink,
     type: "classic",
     content:
-      "Diseño clásico, se pueden agregar una lista de productos, hasta 4 productos destacados, medios de entrega, medios de pago y redes sociales.",
+      "Diseño clásico, se pueden agregar una lista de productos, hasta 4 productos destacados, medios de entrega, métodos de pago y redes sociales.",
   },
   {
     description: "",

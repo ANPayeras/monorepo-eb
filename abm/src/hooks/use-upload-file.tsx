@@ -85,7 +85,7 @@ const useUploadFile = () => {
         fd.append("file", file);
 
         try {
-            const data = await fetch(`${BASE_URL}/files`, { method: "POST", body: fd })
+            const data = await fetch(`${BASE_URL}/api/files`, { method: "POST", body: fd })
             const { public_id, secure_url } = await data.json()
 
             return {
@@ -103,7 +103,7 @@ const useUploadFile = () => {
         fd.append("resource_type", resourceType);
 
         try {
-            fetch(`${BASE_URL}/files`, { method: "DELETE", body: fd })
+            fetch(`${BASE_URL}/api/files`, { method: "DELETE", body: fd })
 
             return { result: 'ok' }
         } catch (error) {

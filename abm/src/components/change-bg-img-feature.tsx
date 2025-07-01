@@ -31,7 +31,7 @@ const ChangeBgImgFeature = () => {
     return (
         <div className='flex justify-between items-center h-8'>
             <div className='flex flex-col text-sm md:text-medium'>
-                <span>Imagen de Fondo:</span>
+                <span>Imagen de fondo:</span>
             </div>
             <UpdateAssetTool
                 isAsset={!!backgroundImg?.uploadImgUrl}

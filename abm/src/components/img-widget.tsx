@@ -7,6 +7,7 @@ import { ImgWidgetInterface } from '@/interfaces'
 import { IconPhotoScan } from '@tabler/icons-react'
 import useUploadFile from '@/hooks/use-upload-file'
 import WidgetBaseCard from './widget-base-card'
+import { useIsSmall } from '@/hooks/use-media.query'
 
 const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterface) => {
     const deleteWidget = useDataStore(state => state.deleteWidget)
@@ -26,9 +27,14 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
 
     const image = widget.data?.img?.uploadImgUrl
 
+    const isSmall = useIsSmall()
+
     return (
         <WidgetBaseCard>
-            <div className={`flex w-full max-h-[200px] rounded-md relative ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`} {...props}>
+            <div
+                className={`flex w-full max-h-[200px] rounded-md relative ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`}
+                {...!isSmall && props}
+            >
                 {
                     image ?
                         <>
@@ -53,7 +59,12 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
             </div>
             {
                 selectSection &&
-                <ToolsWidget deleteFunc={_deleteWidget} editFunc={() => selectSection('imgWidget', 0, widget)} isEditing={isEditing} />
+                <ToolsWidget
+                    deleteFunc={_deleteWidget}
+                    editFunc={() => selectSection('imgWidget', 0, widget)}
+                    isEditing={isEditing}
+                    {...isSmall && { props }}
+                />
             }
         </WidgetBaseCard>
     )

@@ -20,7 +20,7 @@ export default defineSchema({
           v.object({
             id: v.string(),
             name: v.string(),
-            price: v.union(v.string(), v.null()),
+            price: v.string(),
             itemImage: v.object({
               localImg: v.optional(v.string()),
               uploadImgUrl: v.string(),
@@ -40,7 +40,7 @@ export default defineSchema({
             storageId: v.union(v.id("_storage"), v.string()),
           })
         ),
-        price: v.union(v.string(), v.null()),
+        price: v.string(),
         id: v.string(),
       })
     ),
@@ -60,11 +60,13 @@ export default defineSchema({
         uploadImgUrl: v.string(),
         storageId: v.union(v.id("_storage"), v.string()),
       }),
-      backgroundVideo: v.optional(v.object({
-        localVideo: v.optional(v.string()),
-        uploadVideoUrl: v.string(),
-        storageId: v.union(v.id("_storage"), v.string()),
-      })),
+      backgroundVideo: v.optional(
+        v.object({
+          localVideo: v.optional(v.string()),
+          uploadVideoUrl: v.string(),
+          storageId: v.union(v.id("_storage"), v.string()),
+        })
+      ),
     }),
     paymentMethods: v.array(
       v.object({
@@ -140,6 +142,10 @@ export default defineSchema({
         active: v.boolean(),
         startDate: v.string(),
         endDate: v.string(),
+        scheduleId: v.union(v.id("_scheduled_functions"), v.string()),
+        scheduleEmailId: v.optional(
+          v.union(v.id("_scheduled_functions"), v.string())
+        ),
       })
     ),
   }),

@@ -24,7 +24,7 @@ const Template = ({ template, username }: { template: Doc<"templates">, username
                 color: textsColor,
                 backgroundImage: `url(${backgroundImg?.localImg || backgroundImg.uploadImgUrl})`,
                 backgroundRepeat: 'no-repeat',
-                backgroundSize: 'cover',
+                backgroundSize: '100% 100%',
             }}>
             {
                 isVideo && <BgVideoPlayer src={isVideo} videoProps={{ autoPlay: false }} />

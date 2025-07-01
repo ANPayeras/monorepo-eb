@@ -1,3 +1,5 @@
+import { SelectSection } from "@/interfaces";
+import { DeliverMethods, Layout, PaymentMethods } from "@/stores/data-store";
 import {
   CSSProperties,
   DetailedHTMLProps,
@@ -23,6 +25,7 @@ export type SheetPaymentProps = {
   title: string;
   description?: string;
   descriptionClassName?: string;
+  subTitle?: string;
 };
 
 export type LinkWordProps = {
@@ -62,4 +65,22 @@ export type BgVideoPlayerProps = {
 export type RowPlanLimitsProps = {
   quantity: number;
   limit: number;
+};
+
+export type PaymentMethodsProps = {
+  selectSection?: (type: string) => void;
+  paymentMethods: PaymentMethods[];
+  containerClassName?: string;
+  editSection?: SelectSection;
+  props?: any;
+  layout?: Layout;
+};
+
+export type DeliverPreviewProps = {
+  selectSection?: (type: string) => void;
+  deliverMethods: DeliverMethods[];
+  containerClassName?: string;
+  editSection?: SelectSection;
+  props?: any;
+  layout?: Layout;
 };

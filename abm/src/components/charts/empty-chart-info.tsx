@@ -9,7 +9,7 @@ const EmptyChartInfo = ({ className, children }: { className?: string, children?
     return (
         <CardDescription
             className={cn(`h-full flex justify-center items-center opacity-50`, className)}>
-            No hay informacion que mostrar
+            No hay información que mostrar
         </CardDescription>
     )
 }

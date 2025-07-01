@@ -11,7 +11,7 @@ import MpBrick from '../mp-brick'
 import Button from '../buttons/button'
 import Error from '../feedbacks/error'
 import { AlertDialogComponent } from '../dialog'
-import { addDaysToDate } from '@/lib/utils'
+import { changeDaysToDate } from '@/lib/utils'
 import LinkWord from '../link-word'
 import { feedbacksReferencess } from '@/constants'
 import { PreApprovalResponse } from 'mercadopago/dist/clients/preApproval/commonTypes'
@@ -108,7 +108,7 @@ const SuscriptionPlans = () => {
             <MpBrick
                 email={user?.email!}
                 amount={Number(selectedRecurring?.price)}
-                description={'El pago se procesara por Mercado Pago, una vez realizado podras ver la suscripcion ahi. \n\n El pago puede demorar hasta 24hs en acreditarse'}
+                description={'El pago se procesará por Mercado Pago, una vez realizado podrás ver la suscripción ahí. \n\n El pago puede demorar hasta 24 hs en acreditarse'}
                 onReady={onReady}
                 onUnmount={onUnmount}
             />,
@@ -142,7 +142,7 @@ const SuscriptionPlans = () => {
 
     const confirmFreeTrial = async () => {
         const startDate = new Date()
-        const endDate = addDaysToDate(startDate, 7)
+        const endDate = changeDaysToDate(startDate, 7)
         await activeFreeTrial({ active: true, startDate: startDate.toISOString(), endDate: endDate.toISOString() })
     }
 
@@ -191,13 +191,13 @@ const SuscriptionPlans = () => {
             <SuscriptionPlansFooter>
                 {
                     activeSucription ?
-                        <LinkWord link={activeSucription?.adminUrl || ''} text='Ver suscripcion' /> :
+                        <LinkWord link={activeSucription?.adminUrl || ''} text='Ver suscripción' /> :
                         <Button
                             onClick={!hasFreeTrial ? () => setOpenDialog(true) : () => setOpenSheet(true)}
                             disabled={!selectedPlan || selectedPlan?.type === 'free' || !!pendingSucription}
                             leftIconName={pendingSucription ? 'clockFilled' : undefined}
                         >
-                            {pendingSucription ? 'Validando suscripcion' : primaryActionText[freeTrialStatus || '']}
+                            {pendingSucription ? 'Validando suscripción' : primaryActionText[freeTrialStatus || '']}
                         </Button>
                 }
             </SuscriptionPlansFooter>
@@ -205,8 +205,9 @@ const SuscriptionPlans = () => {
                 open={openSheet}
                 handleChange={handleChangeSheet}
                 title={activeSucription ? '' : selectedPlan?.title || ''}
-                description={isFreeTrialActive ? 'Dejaras de tener la prueba gratuita.' : ''}
+                description={isFreeTrialActive ? 'Dejarás de tener la prueba gratuita.' : ''}
                 descriptionClassName='text-red-500'
+                subTitle={`Vas a pagar $${selectedRecurring?.price} por ${isAnual ? 'un año' : 'mes'}`}
             >
                 <div className='flex flex-col'>
                     {
@@ -233,8 +234,8 @@ const SuscriptionPlans = () => {
                 open={openDialog}
                 onOpenChange={() => setOpenDialog(false)}
                 onConfirm={confirmFreeTrial}
-                title={'Activar prueba gratuita?'}
-                description={'\nAl activarla, tendras 7 dias para usar todas las funciones sin nigun costo. Pasado ese tiempo deberas suscribirte para poder seguir usando las mismas. \n\nSi cancelas en algun momento la prueba, ya no podras volver a activarla.'}
+                title={'¿Activar prueba gratuita?'}
+                description={'\nAl activarla, tendrás 7 días para usar todas las funciones sin ningún costo. Pasado ese tiempo deberás suscribirte para poder seguir usando las mismas. \n\nSi cancelas en algún momento la prueba, ya no podrás volver a activarla.'}
                 acceptText='Si'
             />
         </div>

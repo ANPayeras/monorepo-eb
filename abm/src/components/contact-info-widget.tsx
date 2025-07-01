@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+
 import { Contact, Layout } from '@/stores/data-store'
 import ToolsWidget from './tools-widget'
 import { SelectSection } from '@/interfaces'
@@ -6,11 +7,16 @@ import Link from 'next/link'
 import WidgetBaseCard from './widget-base-card'
 import { icons } from '@/constants'
 import PlaceholdersWidgets from './widgets/placeholders-widgets'
+import { useIsSmall } from '@/hooks/use-media.query'
 
 const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSection?: SelectSection, contact: Contact[], layout: Layout, props?: any }> = ({ selectSection, editSection, contact, layout, props }) => {
+    const isSmall = useIsSmall()
     return (
         <WidgetBaseCard containerClassName='bg-transparent border-none shadow-none hover:border-slate-700 hover:border transition-all'>
-            <div className={`hover:border-slate-700 hover:border hover:shadow-sm h-[60px] flex justify-center items-center p-2 gap-1 w-full rounded-md ${!props ? 'active:bg-inherit' : 'active:bg-slate-400'} touch-none`} {...props}>
+            <div
+                className={`hover:border-slate-700 hover:border hover:shadow-sm h-16 flex justify-center items-center p-2 gap-1 w-full rounded-md ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`}
+                {...!isSmall && props}
+            >
                 {
                     contact.length ? contact.map((c, i) => {
                         const Icon = icons?.find(icon => icon.name === c.title)!
@@ -29,11 +35,12 @@ const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSectio
                 }
             </div>
             {
-                selectSection ?
-                    <ToolsWidget
-                        editFunc={() => selectSection('contact')}
-                        isEditing={editSection?.section === 'contact'} />
-                    : <></>
+                selectSection &&
+                <ToolsWidget
+                    editFunc={() => selectSection('contact')}
+                    isEditing={editSection?.section === 'contact'}
+                    {...isSmall && { props }}
+                />
             }
         </WidgetBaseCard>
     )

@@ -3,6 +3,7 @@ import { httpRouter } from "convex/server";
 import { Webhook } from "svix";
 import { api, internal } from "./_generated/api";
 import { httpAction } from "./_generated/server";
+import { emailsTemplates } from "./utils";
 
 const handleClerkWebhook = httpAction(async (ctx, request) => {
   const event = await validateRequest(request);
@@ -18,6 +19,14 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
         name: event.data.first_name || "",
         username: event.data.username || `user${event.data.id}`,
         isPremiun: false,
+      });
+      await ctx.runAction(api.emails.sendEmail, {
+        body: [
+          {
+            ...emailsTemplates.welcome,
+            to: event.data.email_addresses[0].email_address,
+          },
+        ],
       });
       break;
     case "user.updated":
@@ -37,31 +46,31 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
   });
 });
 
-const handleSuscriptionWebhook = httpAction(async (ctx, request) => {
-  const xSignature = request.headers.get("x-signature")!;
-  const xRequestId = request.headers.get("x-request-id")!;
-  const body: { data: { id: string }; type: string; action: string } =
-    await request.json();
-  const validation = await ctx.runAction(
-    api.payment.validateRequestSuscription,
-    {
-      headers: { xSignature, xRequestId },
-      body,
-    }
-  );
+// const handleSuscriptionWebhook = httpAction(async (ctx, request) => {
+//   const xSignature = request.headers.get("x-signature")!;
+//   const xRequestId = request.headers.get("x-request-id")!;
+//   const body: { data: { id: string }; type: string; action: string } =
+//     await request.json();
+//   const validation = await ctx.runAction(
+//     api.payment.validateRequestSuscription,
+//     {
+//       headers: { xSignature, xRequestId },
+//       body,
+//     }
+//   );
 
-  if (!validation) {
-    return new Response("Unauthorized", { status: 400 });
-  }
+//   if (!validation) {
+//     return new Response("Unauthorized", { status: 400 });
+//   }
 
-  await ctx.runMutation(internal.users.createUsertest, {
-    username: JSON.stringify(body),
-  });
+//   await ctx.runMutation(internal.users.createUsertest, {
+//     username: JSON.stringify(body),
+//   });
 
-  return new Response(null, {
-    status: 200,
-  });
-});
+//   return new Response(null, {
+//     status: 200,
+//   });
+// });
 
 const http = httpRouter();
 
@@ -71,11 +80,11 @@ http.route({
   handler: handleClerkWebhook,
 });
 
-http.route({
-  path: "/suscription",
-  method: "POST",
-  handler: handleSuscriptionWebhook,
-});
+// http.route({
+//   path: "/suscription",
+//   method: "POST",
+//   handler: handleSuscriptionWebhook,
+// });
 
 const validateRequest = async (
   req: Request

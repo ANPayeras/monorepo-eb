@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
+
 import { Variants, motion } from "framer-motion";
 import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import { Doc, Id } from '../../convex/_generated/dataModel';
-import Link from 'next/link';
 import { Switch } from './ui/switch';
 import { useIsSmall } from '@/hooks/use-media.query';
 import { revalidatePathAction } from '@/actions/actions';
 import { useDataStore } from '@/providers/data-store-providers';
+import { useRouter } from 'next/navigation';
 
 const itemVariants: Variants = {
     open: {
@@ -22,7 +23,9 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
     const { resetState } = useDataStore(state => state)
     const deleteTemplate = useMutation(api.templates.deleteTemplate)
     const activeTemplate = useMutation(api.templates.activeTemplate)
+    const changeLastBuild = useMutation(api.templates.changeLastBuild)
     const isSmall = useIsSmall()
+    const router = useRouter()
     const [isDeleteTemplate, setIsDeleteTemplate] = useState<boolean>(false);
 
     const handleDeleteTemplate = () => {
@@ -34,6 +37,20 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
         await deleteTemplate({ templateId: id })
         await revalidatePathAction(`/build/${id}`)
         resetState()
+    }
+
+    const editTemplate = async () => {
+        try {
+            await changeLastBuild({ _id: t._id })
+            router.push(`/build/${t._id}`)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const onActiveTemplate = async () => {
+        await activeTemplate({ templateId: t._id })
+        await revalidatePathAction(`/build/${t._id}`)
     }
 
     return (
@@ -77,12 +94,10 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
                             whileHover={{
                                 scale: 1.1
                             }}
+                            onClick={editTemplate}
+                            className='px-5 py-1 bg-black text-white rounded-tl-sm font-bold text-sm sm:text-medium flex justify-center items-center'
                         >
-                            <Link
-                                href={`/build/${t._id}`}
-                                className='h-full px-5 py-1 bg-black text-white rounded-tl-sm font-bold text-sm sm:text-medium flex justify-center items-center'>
-                                Editar
-                            </Link>
+                            Editar
                         </motion.button>
                         <motion.button
                             className='flex px-5 py-1 bg-black text-white font-bold text-sm sm:text-medium justify-center items-center'
@@ -100,7 +115,7 @@ const TemplateBtnsOptions = ({ t, i, isHovered, templateHovered }: { t: Doc<"tem
                             <Switch
                                 className='data-[state=checked]:bg-green-400 scale-90 sm:scale-100'
                                 name='enabled'
-                                onClick={() => activeTemplate({ templateId: t._id })}
+                                onClick={onActiveTemplate}
                                 checked={t.active}
                             />
                         </motion.div>

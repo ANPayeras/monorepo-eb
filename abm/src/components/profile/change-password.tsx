@@ -1,5 +1,6 @@
 "use client"
-import React, { Dispatch, SetStateAction, useEffect } from 'react'
+
+import React, { useEffect } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -44,7 +45,7 @@ const errors: { [key: string]: { type: "oldPassword" | "newPassword" | "repeatNe
     }
 }
 
-const ChangePassword = ({ setOpen, handleAccept, isPassword }: { setOpen: Dispatch<SetStateAction<boolean>>, handleAccept: (data: z.infer<typeof formSchema>) => Promise<boolean>, isPassword: boolean }) => {
+const ChangePassword = ({ onCancel, handleAccept, isPassword }: { onCancel: () => void, handleAccept: (data: z.infer<typeof formSchema>) => Promise<boolean>, isPassword: boolean }) => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -58,7 +59,7 @@ const ChangePassword = ({ setOpen, handleAccept, isPassword }: { setOpen: Dispat
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
             await handleAccept(values)
-            setOpen(false)
+            onCancel()
         } catch (error) {
             const _err = error as Error
             const err = JSON.parse(_err.message) as ClerkAPIError
@@ -165,13 +166,13 @@ const ChangePassword = ({ setOpen, handleAccept, isPassword }: { setOpen: Dispat
                                 />
                             </FormControl>
                             <FormDescription className='text-sm'>
-                                Cerrar sesion en otros dispositivos en los que haya iniciado sesion
+                                Cerrar sesión en otros dispositivos en los que haya iniciado sesión
                             </FormDescription>
                         </FormItem>
                     )}
                 />
                 <div className='flex justify-end gap-2'>
-                    <Button className='text-black bg-transparent hover:bg-slate-300' type='button' onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button className='text-black bg-transparent hover:bg-slate-300' type='button' onClick={onCancel}>Cancel</Button>
                     <Button
                         type="submit"
                         disabled={!form.formState.isValid}

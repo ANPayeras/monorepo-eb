@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export type Items = {
     name: string;
-    price: string | null;
+    price: string;
     id: string;
     itemImage: {
         localImg?: string;
@@ -25,7 +25,7 @@ type Combos = {
     title: string,
     description: string,
     imgUrl: { url: string, storageId: Id<"_storage"> | string }[],
-    price: string | null,
+    price: string,
     id: string;
 }
 
@@ -74,8 +74,8 @@ export type Layout = {
 }
 
 export type ItemCart = {
-    label: string;
-    price: number;
+    title: string;
+    price: string;
     quantity: number;
     category: string;
     id: string;
@@ -133,9 +133,9 @@ export type DataActions = {
     addSection: () => void
     addItem: (section: string) => void,
     handleOnChangeSections: (event: ChangeEvent<HTMLInputElement>) => void,
-    handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => void,
+    handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, itemData: Items) => void,
     handleOnChangeHeader: (event: ChangeEvent<HTMLInputElement>, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => void,
-    handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number, imgUrl?: string, imgUrlPos?: number, storageId?: Id<"_storage"> | string) => void,
+    handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number) => void,
     handleOnChangeContact: (event: ChangeEvent<HTMLInputElement>, iCName: string) => void,
     handleOnChangeContactSwitch: (enabled: boolean, iCName: string) => void,
     handleOnChangeColorSwitch: () => void,
@@ -182,7 +182,7 @@ export const defaultInitialState: DataState = {
         title: '',
     },
     sections: [],
-    combos: Array.from({ length: 4 }, (_, i) => ({ description: '', imgUrl: [{ url: '', storageId: '' }], price: null, title: '', id: `combo ${i + 1}` })),
+    combos: Array.from({ length: 4 }, (_, i) => ({ description: '', imgUrl: [{ url: '', storageId: '' }], price: '', title: '', id: `combo ${i + 1}` })),
     contact: [],
     layout: {
         bgColor: '#ffffff',
@@ -216,7 +216,7 @@ const iState: DataState = {
         title: '',
     },
     sections: [],
-    combos: Array.from({ length: 4 }, (_, i) => ({ description: '', imgUrl: [{ url: '', storageId: '' }], price: null, title: '', id: `combo ${i + 1}` })),
+    combos: Array.from({ length: 4 }, (_, i) => ({ description: '', imgUrl: [{ url: '', storageId: '' }], price: '', title: '', id: `combo ${i + 1}` })),
     contact: [],
     layout: {
         bgColor: '#ffffff',
@@ -262,7 +262,7 @@ export const createDataStore = (
             state.sections.push({
                 name: `section ${state.sections.length + 1}`, label: '', items: [{
                     name: 'Item 1',
-                    price: null,
+                    price: '',
                     id: uuidv4(),
                     itemImage: {
                         localImg: '',
@@ -277,7 +277,7 @@ export const createDataStore = (
             let pos = state.sections.map(e => e.name).indexOf(section)
             state.sections[pos].items.push({
                 name: `Item ${state.sections[pos].items.length + 1}`,
-                price: null,
+                price: '',
                 id: uuidv4(),
                 itemImage: {
                     localImg: '',
@@ -293,19 +293,23 @@ export const createDataStore = (
             state.sections[pos].label = value
             return { ...state }
         }),
-        handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, localImg?: string, uploadImgUrl?: string, storageId?: Id<"_storage">) => set((state) => {
+        handleOnChangeItems: (event: ChangeEvent<HTMLInputElement>, section: string, item: number, itemData: Items) => set((state) => {
             let { value, name } = event.target
             let pos = state.sections.map(e => e.name).indexOf(section)
             if (name === 'price' && value.length === 9) return { ...state }
-            if (name === 'itemImage') {
-                if (localImg) state.sections[pos].items[item].itemImage.localImg = localImg
-                if (uploadImgUrl && storageId) {
-                    state.sections[pos].items[item].itemImage.localImg = ''
-                    state.sections[pos].items[item].itemImage.uploadImgUrl = uploadImgUrl
-                    state.sections[pos].items[item].itemImage.storageId = storageId
+            state.sections[pos].items[item][name as keyof Omit<Items, "itemImage">] = value
+            const isInCartIndex = state.cart.findIndex(ci => ci.id === itemData.id)
+            if (isInCartIndex >= 0) {
+                switch (name) {
+                    case 'price':
+                        state.cart[isInCartIndex].price = value
+                        break;
+                    case 'name':
+                        state.cart[isInCartIndex].title = value
+                        break;
+                    default:
+                        break;
                 }
-            } else {
-                state.sections[pos].items[item][name as keyof Omit<Items, "itemImage">] = value
             }
             return { ...state }
         }),
@@ -337,20 +341,23 @@ export const createDataStore = (
             state.header.imgUrl.storageId = storageId
             return { ...state }
         }),
-        handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number, imgUrl?: string, imgUrlPos?: number, storageId?: Id<"_storage"> | string) => set((state) => {
+        handleOnChangeCombos: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, combo: number) => set((state) => {
             let { value, name } = event.target
             const { imgUrl: _imgUrl } = state.combos[combo]
             if (name === 'price' && value.length === 9) return { ...state }
-            if (imgUrl) {
-                const existImg = _imgUrl[imgUrlPos!]?.url
-                // _imgUrl.splice(imgUrlPos!, 1, imgUrl)
-                _imgUrl[imgUrlPos!].url = imgUrl
-                _imgUrl[imgUrlPos!].storageId = storageId!
-                if (_imgUrl.length < 5 && !existImg) {
-                    _imgUrl.splice(imgUrlPos! + 1, 0, { url: '', storageId: '' })
+            state.combos[combo][name as keyof Omit<Combos, "imgUrl">] = value
+            const isInCartIndex = state.cart.findIndex(ci => ci.id === `combo ${combo + 1}`)
+            if (isInCartIndex >= 0) {
+                switch (name) {
+                    case 'price':
+                        state.cart[isInCartIndex].price = value
+                        break;
+                    case 'title':
+                        state.cart[isInCartIndex].title = value
+                        break;
+                    default:
+                        break;
                 }
-            } else {
-                state.combos[combo][name as keyof Omit<Combos, "imgUrl">] = value
             }
             return { ...state }
         }),
@@ -446,8 +453,8 @@ export const createDataStore = (
             return { ...state }
         }),
         handleOnChangeCartQuantity: (item: ItemCart, type: string) => set((state) => {
-            const cartItem = state.cart.find(i => i.category === item.category && i.label === item.label)!
-            const cartItemPos = state.cart.findIndex(i => i.category === item.category && i.label === item.label)!
+            const cartItem = state.cart.find(i => i.category === item.category && i.title === item.title)!
+            const cartItemPos = state.cart.findIndex(i => i.category === item.category && i.title === item.title)!
             switch (type) {
                 case 'increase':
                     cartItem.quantity += 1

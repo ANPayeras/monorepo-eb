@@ -10,6 +10,8 @@ import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api';
 import Link from 'next/link';
 import { useDataStore } from '@/providers/data-store-providers';
+import { cn } from '@/lib/utils';
+import { VERSION } from '@/constants/envs';
 
 const links = [
     {
@@ -42,7 +44,7 @@ const links = [
         ),
     },
     {
-        label: "Editar imagen",
+        label: "Postales",
         href: "/tools",
         icon: (
             <IconBrush className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
@@ -79,15 +81,20 @@ const LeftSidebar = () => {
             <Sidebar open={open} setOpen={setOpen} animate={true}>
                 <SidebarBody className="justify-between gap-10 md:border-r-1">
                     <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-                        <Link href={'/'} className='w-fit'>
-                            <Image
-                                className='h-full w-10 rounded-sm'
-                                src={'/logo.png'}
-                                alt={'logo'}
-                                width={100}
-                                height={100}
-                            />
-                        </Link>
+                        <div className='flex flex-col gap-2 items-center'>
+                            <Link href={'/'} className='w-fit rounded-full drop-shadow-md'>
+                                <Image
+                                    className='h-full w-10 rounded-full'
+                                    src={'/logo.png'}
+                                    alt={'logo'}
+                                    width={100}
+                                    height={100}
+                                />
+                            </Link>
+                            {
+                                open && <span className='text-sm bg-yellow-100 px-1 text-black rounded-sm drop-shadow-md transition-all'>Beta</span>
+                            }
+                        </div>
                         <div className="mt-8 flex flex-col gap-2">
                             {_links.map((link, idx) => {
                                 const isActive = pathname.includes(link.href)
@@ -108,7 +115,7 @@ const LeftSidebar = () => {
                                 }}
                                 className='hover:bg-slate-200 transition-all rounded-sm'
                                 link={{
-                                    label: "Cerrar sesion",
+                                    label: "Cerrar sesión",
                                     href: "/",
                                     icon: (
                                         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
@@ -128,6 +135,7 @@ const LeftSidebar = () => {
                                 ),
                             }}
                         />
+                        <span className={cn('flex w-96 pl-1 text-sm text-muted-foreground invisible transition-all', open && 'visible')}>{`v ${VERSION}`}</span>
                     </div>
                 </SidebarBody>
             </Sidebar>

@@ -46,35 +46,6 @@ const MenuTemplate = () => {
         }
     }
 
-    // const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>, section?: string, item?: number) => {
-    //     e.preventDefault();
-    //     const { files, name } = e.target
-    //     if (!files || !files?.length) return;
-
-    //     try {
-    //         const file = files[0];
-    //         const reader = new FileReader();
-    //         checkAsset(file)
-    //         reader.addEventListener("load", async () => {
-    //             if (name === 'imgUrl') handleOnChangeHeader(e, reader.result as string)
-    //             if (name === 'itemImage') handleOnChangeItems(e, section!, item!, reader.result as string)
-    //             // const { url, storageId } = await uploadFile(file)
-    //             // if (name === 'imgUrl') handleOnChangeHeader(e, '', url!, storageId)
-    //             // if (name === 'itemImage') handleOnChangeItems(e, section!, item!, '', url!, storageId)
-    //         });
-    //         reader.readAsDataURL(file);
-    //     } catch (error) {
-    //         const err = error as Error
-    //         toast({
-    //             title: "Error al subir",
-    //             description: err.message,
-    //             variant: 'destructive',
-    //             duration: 5000,
-    //         })
-    //         console.log(error)
-    //     }
-    // }
-
     const deleteImg = async (type: string, storageId: Id<"_storage">, section?: string, item?: number) => {
         if (type === 'header') {
             deleteImgHeader()
@@ -207,7 +178,7 @@ const MenuTemplate = () => {
                                                             className='h-6 text-sm'
                                                             name={`name`}
                                                             value={it.name}
-                                                            onChange={(e) => handleOnChangeItems(e, s.name, i)}
+                                                            onChange={(e) => handleOnChangeItems(e, s.name, i, it)}
                                                             placeholder='Nombre'
                                                         />
                                                         <div className='flex justify-center items-center'>
@@ -216,7 +187,7 @@ const MenuTemplate = () => {
                                                                 className='h-6 text-sm'
                                                                 name={`price`}
                                                                 value={it.price || ''}
-                                                                onChange={(e) => handleOnChangeItems(e, s.name, i)}
+                                                                onChange={(e) => handleOnChangeItems(e, s.name, i, it)}
                                                                 placeholder='Precio'
                                                                 type='number' />
                                                         </div>

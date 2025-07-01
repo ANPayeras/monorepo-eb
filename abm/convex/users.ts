@@ -1,6 +1,9 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { api, internal } from "./_generated/api";
+import { emailsTemplates } from "./utils";
+import { changeDaysToDate } from "@/lib/utils";
 
 export const createUser = internalMutation({
   args: {
@@ -34,6 +37,34 @@ export const deleteUser = internalMutation({
       .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .first();
 
+    const sus = await ctx.db
+      .query("suscriptions")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), user?._id),
+          q.eq(q.field("status"), "active")
+        )
+      )
+      .first();
+
+    const templates = await ctx.db
+      .query("templates")
+      .filter((q) => q.eq(q.field("user"), user?._id))
+      .collect();
+
+    if (sus?.subscriptionPreapprovalId) {
+      await ctx.scheduler.runAfter(0, internal.payment.cancellSuscriptionMP, {
+        subscriptionPreapprovalId: sus.subscriptionPreapprovalId,
+      });
+    }
+
+    if (templates.length) {
+      for (const template of templates) {
+        await ctx.db.delete(template._id);
+      }
+    }
+
+    console.log("user deleted", user);
     await ctx.db.delete(user?._id!);
   },
 });
@@ -53,9 +84,11 @@ export const updateInternalUser = internalMutation({
       throw new ConvexError("User not found");
     }
 
-    await ctx.db.patch(user._id, {
-      username: args.username,
-    });
+    if (user.username !== args.username) {
+      await ctx.db.patch(user._id, {
+        username: args.username,
+      });
+    }
   },
 });
 
@@ -188,8 +221,8 @@ export const checkFreeTrial = query({
 export const updateFreeTrial = mutation({
   args: {
     active: v.boolean(),
-    endDate: v.optional(v.string()),
-    startDate: v.optional(v.string()),
+    endDate: v.string(),
+    startDate: v.string(),
   },
   handler: async (ctx, args) => {
     const { active, endDate, startDate } = args;
@@ -204,12 +237,35 @@ export const updateFreeTrial = mutation({
       .filter((q) => q.eq(q.field("email"), identity.email))
       .first();
 
+    const scheduleId: Id<"_scheduled_functions"> = await ctx.scheduler.runAt(
+      new Date(endDate),
+      internal.users.checkHasFreeTrial,
+      {
+        reference: user!._id,
+        isPremium: false,
+      }
+    );
+
+    const sendEmailDate = changeDaysToDate(new Date(startDate), 5);
+
+    const scheduleEmailId: Id<"_scheduled_functions"> =
+      await ctx.scheduler.runAt(sendEmailDate, api.emails.sendEmail, {
+        body: [
+          {
+            ...emailsTemplates.endFreeTrial,
+            to: identity.email!,
+          },
+        ],
+      });
+
     return await ctx.db.patch(user?._id!, {
       isPremium: true,
       freeTrial: {
         active,
-        endDate: user?.freeTrial?.endDate || endDate || "",
-        startDate: user?.freeTrial?.startDate || startDate || "",
+        endDate,
+        startDate,
+        scheduleId,
+        scheduleEmailId,
       },
     });
   },
@@ -218,6 +274,7 @@ export const updateFreeTrial = mutation({
 export const checkHasFreeTrial = internalMutation({
   args: {
     reference: v.id("users"),
+    isPremium: v.boolean(),
   },
   handler: async (ctx, args) => {
     const user = await ctx.db
@@ -226,11 +283,24 @@ export const checkHasFreeTrial = internalMutation({
       .first();
 
     if (!!user?.freeTrial?.active) {
+      if (user.freeTrial.scheduleId) {
+        await ctx.scheduler.cancel(
+          user.freeTrial.scheduleId as Id<"_scheduled_functions">
+        );
+      }
+      if (user.freeTrial.scheduleEmailId) {
+        await ctx.scheduler.cancel(
+          user.freeTrial.scheduleEmailId as Id<"_scheduled_functions">
+        );
+      }
       await ctx.db.patch(user._id, {
+        isPremium: args.isPremium,
         freeTrial: {
           active: false,
           endDate: user.freeTrial.endDate,
           startDate: user.freeTrial.startDate,
+          scheduleId: "",
+          scheduleEmailId: "",
         },
       });
     }
@@ -239,19 +309,39 @@ export const checkHasFreeTrial = internalMutation({
   },
 });
 
-// Borrar
-export const createUsertest = internalMutation({
-  args: {
-    username: v.string(),
-  },
-  handler: async (ctx, args) => {
-    await ctx.db.insert("users", {
-      clerkId: "args.clerkId",
-      email: "args.email",
-      imageUrl: "args.imageUrl",
-      name: "args.name",
-      username: args.username,
-      phone: "",
-    });
+export const checkPlanStatus = query({
+  args: {},
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("User not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), identity.email))
+      .first();
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    let planStatus = "";
+
+    switch (user.isPremium) {
+      case true:
+        if (user?.freeTrial?.active) {
+          planStatus = "freeTrial";
+        } else {
+          planStatus = "premium";
+        }
+        break;
+      case false:
+        planStatus = "free";
+        break;
+    }
+
+    return planStatus;
   },
 });

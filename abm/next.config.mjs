@@ -1,3 +1,8 @@
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const { version } = require("./package.json");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -15,6 +20,9 @@ const nextConfig = {
         pathname: "**",
       },
     ],
+  },
+  env: {
+    version,
   },
   reactStrictMode: false,
   async rewrites() {
@@ -34,8 +42,7 @@ const nextConfig = {
         destination: `${process.env.REWRITES_VIEW_URL}/test/:user`,
       },
       {
-        source:
-          "/test/:user/:path(all|combo|confirmation)/:combo(1|2|3|4)?",
+        source: "/test/:user/:path(all|combo|confirmation)/:combo(1|2|3|4)?",
         destination: `${process.env.REWRITES_VIEW_URL}/test/:user/:path?combo=:combo`,
       },
       {

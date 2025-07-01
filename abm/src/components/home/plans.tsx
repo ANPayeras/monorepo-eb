@@ -35,7 +35,7 @@ const Plans = () => {
             <SuscriptionPlansFooter>
                 <Link href='/sign-up'>
                     <HoverBorderGradientButton>
-                        Comienza gratis
+                        Comenzá gratis
                     </HoverBorderGradientButton>
                 </Link>
             </SuscriptionPlansFooter>

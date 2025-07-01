@@ -1,4 +1,5 @@
 import React from 'react'
+
 import Link from 'next/link'
 
 const BrandLink = () => {
@@ -8,7 +9,7 @@ const BrandLink = () => {
             target='_blank'
             href={process.env.NEXT_PUBLIC_ABM_URL!}
         >
-            Hecho con EBrochure
+            Hecho con Estoy.Link
         </Link>
     )
 }

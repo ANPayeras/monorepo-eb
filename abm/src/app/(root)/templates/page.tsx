@@ -74,7 +74,7 @@ const Templates = () => {
             }
           </Swiper> :
           <EmptyTemplates
-            mainTitle='Agrega Plantillas para ver las aca'
+            mainTitle='Agregá plantillas para ver las acá'
             linkTitle='Crear'
             linkUrl='/build'
           />

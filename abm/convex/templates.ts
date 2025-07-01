@@ -49,7 +49,7 @@ export const createTemplate = mutation({
       combos: Array.from({ length: 4 }, (_, i) => ({
         description: "",
         imgUrl: [{ url: "", storageId: "" }],
-        price: null,
+        price: '',
         title: "",
         id: `combo ${i + 1}`,
       })),
@@ -118,10 +118,10 @@ export const createTemplateTest = mutation({
 
     testTemplate && (await ctx.db.patch(testTemplate._id, { test: false }));
 
-    return {
+    await ctx.db.patch(args.templateId, {
       test: true,
       testScheduledTimeId: scheduledId,
-    };
+    });
   },
 });
 
@@ -224,42 +224,53 @@ export const updateTemplate = mutation({
       throw new ConvexError("User not found");
     }
 
-    const lastBuildTemplate = await ctx.db
+    const currentTemplate = await ctx.db
       .query("templates")
-      .filter((q) => q.eq(q.field("lastBuild"), true))
+      .filter((q) => q.eq(q.field("_id"), args._id))
       .first();
 
-    if (lastBuildTemplate?._id === args._id) {
+    await ctx.db.patch(args._id, {
+      ...args,
+      lastBuild: true,
+      test: currentTemplate?.test,
+      testScheduledTimeId: currentTemplate?.testScheduledTimeId,
+    });
+  },
+});
+
+export const changeLastBuild = mutation({
+  args: {
+    _id: v.id("templates"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("User not authenticated");
+    }
+
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), identity.email))
+      .collect();
+
+    if (user.length === 0) {
+      throw new ConvexError("User not found");
+    }
+
+    const lastBuildTemplate = await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), user[0]._id),
+          q.eq(q.field("lastBuild"), true)
+        )
+      )
+      .first();
+
+    if (lastBuildTemplate?._id !== args._id) {
       await ctx.db.patch(args._id, {
-        ...args,
         lastBuild: true,
-        layout: {
-          ...args.layout,
-          backgroundImg: {
-            storageId: args.layout.backgroundImg.storageId,
-            uploadImgUrl: args.layout.backgroundImg.uploadImgUrl,
-          },
-          backgroundVideo: {
-            storageId: args.layout.backgroundVideo?.storageId || "",
-            uploadVideoUrl: args.layout.backgroundVideo?.uploadVideoUrl || "",
-          },
-        },
-      });
-    } else {
-      await ctx.db.patch(args._id, {
-        ...args,
-        lastBuild: true,
-        layout: {
-          ...args.layout,
-          backgroundImg: {
-            storageId: args.layout.backgroundImg.storageId,
-            uploadImgUrl: args.layout.backgroundImg.uploadImgUrl,
-          },
-          backgroundVideo: {
-            storageId: args.layout.backgroundVideo?.storageId || "",
-            uploadVideoUrl: args.layout.backgroundVideo?.uploadVideoUrl || "",
-          },
-        },
       });
       lastBuildTemplate &&
         (await ctx.db.patch(lastBuildTemplate._id, {
@@ -319,8 +330,6 @@ export const activeTemplate = mutation({
         q.and(q.eq(q.field("active"), true), q.eq(q.field("user"), user[0]._id))
       )
       .first();
-
-    console.log("currentActiveTemplate", currentActiveTemplate);
 
     if (currentActiveTemplate) {
       if (currentActiveTemplate._id === args.templateId) {
@@ -513,7 +522,10 @@ export const deleteTemplateTest = internalMutation({
     templateId: v.id("templates"),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.templateId, { test: false });
+    await ctx.db.patch(args.templateId, {
+      test: false,
+      testScheduledTimeId: undefined,
+    });
   },
 });
 

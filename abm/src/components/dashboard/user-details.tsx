@@ -1,4 +1,5 @@
 import React from 'react'
+
 import LoaderSpinner from '../loader-spinner'
 import { currentUser } from '@clerk/nextjs/server'
 import PlanDescription from './plan-description'
@@ -11,10 +12,9 @@ const UserDetails = async () => {
             {
                 !user ? <LoaderSpinner size='sm' /> :
                     <>
-                        <span className='text-sm md:text-lg'>Bienvenid@ <span className='text-blue-800 font-bold'>{user?.username}</span>, como has estado?</span>
+                        <span className='text-sm md:text-lg'>Bienvenid@ <span className='text-blue-800 font-bold'>{user?.username}</span>, ¿cómo estás?</span>
                         <PlanDescription />
                     </>
-
             }
         </div>
     )

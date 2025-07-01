@@ -66,7 +66,7 @@ const EditPreview = () => {
                                         <IconShoppingCartPlus
                                             size={18}
                                             className='transition-all cursor-pointer hover:scale-110'
-                                            onClick={() => handleOnChangeCart({ price: Number(it.price), label: it.name || `Item ${i + 1}`, quantity: 1, category: row.original.name, id: it.id })}
+                                            onClick={() => handleOnChangeCart({ price: it.price, title: it.name || `Item ${i + 1}`, quantity: 1, category: row.original.name, id: it.id })}
                                         />
                                 }
                             </div>

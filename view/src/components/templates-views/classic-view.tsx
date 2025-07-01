@@ -16,13 +16,13 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
     const { header, combos, paymentMethods, contact, deliverMethods } = template
     return (
         <>
-            <div className='w-full min-h-20 h-20 flex justify-center items-center relative overflow-hidden rounded-lg'>
-                {
-                    header.imgUrl.uploadImgUrl &&
+            {
+                header.imgUrl.uploadImgUrl &&
+                <div className='w-full min-h-20 h-20 flex justify-center items-center relative overflow-hidden rounded-lg'>
                     <Link
                         onClick={() => sentEvent('widget_click', {
                             type: 'header',
-                            imgUrl: header.imgUrl || '',
+                            imgUrl: header.imgUrl.uploadImgUrl || '',
                             title: header.title
                         })}
                         className='h-full w-full relative bg-gray-900 rounded-lg'
@@ -32,8 +32,8 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                             <p className="font-bold text-xl">{header.title}</p>
                         </DirectionAwareHover>
                     </Link>
-                }
-            </div>
+                </div>
+            }
             <div className='w-full grid grid-cols-[repeat(auto-fit,_minmax(100%,_0.5fr))] mobile:grid-cols-[repeat(auto-fit,_minmax(150px,_0.5fr))] md:grid-cols-[repeat(auto-fit,_minmax(200px,_0.5fr))] justify-center gap-4'>
                 {
                     combos.map((c, i) => (
@@ -49,7 +49,7 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                                         comboNumber: c.id,
                                     })}
                                     className='h-full w-full relative bg-gray-900'
-                                    href={`${userData.username}/combo/${c.id}`}
+                                    href={`${userData.username}/combo?combo=${c.id.split('combo ')[1]}`}
                                 >
                                     {
                                         c.imgUrl[0].url ?

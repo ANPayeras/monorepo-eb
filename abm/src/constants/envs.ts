@@ -7,3 +7,6 @@ export const CLOUDINARY_URL = process.env.CLOUDINARY_URL;
 export const CLOUDINARY_SECRET = process.env.CLOUDINARY_SECRET;
 export const CLOUDINARY_CLOUD = process.env.CLOUDINARY_CLOUD;
 export const CLOUDINARY_KEY = process.env.CLOUDINARY_KEY;
+export const RESEND_API_KEY = process.env.RESEND_API_KEY;
+export const RESEND_WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET;
+export const VERSION = process.env.version;
