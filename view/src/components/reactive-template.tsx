@@ -67,7 +67,7 @@ const ReactiveTemplate = ({ user, component = '', combo = '', test = false }: Re
           <Template template={template[0]} userData={userData!} /> :
           <div className='absolute w-full flex flex-col items-center py-10 max-h-screen overflow-hidden overflow-y-visible'>
             <div className="w-[90%] max-w-[400px] md:max-w-[600px] flex flex-col items-center">
-              <Header iconUrl={`/${user}/confirmation`} />
+              <Header iconUrl={`/${decodeURIComponent(user)}/confirmation`} />
               {Component[component]}
             </div>
           </div>

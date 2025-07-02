@@ -9,6 +9,11 @@ const limits = [
     premium: 10,
   },
   {
+    name: "activeTemplates",
+    free: 1,
+    premium: 5,
+  },
+  {
     name: "categories",
     free: 5,
     premium: 15,

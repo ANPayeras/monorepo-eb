@@ -1,4 +1,5 @@
-import React, { CSSProperties, FC, MutableRefObject, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { CSSProperties, FC, useCallback, useEffect, useMemo, useState } from 'react'
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCreative } from 'swiper/modules';
 import { Swiper as SwiperType } from 'swiper/types'
@@ -7,22 +8,12 @@ import 'swiper/css';
 import { estaticTemplates } from '@/constants';
 import SectionsPreview from './sections-preview';
 import { IconBrandWhatsapp, IconPhonePlus } from '@tabler/icons-react';
-import { ItemCart, Layout } from '@/stores/data-store';
 import LoaderSpinner from './loader-spinner';
 import Link from 'next/link';
-import { Doc } from '../../convex/_generated/dataModel';
 import CopyLink from './copy-link';
 import BgVideoPlayer from './bg-video';
 import { amountToCurrency } from '@/lib/utils';
-
-type SwiperTemplatesPreviewProps = {
-    swiperRef: MutableRefObject<SwiperType | undefined>;
-    userData: Doc<"users">,
-    layout: Layout,
-    editSection: { section: string, combo: number }
-    layoutTemplate: JSX.Element,
-    cart: ItemCart[]
-}
+import { SwiperTemplatesPreviewProps } from '@/interfaces';
 
 const SwiperTemplatesPreview: FC<SwiperTemplatesPreviewProps> = ({ swiperRef, userData, layout, editSection, layoutTemplate, cart }) => {
 

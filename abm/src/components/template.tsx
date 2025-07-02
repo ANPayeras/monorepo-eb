@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+
 import { Doc } from '../../convex/_generated/dataModel'
 import ClassicView from './templates-views/classic-view'
 import EmptyView from './templates-views/empty-view'

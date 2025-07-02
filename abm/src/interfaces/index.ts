@@ -1,6 +1,7 @@
 import {
   Contact,
   DeliverMethods,
+  ItemCart,
   Layout,
   PaymentMethods,
   resizableItem,
@@ -165,3 +166,22 @@ export type DetailMetricsResponse = [
 ][];
 
 export type FlagsKeys = "payment";
+
+export type SwiperTemplatesPreviewProps = {
+  swiperRef: MutableRefObject<SwiperType | undefined>;
+  userData: Doc<"users">;
+  layout: Layout;
+  editSection: { section: string; combo: number };
+  layoutTemplate: JSX.Element;
+  cart: ItemCart[];
+};
+
+export type TemplateBtnsOptionsProps = {
+  t: Doc<"templates">;
+  i: number;
+  isHovered: boolean;
+  templateHovered: number | null;
+  onActiveTemplate: (template: Doc<"templates">, isActive: boolean) => void;
+  isPremium: boolean;
+  activesTemplates: Doc<"templates">[];
+};
