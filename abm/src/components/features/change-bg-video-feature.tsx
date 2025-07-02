@@ -9,9 +9,13 @@ const ChangeBgVideoFeature = () => {
     const { isUploading, getLocalUrls, onAccept, isSuccess, files, uploadFileCloudinary, deleteFileCloudinary } = useUploadFile()
 
     const uploadVideo = async (file: File) => {
-        if (backgroundVideo?.uploadVideoUrl) await deleteVideo()
-        const { url, storageId } = await uploadFileCloudinary(file)
-        handleOnChangeBgLayoutVideo('', url!, storageId)
+        try {
+            if (backgroundVideo?.uploadVideoUrl) await deleteVideo()
+            const { url, storageId } = await uploadFileCloudinary(file)
+            handleOnChangeBgLayoutVideo('', url!, storageId)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     // const uploadVideo = async (reader: FileReader, file: File) => {

@@ -9,9 +9,13 @@ const ChangeBgImgFeature = () => {
     const { getLocalUrls, onAccept, isUploading, isSuccess, files, deleteFileCloudinary, uploadFileCloudinary } = useUploadFile()
 
     const uploadImage = async (file: File) => {
-        if (backgroundImg.uploadImgUrl) await deleteImg()
-        const { url, storageId } = await uploadFileCloudinary(file)
-        handleOnChangeBgLayoutImg('', url!, storageId)
+        try {
+            if (backgroundImg.uploadImgUrl) await deleteImg()
+            const { url, storageId } = await uploadFileCloudinary(file)
+            handleOnChangeBgLayoutImg('', url!, storageId)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     // const uploadImage = async (reader: FileReader, file: File) => {
@@ -24,8 +28,12 @@ const ChangeBgImgFeature = () => {
     // }
 
     const deleteImg = async () => {
-        await deleteFileCloudinary(backgroundImg.storageId, 'image')
-        deleteBgLayoutImg()
+        try {
+            await deleteFileCloudinary(backgroundImg.storageId, 'image')
+            deleteBgLayoutImg()
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (

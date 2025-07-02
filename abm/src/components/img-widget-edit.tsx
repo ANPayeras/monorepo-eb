@@ -23,10 +23,14 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
     }
 
     const uploadImage = async (file: File) => {
-        const { url, storageId } = await uploadFileCloudinary(file)
-        handleNestedWidgetChanges ?
-            handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: url!, storageId: storageId } }) :
-            handleWidgetChanges(widget, { img: { localImg: '', uploadImgUrl: url!, storageId: storageId } })
+        try {
+            const { url, storageId } = await uploadFileCloudinary(file)
+            handleNestedWidgetChanges ?
+                handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: url!, storageId: storageId } }) :
+                handleWidgetChanges(widget, { img: { localImg: '', uploadImgUrl: url!, storageId: storageId } })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     // const uploadImage = async (reader: FileReader, file: File) => {
@@ -40,12 +44,15 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
     // }
 
     const deleteImg = async () => {
-        const storageId = panel?.img?.storageId || widget.data?.img?.storageId
-        await deleteFileCloudinary(storageId!, 'image')
-        handleNestedWidgetChanges ?
-            handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: '', storageId: '' } }) :
-            handleWidgetChanges(widget, { img: { localImg: '', uploadImgUrl: '', storageId: '' } })
-
+        try {
+            const storageId = panel?.img?.storageId || widget.data?.img?.storageId
+            await deleteFileCloudinary(storageId!, 'image')
+            handleNestedWidgetChanges ?
+                handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: '', storageId: '' } }) :
+                handleWidgetChanges(widget, { img: { localImg: '', uploadImgUrl: '', storageId: '' } })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (

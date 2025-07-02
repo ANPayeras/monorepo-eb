@@ -23,8 +23,12 @@ const CombosTemplate: FC<{ combo: number }> = ({ combo }) => {
     }
 
     const deleteImg = async (pos: number) => {
-        await deleteFileCloudinary(imgUrl[pos].storageId, 'image')
-        deleteImgCombo(combo, pos)
+        try {
+            await deleteFileCloudinary(imgUrl[pos].storageId, 'image')
+            deleteImgCombo(combo, pos)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
