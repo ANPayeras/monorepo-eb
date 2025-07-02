@@ -113,7 +113,7 @@ const useUploadFile = () => {
             }
         } catch (error) {
             console.log(error);
-            return Response.json(null, { status: 500 });
+            throw Error(error as string)
         }
     }
 

@@ -47,18 +47,26 @@ const MenuTemplate = () => {
     }
 
     const deleteImg = async (type: string, storageId: Id<"_storage">, section?: string, item?: number) => {
-        if (type === 'header') {
-            deleteImgHeader()
-        } else {
-            deleteImgItem(section!, item!)
+        try {
+            if (type === 'header') {
+                deleteImgHeader()
+            } else {
+                deleteImgItem(section!, item!)
+            }
+            await deleteFileCloudinary(storageId, 'image')
+        } catch (error) {
+            console.log(error)
         }
-        await deleteFileCloudinary(storageId, 'image')
     }
 
     const onDeleteItem = async (item: Items, section: string, itemPos: number) => {
-        const { itemImage: { storageId } } = item
-        if (storageId) await deleteImg('itemImage', storageId as Id<"_storage">, section, itemPos)
-        deleteItem(section, itemPos)
+        try {
+            const { itemImage: { storageId } } = item
+            if (storageId) await deleteImg('itemImage', storageId as Id<"_storage">, section, itemPos)
+            deleteItem(section, itemPos)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const _deleteSection = (section: string) => {
