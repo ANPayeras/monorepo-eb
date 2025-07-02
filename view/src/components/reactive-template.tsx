@@ -18,6 +18,7 @@ import Checkout from './checkout'
 import Header from './header'
 
 const ReactiveTemplate = ({ user, component = '', combo = '', test = false }: ReactiveTemplateProps) => {
+  console.log('ReactiveTemplate', combo)
   const { init } = useInitPosthog()
 
   const data = useQuery(api.templates.getTemplateView, { user, test })
