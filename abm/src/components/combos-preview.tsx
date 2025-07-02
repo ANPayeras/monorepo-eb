@@ -36,8 +36,8 @@ const CombosPreview: FC<{ combo: number }> = ({ combo }) => {
                                 {
                                     imgUrl[1]?.url &&
                                     <>
-                                        <CarouselPrevious className='left-0' />
-                                        <CarouselNext className='right-0' />
+                                        <CarouselPrevious className='left-0 text-slate-950' />
+                                        <CarouselNext className='right-0 text-slate-950' />
                                     </>
                                 }
                             </Carousel> :

@@ -73,77 +73,79 @@ const Templates = () => {
 
   return (
     <div className='flex flex-col gap-4 w-full h-full'>
-      <div className='flex gap-2'>
-        <span className='text-slate-900'>Plantillas activas:</span>
-        <div className='flex'>
-          {
-            activesTemplates ?
-              <RowPlanLimits quantity={activesTemplates?.length || 0} limit={limit} /> : <LoaderSpinner size='sm' />
-          }
-        </div>
-      </div>
       {
         listTemplates?.length ?
-          <Swiper
-            slidesPerView={1}
-            spaceBetween={30}
-            grabCursor={true}
-            pagination={{
-              clickable: true,
-            }}
-            modules={[Pagination]}
-            breakpoints={{
-              0: {
-                centeredSlides: false
-              },
-              450: {
-                centeredSlides: false,
-              },
-              768: {
-                slidesPerView: 2,
-                centeredSlides: false
-              },
-              1024: {
-                slidesPerView: 3,
-              },
-            }}
-            className="w-full max-w-6xl h-full"
-          >
-            {
-              listTemplates?.map((t, i) => (
-                <SwiperSlide key={i}>
-                  {
-                    isPremium &&
-                    <div className='flex justify-between bg-slate-400 px-1 rounded-t-sm'>
-                      <span className='text-slate-50'>Nombre: <span className='font-bold'>{t.name}</span></span>
-                      <div className='flex gap-2 text-slate-50 items-center'>
-                        <Link href={`${VIEW_URL}/${t.name}`} target='_blank' className='transition-all hover:scale-105'>
-                          <Icon name='redirect' iconProps={{ size: 18 }} />
-                        </Link>
-                        <CopyLink text={`${VIEW_URL}/${t.name}`} />
+          <>
+            <div className='flex gap-2'>
+              <span className='text-slate-900'>Plantillas activas:</span>
+              <div className='flex'>
+                {
+                  activesTemplates ?
+                    <RowPlanLimits quantity={activesTemplates?.length || 0} limit={limit} /> : <LoaderSpinner size='sm' />
+                }
+              </div>
+            </div>
+            <Swiper
+              slidesPerView={1}
+              spaceBetween={30}
+              grabCursor={true}
+              pagination={{
+                clickable: true,
+              }}
+              modules={[Pagination]}
+              breakpoints={{
+                0: {
+                  centeredSlides: false
+                },
+                450: {
+                  centeredSlides: false,
+                },
+                768: {
+                  slidesPerView: 2,
+                  centeredSlides: false
+                },
+                1024: {
+                  slidesPerView: 3,
+                },
+              }}
+              className="w-full max-w-6xl h-full"
+            >
+              {
+                listTemplates?.map((t, i) => (
+                  <SwiperSlide key={i}>
+                    {
+                      isPremium &&
+                      <div className='flex justify-between bg-slate-400 px-1 rounded-t-sm'>
+                        <span className='text-slate-50'>Nombre: <span className='font-bold'>{t.name}</span></span>
+                        <div className='flex gap-2 text-slate-50 items-center'>
+                          <Link href={`${VIEW_URL}/${t.name}`} target='_blank' className='transition-all hover:scale-105'>
+                            <Icon name='redirect' iconProps={{ size: 18 }} />
+                          </Link>
+                          <CopyLink text={`${VIEW_URL}/${t.name}`} />
+                        </div>
                       </div>
-                    </div>
-                  }
-                  <motion.div
-                    onHoverStart={() => handleHoverTemplates(i)}
-                    onHoverEnd={() => handleHoverTemplates(null)}
-                    className='max-w-[400px] min-w-[300px] h-full relative'
-                  >
-                    <Template {...{ template: t, username: user.username || '' }} />
-                    <TemplateBtnsOptions
-                      t={t}
-                      i={i}
-                      isHovered={isHovered}
-                      templateHovered={templateHovered}
-                      onActiveTemplate={onActiveTemplate}
-                      isPremium={!!isPremium}
-                      activesTemplates={activesTemplates as Doc<"templates">[]}
-                    />
-                  </motion.div>
-                </SwiperSlide>
-              ))
-            }
-          </Swiper> :
+                    }
+                    <motion.div
+                      onHoverStart={() => handleHoverTemplates(i)}
+                      onHoverEnd={() => handleHoverTemplates(null)}
+                      className='max-w-[400px] min-w-[300px] h-full relative'
+                    >
+                      <Template {...{ template: t, username: user.username || '' }} />
+                      <TemplateBtnsOptions
+                        t={t}
+                        i={i}
+                        isHovered={isHovered}
+                        templateHovered={templateHovered}
+                        onActiveTemplate={onActiveTemplate}
+                        isPremium={!!isPremium}
+                        activesTemplates={activesTemplates as Doc<"templates">[]}
+                      />
+                    </motion.div>
+                  </SwiperSlide>
+                ))
+              }
+            </Swiper>
+          </> :
           <EmptyTemplates
             mainTitle='Agregá plantillas para ver las acá'
             linkTitle='Crear'

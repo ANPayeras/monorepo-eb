@@ -111,7 +111,7 @@ export type WidgetData = {
     img?: {
         localImg?: string;
         uploadImgUrl?: string;
-        storageId?: Id<"_storage"> | string;
+        storageId: Id<"_storage"> | string;
     }
 }
 
@@ -575,7 +575,10 @@ export const createDataStore = (
             return { ...state }
         }),
         updateWidgetOrder: (widgets: Widget[]) => set((state) => {
-            return { ...state, widgets: widgets }
+            let { widgets: widgetsState } = state
+            widgetsState.length = 0;
+            widgetsState.push.apply(widgetsState, widgets);
+            return { ...state }
         }),
         addTemplateBuild: (id: Id<"templates">) => set((state) => {
             return { ...state, templateBuildId: id }
