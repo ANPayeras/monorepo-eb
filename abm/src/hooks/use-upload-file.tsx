@@ -6,12 +6,15 @@ import { checkAsset } from '@/lib/utils';
 import { useToast } from './use-toast';
 import { useEffect, useState } from 'react';
 import { BASE_URL } from '@/constants/envs';
+import { useAction } from 'convex/react';
+import { api } from '../../convex/_generated/api';
 
 const useUploadFile = () => {
     // const generateUploadUrl = useMutation(api.files.generateUploadUrl);
     // const { startUpload, isUploading } = useUploadFiles(generateUploadUrl)
     // const getImageUrl = useMutation(api.templates.getUrl);
     // const _deleteFile = useMutation(api.files.deleteFile)
+    const getSignature = useAction(api.filesCloudinary.getSignature)
     const [files, setFiles] = useState<File[]>([]);
     const [isSuccess, setIsSuccess] = useState<boolean>(false);
     const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -81,19 +84,36 @@ const useUploadFile = () => {
     }
 
     const uploadFileCloudinary = async (file: File) => {
+        // const data = await fetch(`${BASE_URL}/api/files`, { method: "POST", body: fd })
         const fd = new FormData();
-        fd.append("file", file);
 
         try {
-            const data = await fetch(`${BASE_URL}/api/files`, { method: "POST", body: fd })
-            const { public_id, secure_url } = await data.json()
+            const { signature, timestamp, cloud, key } = await getSignature()
+            const url = `https://api.cloudinary.com/v1_1/${cloud}/upload`;
 
-            return {
-                url: secure_url,
-                storageId: public_id,
+            fd.append("file", file);
+            fd.append("api_key", key as string);
+            fd.append("timestamp", String(timestamp));
+            fd.append("signature", signature);
+
+            const data = await fetch(url, {
+                method: "POST",
+                body: fd,
+            });
+
+            if (data.status === 200) {
+                const { public_id, secure_url } = await data.json()
+
+                return {
+                    url: secure_url,
+                    storageId: public_id,
+                }
+            } else {
+                throw Error(String(data.status));
             }
         } catch (error) {
-            throw Error(error as string)
+            console.log(error);
+            return Response.json(null, { status: 500 });
         }
     }
 

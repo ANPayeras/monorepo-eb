@@ -16,6 +16,7 @@ import type {
 import type * as crons from "../crons.js";
 import type * as emails from "../emails.js";
 import type * as files from "../files.js";
+import type * as filesCloudinary from "../filesCloudinary.js";
 import type * as flags from "../flags.js";
 import type * as http from "../http.js";
 import type * as metrics from "../metrics.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   crons: typeof crons;
   emails: typeof emails;
   files: typeof files;
+  filesCloudinary: typeof filesCloudinary;
   flags: typeof flags;
   http: typeof http;
   metrics: typeof metrics;
