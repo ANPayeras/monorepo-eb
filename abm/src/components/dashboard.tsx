@@ -1,4 +1,5 @@
 import React from 'react'
+
 import UserDetails from './dashboard/user-details'
 import ActiveTemplate from './dashboard/active-template'
 import WidgetsDashboard from './dashboard/widgets-dashboard'

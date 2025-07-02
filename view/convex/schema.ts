@@ -4,6 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   templates: defineTable({
     user: v.id("users"),
+    name: v.optional(v.string()),
     header: v.object({
       imgUrl: v.object({
         localImg: v.optional(v.string()),
@@ -20,7 +21,7 @@ export default defineSchema({
           v.object({
             id: v.string(),
             name: v.string(),
-            price: v.union(v.string(), v.null()),
+            price: v.string(),
             itemImage: v.object({
               localImg: v.optional(v.string()),
               uploadImgUrl: v.string(),
@@ -40,7 +41,7 @@ export default defineSchema({
             storageId: v.union(v.id("_storage"), v.string()),
           })
         ),
-        price: v.union(v.string(), v.null()),
+        price: v.string(),
         id: v.string(),
       })
     ),
@@ -142,6 +143,10 @@ export default defineSchema({
         active: v.boolean(),
         startDate: v.string(),
         endDate: v.string(),
+        scheduleId: v.union(v.id("_scheduled_functions"), v.string()),
+        scheduleEmailId: v.optional(
+          v.union(v.id("_scheduled_functions"), v.string())
+        ),
       })
     ),
   }),

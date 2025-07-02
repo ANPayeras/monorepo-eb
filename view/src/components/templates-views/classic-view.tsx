@@ -11,9 +11,9 @@ import { IconPhotoScan } from '@tabler/icons-react'
 import { ClassicViewProps } from '@/types'
 import { DirectionAwareHover } from '../ui/direction-aware-hover'
 
-const ClassicView = ({ template, userData }: ClassicViewProps) => {
+const ClassicView = ({ template }: ClassicViewProps) => {
     const { sentEvent } = useSentEvent()
-    const { header, combos, paymentMethods, contact, deliverMethods } = template
+    const { header, combos, paymentMethods, contact, deliverMethods, name } = template
     return (
         <>
             {
@@ -26,7 +26,7 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                             title: header.title
                         })}
                         className='h-full w-full relative bg-gray-900 rounded-lg'
-                        href={`${userData.username}/all`}
+                        href={`${name}/all`}
                     >
                         <DirectionAwareHover imageUrl={header.imgUrl.uploadImgUrl}>
                             <p className="font-bold text-xl">{header.title}</p>
@@ -49,7 +49,7 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                                         comboNumber: c.id,
                                     })}
                                     className='h-full w-full relative bg-gray-900'
-                                    href={`${userData.username}/combo?combo=${c.id.split('combo ')[1]}`}
+                                    href={`${name}/combo?combo=${c.id.split('combo ')[1]}`}
                                 >
                                     {
                                         c.imgUrl[0].url ?
@@ -70,7 +70,7 @@ const ClassicView = ({ template, userData }: ClassicViewProps) => {
                     ))
                 }
             </div>
-            <CartWidget {...{ user: userData.username! }} />
+            <CartWidget {...{ user: template.name || '' }} />
             {
                 paymentMethods.length ? <PaymentMethodsWidget {...{ template }} /> : <></>
             }

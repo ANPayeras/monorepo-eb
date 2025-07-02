@@ -41,6 +41,7 @@ export const createTemplate = mutation({
 
     return await ctx.db.insert("templates", {
       user: user[0]._id,
+      name: user[0].username,
       header: {
         imgUrl: { localImg: "", uploadImgUrl: "", storageId: "" },
         title: "",
@@ -49,7 +50,7 @@ export const createTemplate = mutation({
       combos: Array.from({ length: 4 }, (_, i) => ({
         description: "",
         imgUrl: [{ url: "", storageId: "" }],
-        price: '',
+        price: "",
         title: "",
         id: `combo ${i + 1}`,
       })),
@@ -146,6 +147,15 @@ export const listTemplates = query({
       .query("templates")
       .filter((q) => q.eq(q.field("user"), user[0]._id))
       .collect();
+  },
+});
+
+export const getActivesTemplates = query({
+  args: {
+    templates: v.array(v.any()),
+  },
+  handler: async (_ctx, args) => {
+    return args.templates.filter((t) => t.active);
   },
 });
 
@@ -324,21 +334,30 @@ export const activeTemplate = mutation({
       throw new ConvexError("User not found");
     }
 
-    const currentActiveTemplate = await ctx.db
+    const activesTemplates = await ctx.db
       .query("templates")
       .filter((q) =>
         q.and(q.eq(q.field("active"), true), q.eq(q.field("user"), user[0]._id))
       )
-      .first();
+      .collect();
 
-    if (currentActiveTemplate) {
-      if (currentActiveTemplate._id === args.templateId) {
-        return await ctx.db.patch(currentActiveTemplate._id, { active: false });
+    const exist = activesTemplates.find((t) => t._id === args.templateId);
+
+    if (user[0].isPremium) {
+      if (exist) {
+        await ctx.db.patch(exist._id, { active: false });
+      } else {
+        await ctx.db.patch(args.templateId, { active: true });
       }
-      await ctx.db.patch(currentActiveTemplate._id, { active: false });
+      return;
     }
 
-    return await ctx.db.patch(args.templateId, { active: true });
+    if (activesTemplates.length) {
+      if (exist) return await ctx.db.patch(exist._id, { active: false });
+      await ctx.db.patch(activesTemplates[0]._id, { active: false });
+    }
+
+    await ctx.db.patch(args.templateId, { active: true });
   },
 });
 
@@ -550,21 +569,35 @@ export const getTemplateView = query({
     test: v.boolean(),
   },
   handler: async (ctx, args) => {
+    const userDecoded = decodeURIComponent(args.user);
+    const username = userDecoded.split("@")[0];
+
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("username"), args.user))
+      .filter((q) => q.eq(q.field("username"), username))
       .first();
 
-    const template = await ctx.db
-      .query("templates")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("user"), user?._id),
-          q.field(args.test ? "test" : "active"),
-          true
+    let template = [];
+
+    if (args.test) {
+      template = await ctx.db
+        .query("templates")
+        .filter((q) =>
+          q.and(q.eq(q.field("user"), user?._id), q.field("test"), true)
         )
-      )
-      .collect();
+        .collect();
+    } else {
+      template = await ctx.db
+        .query("templates")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("user"), user?._id),
+            q.eq(q.field("name"), userDecoded),
+            q.eq(q.field("active"), true)
+          )
+        )
+        .collect();
+    }
 
     return { template, user };
   },

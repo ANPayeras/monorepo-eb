@@ -60,6 +60,7 @@ export const deleteUser = internalMutation({
 
     if (templates.length) {
       for (const template of templates) {
+        // TODO: Delete assets
         await ctx.db.delete(template._id);
       }
     }

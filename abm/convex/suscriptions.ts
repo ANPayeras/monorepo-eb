@@ -1,6 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { internalMutation, query } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
+import { internal } from "./_generated/api";
 
 export const getActiveSuscription = query({
   handler: async (ctx) => {
@@ -162,17 +163,21 @@ export const cancellSuscription = internalMutation({
       )
       .first();
 
-    await ctx.db.patch(sus?._id!, {
-      status: "cancelled",
-    });
-
     if (sus) {
-      const user = await ctx.db.get(sus?.user);
+      await ctx.db.patch(sus._id, {
+        status: "cancelled",
+      });
+
+      const user = await ctx.db.get(sus.user);
 
       if (user) {
         await ctx.db.patch(user._id, {
           isPremium: false,
           suscriptionId: undefined,
+        });
+
+        await ctx.runMutation(internal.suscriptions.removePremiumFeatures, {
+          userId: user._id,
         });
       }
     }
@@ -190,5 +195,29 @@ export const getAllSuscriptionsByPlan = query({
         q.eq(q.field("subscriptionPreapprovalPlanId"), args.planID)
       )
       .collect();
+  },
+});
+
+// Review this
+export const removePremiumFeatures = internalMutation({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    // disabled active templates
+    const activeTemplates = await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(q.eq(q.field("user"), args.userId), q.field("active"), true)
+      )
+      .collect();
+
+    if (activeTemplates.length) {
+      for (const template of activeTemplates) {
+        await ctx.db.patch(template._id, {
+          active: false,
+        });
+      }
+    }
   },
 });

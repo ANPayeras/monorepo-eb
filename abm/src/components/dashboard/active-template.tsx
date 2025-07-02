@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
 import Link from 'next/link'
@@ -18,7 +18,7 @@ const ActiveTemplate = () => {
     const changeLastBuild = useMutation(api.templates.changeLastBuild)
     const router = useRouter()
 
-    const viewUrl = `${VIEW_URL}/${user?.username}`
+    const viewUrl = useMemo(() => template?.length ? `${VIEW_URL}/${template[0].name}` : '', [template])
 
     const editTemplate = async () => {
         try {

@@ -4,6 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   templates: defineTable({
     user: v.id("users"),
+    name: v.optional(v.string()),
     header: v.object({
       imgUrl: v.object({
         localImg: v.optional(v.string()),

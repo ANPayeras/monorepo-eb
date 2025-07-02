@@ -7,21 +7,35 @@ export const getTemplateView = query({
     test: v.boolean(),
   },
   handler: async (ctx, args) => {
+    const userDecoded = decodeURIComponent(args.user);
+    const username = userDecoded.split("@")[0];
+
     const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("username"), args.user))
+      .filter((q) => q.eq(q.field("username"), username))
       .first();
 
-    const template = await ctx.db
-      .query("templates")
-      .filter((q) =>
-        q.and(
-          q.eq(q.field("user"), user?._id),
-          q.field(args.test ? "test" : "active"),
-          true
+    let template = [];
+
+    if (args.test) {
+      template = await ctx.db
+        .query("templates")
+        .filter((q) =>
+          q.and(q.eq(q.field("user"), user?._id), q.field("test"), true)
         )
-      )
-      .collect();
+        .collect();
+    } else {
+      template = await ctx.db
+        .query("templates")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("user"), user?._id),
+            q.eq(q.field("name"), userDecoded),
+            q.eq(q.field("active"), true)
+          )
+        )
+        .collect();
+    }
 
     return { template, user };
   },
