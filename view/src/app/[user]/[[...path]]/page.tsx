@@ -10,6 +10,9 @@ const page = ({ params, searchParams }: MainPageProps) => {
   let _combo;
   const _path = path?.length ? path[0] : '';
 
+  console.log('params', params)
+  console.log('searchParams', searchParams)
+
   if (combo === ':combo') _combo = combo.replace(':combo', '')
   else _combo = `combo ${combo}`
 

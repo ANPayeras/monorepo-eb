@@ -8,8 +8,7 @@ import useSentEvent from '@/hooks/use-sent-events'
 const Combo = ({ template, combo }: { template: Doc<"templates">, combo: string }) => {
     const { cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
     const { sentEvent } = useSentEvent()
-    console.log(template)
-    console.log(combo)
+    console.log('Combo', combo)
     const { description, price, title, imgUrl, id } = template.combos.find((c => c.id === combo))!
     const cartItem = cart.find(i => i.category === combo)
 
