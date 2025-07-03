@@ -119,7 +119,6 @@ export type BgVideoPlayerProps = {
 export type ReactiveTemplateProps = {
   user: string;
   component: string;
-  combo: string;
   test?: boolean;
 };
 

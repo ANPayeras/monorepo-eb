@@ -6,11 +6,11 @@ import CarrouselWrapped from './carrousel-wrapped'
 import useSentEvent from '@/hooks/use-sent-events'
 import { useSearchParams } from 'next/navigation'
 
-const Combo = ({ template, combo }: { template: Doc<"templates">, combo: string }) => {
-    const a = useSearchParams()
+const Combo = ({ template }: { template: Doc<"templates"> }) => {
+    const searchParams = useSearchParams()
+    const combo = `combo ${searchParams.get('combo')}`
     const { cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
     const { sentEvent } = useSentEvent()
-    console.log('Combo', a.get('combo'))
     const { description, price, title, imgUrl, id } = template.combos.find((c => c.id === combo))!
     const cartItem = cart.find(i => i.category === combo)
 
