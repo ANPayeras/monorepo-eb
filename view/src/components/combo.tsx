@@ -4,11 +4,13 @@ import { useDataStore } from '@/providers/data-store-providers'
 import { Doc } from '../../convex/_generated/dataModel'
 import CarrouselWrapped from './carrousel-wrapped'
 import useSentEvent from '@/hooks/use-sent-events'
+import { useSearchParams } from 'next/navigation'
 
 const Combo = ({ template, combo }: { template: Doc<"templates">, combo: string }) => {
+    const a = useSearchParams()
     const { cart, handleOnChangeCart, handleOnChangeCartQuantity } = useDataStore(state => state)
     const { sentEvent } = useSentEvent()
-    console.log('Combo', combo)
+    console.log('Combo', a.get('combo'))
     const { description, price, title, imgUrl, id } = template.combos.find((c => c.id === combo))!
     const cartItem = cart.find(i => i.category === combo)
 
