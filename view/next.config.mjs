@@ -17,16 +17,16 @@ const nextConfig = {
     ],
   },
   assetPrefix: "/view",
-  // async rewrites() {
-  //   return {
-  //     beforeFiles: [
-  //       {
-  //         source: "/view/_next/:path*",
-  //         destination: "/_next/:path*",
-  //       },
-  //     ],
-  //   };
-  // },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/view/_next/:path*",
+          destination: "/_next/:path*",
+        },
+      ],
+    };
+  },
 };
 
 export default nextConfig;
