@@ -17,8 +17,7 @@ import Combo from './combo'
 import Checkout from './checkout'
 import Header from './header'
 
-const ReactiveTemplate = ({ user, component = '', combo = '', test = false }: ReactiveTemplateProps) => {
-  console.log('ReactiveTemplate', combo)
+const ReactiveTemplate = ({ user, component = '', test = false }: ReactiveTemplateProps) => {
   const { init } = useInitPosthog()
 
   const data = useQuery(api.templates.getTemplateView, { user, test })
@@ -41,7 +40,7 @@ const ReactiveTemplate = ({ user, component = '', combo = '', test = false }: Re
     [index: string]: JSX.Element;
   } = {
     all: <All template={template[0]} />,
-    combo: <Combo template={template[0]} combo={decodeURIComponent(combo)} />,
+    combo: <Combo template={template[0]} />,
     confirmation: <Checkout user={userData!} />,
   }
 
