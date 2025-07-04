@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { LAUNCH_DATE } from "./constants/envs";
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -12,12 +13,25 @@ const isPublicRoute = createRouteMatcher([
   "/test/:user/:path(all|combo|confirmation)/:combo(1|2|3|4)?",
 ]);
 
+const launchDate = new Date(LAUNCH_DATE!);
+
 export default clerkMiddleware((auth, request) => {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-url", request.url);
 
   if (!isPublicRoute(request)) {
     auth().protect();
+  }
+
+  const now = new Date();
+
+  const isAfterLaunch = now >= launchDate;
+  const isWaitlistPage = request.nextUrl.pathname.startsWith("/waitlist");
+
+  if (!isAfterLaunch && !isWaitlistPage) {
+    const waitlistUrl = request.nextUrl.clone();
+    waitlistUrl.pathname = "/waitlist";
+    return NextResponse.redirect(waitlistUrl);
   }
 
   return NextResponse.next({

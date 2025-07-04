@@ -10,3 +10,4 @@ export const CLOUDINARY_KEY = process.env.CLOUDINARY_KEY;
 export const RESEND_API_KEY = process.env.RESEND_API_KEY;
 export const RESEND_WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET;
 export const VERSION = process.env.version;
+export const LAUNCH_DATE = process.env.NEXT_PUBLIC_LAUNCH_DATE;
