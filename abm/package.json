@@ -10,8 +10,8 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@clerk/localizations": "3.0.4",
-    "@clerk/nextjs": "^5.3.7",
+    "@clerk/localizations": "^3.17.3",
+    "@clerk/nextjs": "^6.23.3",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@hookform/resolvers": "^3.9.0",
@@ -53,7 +53,7 @@
     "mercadopago": "^2.0.15",
     "mini-svg-data-uri": "^1.4.4",
     "motion": "^12.12.1",
-    "next": "14.2.6",
+    "next": "14.2.25",
     "next-qrcode": "^2.5.1",
     "react": "^18",
     "react-color-palette": "^7.2.2",
