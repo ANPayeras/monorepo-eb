@@ -1,7 +1,7 @@
 "use client"
 
 import Icon from '@/components/Icon';
-import { LAUNCH_DATE, MP_API_KEY } from '@/constants/envs';
+import { LAUNCH_DATE } from '@/constants/envs';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
@@ -52,12 +52,13 @@ const Page = () => {
                         className='rounded-full drop-shadow-md'
                     />
                 </div>
-                <div className='flex flex-col items-center gap-2'>
-                    <h1 className='text-4xl sm:text-6xl text-center text-slate-500'>Cada vez falta menos</h1>
+                <div className='flex flex-col items-center gap-4'>
+                    <h2 className='text-4xl sm:text-5xl text-center text-slate-500'>Creemos en la independencia, también la digital.</h2>
+                    <p className='border p-2 rounded-sm drop-shadow-md bg-opacity-50 bg-slate-900 text-slate-100'>9/07/2025 - 12:00</p>
                 </div>
                 <div className='flex items-center gap-2 mt-5'>
-                    <h2 className='text-3xl sm:text-5xl'>Días:</h2>
-                    <SlotCounter value={day} delay={2} containerClassName='text-3xl sm:text-5xl' autoAnimationStart={false} />
+                    <h2 className='text-3xl sm:text-5xl text-black'>Días:</h2>
+                    <SlotCounter value={day} delay={2} containerClassName='text-3xl sm:text-5xl text-black' autoAnimationStart={false} />
                 </div>
                 <div className='flex gap-2 text-3xl sm:text-5xl mb-5'>
                     <SlotCounter value={hour < 10 ? `0${hour}` : hour} containerClassName='text-slate-600' autoAnimationStart={false} />:
@@ -67,9 +68,10 @@ const Page = () => {
                 <div className='flex gap-2 text-3xl sm:text-5xl'>
                     <h2 className='text-3xl sm:text-5xl text-slate-600'>¿Estás preparad@?</h2>
                 </div>
-                <div className='flex gap-2'>
+                <div className='flex flex-col text-sm md:text-medium gap-2 items-center text-center'>
+                    <h3 className='text-black'>🔔 Suscribite para que te avisemos el día del lanzamiento.</h3>
                     <Link target='_blank' href='https://www.instagram.com/estoy.link?igsh=MW5nZzhoeDg5MHF1cQ==' className='flex gap-2 items-center hover:scale-105 transition-all'>
-                        <Icon name='instagram' iconProps={{ size: 40 }} />
+                        <Icon name='instagram' iconProps={{ size: 30 }} />
                     </Link>
                 </div>
             </div>
