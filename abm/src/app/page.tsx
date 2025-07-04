@@ -1,4 +1,5 @@
 import React from "react";
+
 import Hero from "@/components/home/hero";
 import { DockMenu } from "@/components/home/dockMenu";
 import { CardsCarrousel } from "@/components/home/cardsCarrousel";
@@ -30,7 +31,6 @@ const page = () => {
                 <Contact />
             </section>
         </main>
-
     )
 }
 

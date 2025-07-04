@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useUser, useAuth } from '@clerk/nextjs'
+import { useUser } from '@clerk/nextjs'
 import { Tabs } from './ui/tabs'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -27,7 +27,6 @@ import { cn } from '@/lib/utils';
 const Profile = () => {
     const { profile } = useParams()
     const { user } = useUser()
-    const { signOut } = useAuth()
     const userConvex = useQuery(api.users.getCurrentUser, !user ? 'skip' : undefined)
     const swiperRef = useRef<SwiperType>()
     const isPaymentActive = useFlag('payment')
@@ -125,8 +124,8 @@ const Profile = () => {
         const { value } = data
         try {
             if (value !== 'Eliminar cuenta') return
-            user.delete()
-            await signOut()
+            await user.delete()
+            window.location.reload()
         } catch (error) {
             console.log(error)
             throw new Error(JSON.stringify(error))
