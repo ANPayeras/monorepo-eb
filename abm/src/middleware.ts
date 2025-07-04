@@ -15,13 +15,11 @@ const isPublicRoute = createRouteMatcher([
 
 const launchDate = new Date(LAUNCH_DATE!);
 
-export default clerkMiddleware((auth, request) => {
+export default clerkMiddleware(async (auth, request) => {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-url", request.url);
 
-  if (!isPublicRoute(request)) {
-    auth().protect();
-  }
+  if (!isPublicRoute(request)) await auth.protect();
 
   const now = new Date();
 
