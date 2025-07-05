@@ -7,8 +7,8 @@ const useInitPosthog = () => {
     const router = useRouter()
     const setInitPostHog = useDataStore(state => state.setInitPostHog)
 
-    const init = (template: Doc<"templates">, user: Doc<"users">) => {
-        identifyUser(template, user)
+    const init = (template: Doc<"templates">) => {
+        identifyUser(template)
         posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
             api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
             person_profiles: 'identified_only',
@@ -31,10 +31,10 @@ const useInitPosthog = () => {
     }
 
     // Check when template change
-    const identifyUser = (template: Doc<"templates">, user: Doc<"users">) => {
+    const identifyUser = (template: Doc<"templates">) => {
         const currentId = posthog.get_distinct_id()
         if (currentId && currentId !== template._id) {
-            router.replace(`/${user.username}`)
+            router.replace(`/${template.name}`)
             posthog.identify(template._id, { user: template.user })
         }
     }

@@ -41,8 +41,8 @@ const Page = () => {
     })
 
     return (
-        <main className="absolute h-full w-full top-0 left-0 bg-slate-400 flex items-center justify-center">
-            <div className='bg-slate-100 flex flex-col items-center gap-5 w-[900px] max-w-[90%] px-10 py-10 rounded-sm drop-shadow-md'>
+        <main className="absolute h-dvh w-full top-0 left-0 bg-slate-400 flex items-center justify-center">
+            <div className='bg-slate-100 flex flex-col items-center gap-5 w-[900px] max-w-[90%] max-h-[90%] px-10 py-10 rounded-sm drop-shadow-md'>
                 <div>
                     <Image
                         src={'/logo.png'}

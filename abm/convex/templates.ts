@@ -433,6 +433,32 @@ export const getActiveTemplateByClerkIdPublic = query({
   },
 });
 
+export const getHasMetricsTemplatesByClerkIdPublic = query({
+  args: {
+    clerkId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .collect();
+
+    if (user.length === 0) {
+      throw new ConvexError("User not found");
+    }
+
+    return await ctx.db
+      .query("templates")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("user"), user[0]._id),
+          q.eq(q.field("hasMetrics"), true)
+        )
+      )
+      .collect();
+  },
+});
+
 export const getUrl = mutation({
   args: {
     storageId: v.id("_storage"),
@@ -587,18 +613,43 @@ export const getTemplateView = query({
         )
         .collect();
     } else {
-      template = await ctx.db
-        .query("templates")
-        .filter((q) =>
-          q.and(
-            q.eq(q.field("user"), user?._id),
-            q.eq(q.field("name"), userDecoded),
-            q.eq(q.field("active"), true)
+      if (user?.isPremium) {
+        template = await ctx.db
+          .query("templates")
+          .filter((q) =>
+            q.and(
+              q.eq(q.field("user"), user?._id),
+              q.eq(q.field("name"), userDecoded),
+              q.eq(q.field("active"), true)
+            )
           )
-        )
-        .collect();
+          .collect();
+      } else {
+        template = await ctx.db
+          .query("templates")
+          .filter((q) =>
+            q.and(
+              q.eq(q.field("user"), user?._id),
+              q.eq(q.field("active"), true)
+            )
+          )
+          .collect();
+      }
     }
 
     return { template, user };
+  },
+});
+
+export const setTemplateMetrics = mutation({
+  args: {
+    templateId: v.id("templates"),
+  },
+  handler: async (ctx, args) => {
+    const { templateId } = args;
+    const template = await ctx.db.get(templateId);
+    if (!template?.hasMetrics) {
+      await ctx.db.patch(args.templateId, { hasMetrics: true });
+    }
   },
 });

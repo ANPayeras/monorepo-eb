@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
 import { capitalizeFirstLetter } from '@/lib/utils'
@@ -6,13 +7,14 @@ import { CardContent, CardHeader, CardTitle, CardDescription } from '../ui/card'
 import { IconChevronRight } from '@tabler/icons-react'
 import Link from 'next/link'
 import EmptyChartInfo from '../charts/empty-chart-info'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const WidgetsMetrics = async ({ clerkId }: { clerkId: string }) => {
+const WidgetsMetrics = async ({ templateId }: { templateId: Id<"templates"> }) => {
 
     const metrics: [string, string | null, number][] = await fetchAction(api.metrics.getMetrics,
         {
             query: "select distinct properties.type, properties.comboNumber, count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' and properties.type is not null and timestamp > now() - interval 3 month group by properties.type, properties.comboNumber order by t_count desc",
-            clerkId
+            templateId
         })
 
     // const metrics = [
@@ -52,18 +54,18 @@ const WidgetsMetrics = async ({ clerkId }: { clerkId: string }) => {
                         <>
                             <div className='flex w-full md:w-1/2 justify-between pr-6 md:pr-0 mb-1'>
                                 <span>Tipo</span>
-                                <span>Clicks</span>
+                                <span>Interacciones</span>
                             </div>
                             {
                                 metrics.map((m, i) => (
                                     <Link
                                         key={i}
                                         href={{
-                                            pathname: '/metrics/detail',
+                                            pathname: `/metrics/${templateId}/detail`,
                                             query: { type: m[0], ...(m[1] && { combo: m[1] }) },
                                         }}
                                         className='flex w-full justify-between hover:bg-slate-200 transition-all cursor-pointer'
-                                        style={{ borderBottom: metrics.length - 1 === i ? '' : '1px solid black' }}>
+                                        style={{ borderBottom: metrics.length - 1 === i ? '' : '1px solid black', borderTop: i === 0 ? '1px solid black':'' }}>
                                         <div className='w-full flex justify-between md:w-1/2'>
                                             <span>{capitalizeFirstLetter(m[0] === 'combo' ? m[1] as string : m[0] as string)}</span>
                                             <span>{m[2]}</span>

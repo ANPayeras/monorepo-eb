@@ -119,7 +119,7 @@ export default defineSchema({
             img: v.optional(
               v.object({
                 localImg: v.optional(v.string()),
-                uploadImgUrl: v.optional(v.string()),
+                uploadImgUrl: v.string(),
                 storageId: v.union(v.id("_storage"), v.string()),
               })
             ),
@@ -128,6 +128,7 @@ export default defineSchema({
       })
     ),
     lastBuild: v.boolean(),
+    hasMetrics: v.optional(v.boolean()),
   }),
   users: defineTable({
     email: v.string(),

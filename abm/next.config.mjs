@@ -29,7 +29,7 @@ const nextConfig = {
     return [
       {
         source:
-          "/:user((?!build|templates|profile|layouts|sign-in|sign-up|api)[^/]+)",
+          "/:user((?!build|templates|profile|layouts|sign-in|sign-up|api|metrics)[^/]+)",
         destination: `${process.env.REWRITES_VIEW_URL}/:user`,
       },
       {

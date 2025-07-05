@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
 import {
@@ -8,13 +9,14 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import EmptyChartInfo from '../charts/empty-chart-info'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const MostVisitedPathNames = async ({ clerkId }: { clerkId: string }) => {
+const MostVisitedPathNames = async ({ templateId }: { templateId: Id<"templates"> }) => {
 
     const metrics: [string, number][] = await fetchAction(api.metrics.getMetrics,
         {
             query: "select properties.$pathname, count() as pt_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' and timestamp > now() - interval 3 month group by properties.$pathname order by pt_count desc limit 5",
-            clerkId
+            templateId
         })
 
     return (

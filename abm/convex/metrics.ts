@@ -1,23 +1,22 @@
 import { ConvexError, v } from "convex/values";
 import { action } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 
 export const getMetrics = action({
   args: {
     query: v.string(),
-    clerkId: v.string(),
+    templateId: v.id("templates"),
   },
   handler: async (ctx, args) => {
-    const template = await ctx.runQuery(
-      internal.templates.getActiveTemplateByClerkId,
-      { clerkId: args.clerkId }
-    );
+    const template = await ctx.runQuery(api.templates.getTemplateById, {
+      templateId: args.templateId,
+    });
 
-    if (!template.length) {
+    if (!template) {
       throw new ConvexError("Template not found");
     }
 
-    const id = template[0]._id as string;
+    const id = template._id as string;
 
     const url = `https://us.posthog.com/api/projects/${process.env.POSTHOG_ID}/query/`;
     const headers = {

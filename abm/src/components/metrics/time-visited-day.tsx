@@ -1,11 +1,13 @@
 import React from 'react'
+
 import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
 import { days } from '@/constants'
 import { PieChartComponent } from '../charts/pie-chart'
 import { ChartConfig } from '../ui/chart'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const TimeVisitedDay = async ({ clerkId }: { clerkId: string }) => {
+const TimeVisitedDay = async ({ templateId }: { templateId: Id<"templates"> }) => {
 
     let chartConfig: { [key: string]: any } = {
         visitors: {
@@ -18,7 +20,7 @@ const TimeVisitedDay = async ({ clerkId }: { clerkId: string }) => {
     const metrics: [number, number][] = await fetchAction(api.metrics.getMetrics,
         {
             query: "select toDayOfWeek(timestamp - interval 3 hour), count() as t_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' and timestamp > now() - interval 3 month group by toDayOfWeek(timestamp - interval 3 hour) order by t_count desc",
-            clerkId
+            templateId
         })
 
     metrics?.forEach((m, i) => {

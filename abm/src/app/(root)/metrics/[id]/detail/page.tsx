@@ -1,7 +1,6 @@
 import React from 'react'
+
 import { fetchAction } from 'convex/nextjs'
-import { api } from '../../../../../convex/_generated/api'
-import { currentUser } from '@clerk/nextjs/server'
 import { BarChartCustom } from '@/components/charts/bar-chart-custom'
 import BaseCard from '@/components/base-card'
 import { ChartConfig } from '@/components/ui/chart'
@@ -12,9 +11,11 @@ import { notFound } from 'next/navigation'
 import HeaderComboImgs from '@/components/detail-metrics/header-combo-imgs'
 import BaseMetricDetail from '@/components/detail-metrics/base-metric-detail'
 import EmptyChartInfo from '@/components/charts/empty-chart-info'
+import { api } from '../../../../../../convex/_generated/api'
+import { Id } from '../../../../../../convex/_generated/dataModel'
 
-const MetricDetail = async ({ searchParams }: { searchParams: { type: string, combo?: string } }) => {
-    const user = await currentUser()
+const MetricDetail = async ({ params, searchParams }: { params: { id: Id<"templates"> }, searchParams: { type: string, combo?: string } }) => {
+    const { id } = params
     const { type, combo } = searchParams
 
     const validRoute = (): boolean => {
@@ -35,34 +36,28 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
     // const mobileUsers = [[0]]
     // const locationsUsers = [ [ 'Argentina', 'San Justo' ], [ 'Argentina', 'Isidro Casanova' ] ]
 
-    const widgetHours: [string, number, number][] = await fetchAction(api.metrics.getMetrics,
+    const widgetDateHours: [number, number, number][] = await fetchAction(api.metrics.getMetrics,
         {
-            query: `select toDate(timestamp - interval 3 hour) as timestamp, toHour(timestamp - interval 3 hour), count() as t_count from events where distinct_id = 'templateID' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} group by timestamp, toHour(timestamp - interval 3 hour) order by t_count desc limit 5`,
-            clerkId: user?.id!
-        })
-
-    const widgetDays: [string, number, number][] = await fetchAction(api.metrics.getMetrics,
-        {
-            query: `select toDate(timestamp - interval 3 hour) as timestamp, toDayOfWeek(timestamp - interval 3 hour), count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} group by timestamp, toDayOfWeek(timestamp - interval 3 hour) order by t_count desc limit 5`,
-            clerkId: user?.id!
+            query: `select toDayOfWeek(timestamp - interval 3 hour), toHour(timestamp - interval 3 hour), count() as t_count from events where distinct_id = 'templateID' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} group by timestamp order by t_count desc limit 5`,
+            templateId: id
         })
 
     const desktopUsers = await fetchAction(api.metrics.getMetrics,
         {
             query: `select count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} and properties.$device_type = 'Desktop' order by t_count desc`,
-            clerkId: user?.id!
+            templateId: id
         })
 
     const mobileUsers = await fetchAction(api.metrics.getMetrics,
         {
             query: `select count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} and properties.$device_type = 'Mobile' order by t_count desc`,
-            clerkId: user?.id!
+            templateId: id
         })
 
     const locationsUsers: [string, string][] = await fetchAction(api.metrics.getMetrics,
         {
             query: `select properties.$geoip_country_name, properties.$geoip_city_name, count() as t_count from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} and timestamp > now() - interval ${metricsInterval} group by properties.$geoip_country_name, properties.$geoip_city_name order by t_count desc limit 5`,
-            clerkId: user?.id!
+            templateId: id
         })
 
     const chartDataHours: { hour: string, count: number }[] = []
@@ -82,21 +77,18 @@ const MetricDetail = async ({ searchParams }: { searchParams: { type: string, co
         },
     } satisfies ChartConfig
 
-    widgetHours?.forEach((m) => {
+    widgetDateHours?.forEach((m) => {
+        chartDataDays.push({ day: days[m[0]], count: m[2], })
         chartDataHours.push({ hour: `${m[1]}hs`, count: m[2], })
     });
 
-    widgetDays?.forEach((m) => {
-        chartDataDays.push({ day: days[m[1]], count: m[2], })
-    });
-
     const detail: { [index: string]: JSX.Element } = {
-        header: <HeaderComboImgs clerkId={user?.id!} queryDinamic={queryDinamic} />,
-        combo: <HeaderComboImgs clerkId={user?.id!} queryDinamic={queryDinamic} />,
-        link: <BaseMetricDetail type='link' />,
-        social: <BaseMetricDetail type='social' />,
-        img: <BaseMetricDetail type='img' />,
-        resizable: <BaseMetricDetail type='resizable' />,
+        header: <HeaderComboImgs templateId={id} queryDinamic={queryDinamic} />,
+        combo: <HeaderComboImgs templateId={id} queryDinamic={queryDinamic} />,
+        link: <BaseMetricDetail templateId={id} type='link' />,
+        social: <BaseMetricDetail templateId={id} type='social' />,
+        img: <BaseMetricDetail templateId={id} type='img' />,
+        resizable: <BaseMetricDetail templateId={id} type='resizable' />,
     }
 
     const _desktopUsers = desktopUsers?.length ? desktopUsers[0][0].toLocaleString(['es-ES']) : 0
