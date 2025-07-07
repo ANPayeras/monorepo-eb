@@ -49,6 +49,14 @@ const nextConfig = {
         source: "/view/_next/:path+",
         destination: `${process.env.REWRITES_VIEW_URL}/view/_next/:path+`,
       },
+      {
+        source: "/oli/static/:path*",
+        destination: `${process.env.REWRITES_VIEW_URL}/oli/static/:path*`,
+      },
+      {
+        source: "/oli/:path*",
+        destination: `${process.env.REWRITES_VIEW_URL}/oli/:path*`,
+      },
     ];
   },
 };

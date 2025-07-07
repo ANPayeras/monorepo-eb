@@ -24,6 +24,14 @@ const nextConfig = {
           source: "/view/_next/:path*",
           destination: "/_next/:path*",
         },
+        {
+          source: "/oli/static/:path*",
+          destination: "https://us-assets.i.posthog.com/static/:path*",
+        },
+        {
+          source: "/oli/:path*",
+          destination: "https://us.i.posthog.com/:path*",
+        },
       ],
     };
   },
