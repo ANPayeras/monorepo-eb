@@ -5,8 +5,9 @@ import BaseCard from '../base-card'
 import { IconChevronRight } from '@tabler/icons-react'
 import DesktopUsersClient from '../metrics/desktop-users-client'
 import MobileUsersClient from '../metrics/mobile-users-client'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const MetricsDashboard = ({ clerkId }: { clerkId: string }) => {
+const MetricsDashboard = ({ templateId }: { templateId: Id<"templates"> }) => {
     return (
         <div
             className='flex bg-slate-50 w-full gap-2 rounded-sm border p-2 shadow-lg flex-col'
@@ -21,10 +22,10 @@ const MetricsDashboard = ({ clerkId }: { clerkId: string }) => {
             </div>
             <div className='flex gap-2'>
                 <BaseCard containerClassName='hover:scale-[1.01] transition-all flex-1 h-auto'>
-                    <DesktopUsersClient clerkId={clerkId} />
+                    <DesktopUsersClient templateId={templateId} />
                 </BaseCard>
                 <BaseCard containerClassName='hover:scale-[1.01] transition-all flex-1 h-auto'>
-                    <MobileUsersClient clerkId={clerkId} />
+                    <MobileUsersClient templateId={templateId} />
                 </BaseCard>
             </div>
         </div>
