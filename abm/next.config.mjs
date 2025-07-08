@@ -25,6 +25,7 @@ const nextConfig = {
     version,
   },
   reactStrictMode: false,
+  skipTrailingSlashRedirect: true,
   async rewrites() {
     return [
       {
@@ -50,14 +51,12 @@ const nextConfig = {
         destination: `${process.env.REWRITES_VIEW_URL}/view/_next/:path+`,
       },
       {
-        source: "/oli-RGBZ/static/:path*",
-        destination: `${process.env.REWRITES_VIEW_URL}/static/:path*`,
-        // destination: "https://us-assets.i.posthog.com/static/:path*",
+        source: "/relay-KGAR/:path*",
+        destination: "https://us.i.posthog.com/:path*",
       },
       {
-        source: "/oli-RGBZ/:path*",
-        destination: `${process.env.REWRITES_VIEW_URL}/:path*`,
-        // destination: "https://us.i.posthog.com/:path*",
+        source: "/relay-KGAR/flags",
+        destination: "https://us.i.posthog.com/flags",
       },
     ];
   },
