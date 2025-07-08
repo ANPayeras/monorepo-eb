@@ -51,11 +51,13 @@ const nextConfig = {
       },
       {
         source: "/oli-RGBZ/static/:path*",
-        destination: "https://us-assets.i.posthog.com/static/:path*",
+        destination: `${process.env.REWRITES_VIEW_URL}/static/:path*`,
+        // destination: "https://us-assets.i.posthog.com/static/:path*",
       },
       {
         source: "/oli-RGBZ/:path*",
-        destination: "https://us.i.posthog.com/:path*",
+        destination: `${process.env.REWRITES_VIEW_URL}/:path*`,
+        // destination: "https://us.i.posthog.com/:path*",
       },
     ];
   },

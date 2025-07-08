@@ -24,14 +24,14 @@ const nextConfig = {
           source: "/view/_next/:path*",
           destination: "/_next/:path*",
         },
-        {
-          source: "/oli-RGBZ/static/:path*",
-          destination: "https://us-assets.i.posthog.com/static/:path*",
-        },
-        {
-          source: "/oli-RGBZ/:path*",
-          destination: "https://us.i.posthog.com/:path*",
-        },
+        // {
+        //   source: "/oli-RGBZ/static/:path*",
+        //   destination: "https://us-assets.i.posthog.com/static/:path*",
+        // },
+        // {
+        //   source: "/oli-RGBZ/:path*",
+        //   destination: "https://us.i.posthog.com/:path*",
+        // },
       ],
     };
   },
