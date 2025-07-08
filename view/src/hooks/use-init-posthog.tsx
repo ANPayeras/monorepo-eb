@@ -10,9 +10,7 @@ const useInitPosthog = () => {
     const init = (template: Doc<"templates">) => {
         identifyUser(template)
         posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-            api_host: '/relay-KGAR',
-            // api_host: process.env.NEXT_PUBLIC_POSTHOG_API_HOST,
-            ui_host: process.env.NEXT_PUBLIC_POSTHOG_UI_HOST,
+            api_host: process.env.NEXT_PUBLIC_POSTHOG_UI_HOST,
             person_profiles: 'identified_only',
             capture_pageview: false,
             capture_dead_clicks: false,

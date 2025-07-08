@@ -17,7 +17,6 @@ const nextConfig = {
     ],
   },
   assetPrefix: "/view",
-  skipTrailingSlashRedirect: true,
   async rewrites() {
     return {
       beforeFiles: [
@@ -25,18 +24,6 @@ const nextConfig = {
           source: "/view/_next/:path*",
           destination: "/_next/:path*",
         },
-        // {
-        //   source: "/relay-KGAR/static/:path*",
-        //   destination: "https://us-assets.i.posthog.com/static/:path*",
-        // },
-        // {
-        //   source: "/relay-KGAR/:path*",
-        //   destination: "https://us.i.posthog.com/:path*",
-        // },
-        // {
-        //   source: "/relay-KGAR/flags",
-        //   destination: "https://us.i.posthog.com/flags",
-        // },
       ],
     };
   },
