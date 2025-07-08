@@ -17,9 +17,29 @@ const launchDate = new Date(LAUNCH_DATE!);
 
 export default clerkMiddleware(async (auth, request) => {
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-url", request.url);
+  // requestHeaders.set("x-url", request.url);
 
   if (!isPublicRoute(request)) await auth.protect();
+
+  //
+  let url = request.nextUrl.clone();
+  if (url.pathname.includes("relay-KGAR")) {
+    const hostname = url.pathname.startsWith("/relay-KGAR/static/")
+      ? "us-assets.i.posthog.com"
+      : "us.i.posthog.com";
+
+    requestHeaders.set("host", hostname);
+
+    url.protocol = "https";
+    url.hostname = hostname;
+    url.port = "443";
+    url.pathname = url.pathname.replace(/^\/relay-KGAR/, "");
+
+    return NextResponse.rewrite(url, {
+      headers: requestHeaders,
+    });
+  }
+  //
 
   const now = new Date();
 
@@ -46,5 +66,6 @@ export const config = {
     // Always run for API routes
     "/(api|trpc)(.*)",
     "/dashboard/",
+    "/relay-KGAR/:path*",
   ],
 };

@@ -50,14 +50,14 @@ const nextConfig = {
         source: "/view/_next/:path+",
         destination: `${process.env.REWRITES_VIEW_URL}/view/_next/:path+`,
       },
-      {
-        source: "/relay-KGAR/:path*",
-        destination: "https://us.i.posthog.com/:path*",
-      },
-      {
-        source: "/relay-KGAR/flags",
-        destination: "https://us.i.posthog.com/flags",
-      },
+      // {
+      //   source: "/relay-KGAR/:path*",
+      //   destination: "https://us.i.posthog.com/:path*",
+      // },
+      // {
+      //   source: "/relay-KGAR/flags",
+      //   destination: "https://us.i.posthog.com/flags",
+      // },
     ];
   },
 };
