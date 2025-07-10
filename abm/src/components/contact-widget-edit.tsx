@@ -1,16 +1,23 @@
 import React from 'react'
+
 import { Input } from './ui/input'
 import { Switch } from './ui/switch'
 import { useDataStore } from '@/providers/data-store-providers'
 import { icons } from '@/constants'
+import MenuBarEdit from './build/menu-bar-edit'
 
-const ContactTemplate = () => {
-    const { contact, handleOnChangeContact, handleOnChangeContactSwitch } = useDataStore(state => state)
+const ContactWidgetEdit = () => {
+    const { contact, widgets, handleOnChangeContact, handleOnChangeContactSwitch } = useDataStore(state => state)
+    const widget = widgets.find(w => w.type === 'socials')!
+
     return (
         <div className='flex flex-col gap-4 p-4'>
-            <span className='text-center'>
-                Habilita o deshabilita redes sociales:
-            </span>
+            <div className='flex flex-col w-full gap-2'>
+                <span className='text-center'>
+                    Redes sociales
+                </span>
+                <MenuBarEdit widget={widget} />
+            </div>
             {
                 icons.map((ic, i) => {
                     const socialMedia = contact.find(c => c.title === ic.name)
@@ -39,4 +46,4 @@ const ContactTemplate = () => {
     )
 }
 
-export default ContactTemplate
+export default ContactWidgetEdit

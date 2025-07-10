@@ -1,5 +1,10 @@
 import { SelectSection } from "@/interfaces";
-import { DeliverMethods, Layout, PaymentMethods } from "@/stores/data-store";
+import {
+  DeliverMethods,
+  Layout,
+  PaymentMethods,
+  Widget,
+} from "@/stores/data-store";
 import {
   CSSProperties,
   DetailedHTMLProps,
@@ -70,17 +75,17 @@ export type RowPlanLimitsProps = {
 export type PaymentMethodsProps = {
   selectSection?: (type: string) => void;
   paymentMethods: PaymentMethods[];
-  containerClassName?: string;
   editSection?: SelectSection;
   props?: any;
-  layout?: Layout;
+  layout: Layout;
+  widget: Widget;
 };
 
 export type DeliverPreviewProps = {
   selectSection?: (type: string) => void;
   deliverMethods: DeliverMethods[];
-  containerClassName?: string;
   editSection?: SelectSection;
   props?: any;
-  layout?: Layout;
+  layout: Layout;
+  widget: Widget;
 };

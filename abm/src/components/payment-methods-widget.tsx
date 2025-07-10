@@ -2,20 +2,42 @@ import React, { FC } from 'react'
 
 import { cn } from '@/lib/utils'
 import ToolsWidget from './tools-widget'
-import WidgetBaseCard from './widget-base-card'
 import { useIsSmall } from '@/hooks/use-media.query'
 import { PaymentMethodsProps } from './types'
+import WidgetBaseCardContainer from './widget-base-card-container'
+import { useDataStore } from '@/providers/data-store-providers'
 
-const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSection, paymentMethods, containerClassName, layout, props }) => {
+const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSection, paymentMethods, layout, props, widget }) => {
+    const { addWidget, widgets } = useDataStore(state => state)
     const isSmall = useIsSmall()
-    return (
-        <WidgetBaseCard>
+
+    const editWidget = () => {
+        const existWidget = widgets.find(w => w.type === 'pm')
+        if (!existWidget) {
+            addWidget({
+                type: 'pm',
+                enabled: false,
+                title: 'Métodos de pago',
+                widgetHandler: 'unique',
+                id: '',
+            })
+        }
+        selectSection && selectSection('paymentMethods')
+    }
+
+    const comp =
+        <>
             <div
-                className={cn(`w-full min-h-16 flex flex-col space-y-1 p-2 rounded-md ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`, containerClassName)}
-                style={{ color: layout?.textsColor }}
+                className={cn(`w-full min-h-16 flex flex-col space-y-1 p-2 ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'}`)}
+                style={{ color: widget?.data?.textColor || layout?.textsColor }}
                 {...!isSmall && props}
             >
-                <div className='flex justify-between items-center gap-4'>
+                <div
+                    className='flex items-center'
+                    style={{
+                        justifyContent: widget?.data?.textAlign || 'center'
+                    }}
+                >
                     <span>Métodos de Pago</span>
                 </div>
                 <div className='flex flex-col'>
@@ -35,13 +57,22 @@ const PaymentMethodsWidget: FC<PaymentMethodsProps> = ({ selectSection, editSect
             {
                 selectSection &&
                 <ToolsWidget
-                    editFunc={() => selectSection('paymentMethods')}
+                    editFunc={editWidget}
                     isEditing={editSection?.section === 'paymentMethods'}
                     {...isSmall && { props }}
                 />
             }
-        </WidgetBaseCard>
-    )
+        </>
+
+    if (layout.templateLayout === 'classic') {
+        return (
+            <WidgetBaseCardContainer widget={widget}>
+                {comp}
+            </WidgetBaseCardContainer>
+        )
+    } else {
+        return comp
+    }
 }
 
 export default PaymentMethodsWidget

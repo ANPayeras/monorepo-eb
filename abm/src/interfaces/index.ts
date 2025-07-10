@@ -185,3 +185,12 @@ export type TemplateBtnsOptionsProps = {
   isPremium: boolean;
   activesTemplates: Doc<"templates">[];
 };
+
+export type ContactInfoWidgetProps = {
+  selectSection?: (type: string) => void;
+  editSection?: SelectSection;
+  contact: Contact[];
+  layout: Layout;
+  props?: any;
+  widget: Widget;
+};

@@ -1,20 +1,39 @@
-import React, { FC } from 'react'
+import React from 'react'
 
-import { Contact, Layout } from '@/stores/data-store'
 import ToolsWidget from './tools-widget'
-import { SelectSection } from '@/interfaces'
+import { ContactInfoWidgetProps } from '@/interfaces'
 import Link from 'next/link'
-import WidgetBaseCard from './widget-base-card'
 import { icons } from '@/constants'
 import PlaceholdersWidgets from './widgets/placeholders-widgets'
 import { useIsSmall } from '@/hooks/use-media.query'
+import WidgetBaseCardContainer from './widget-base-card-container'
+import { useDataStore } from '@/providers/data-store-providers'
 
-const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSection?: SelectSection, contact: Contact[], layout: Layout, props?: any }> = ({ selectSection, editSection, contact, layout, props }) => {
+const ContactInfoWidget = ({ selectSection, editSection, contact, layout, props, widget }: ContactInfoWidgetProps) => {
+    const { addWidget, widgets } = useDataStore(state => state)
     const isSmall = useIsSmall()
-    return (
-        <WidgetBaseCard containerClassName='bg-transparent border-none shadow-none hover:border-slate-700 hover:border transition-all'>
+
+    const editWidget = () => {
+        const existWidget = widgets.find(w => w.type === 'socials')
+        if (!existWidget) {
+            addWidget({
+                type: 'socials',
+                enabled: false,
+                title: 'Redes sociales',
+                widgetHandler: 'unique',
+                id: '',
+            })
+        }
+        selectSection && selectSection('contact')
+    }
+
+    const comp =
+        <>
             <div
-                className={`hover:border-slate-700 hover:border hover:shadow-sm h-16 flex justify-center items-center p-2 gap-1 w-full rounded-md ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`}
+                className={`h-16 flex justify-center items-center p-2 gap-1 w-full ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'}`}
+                style={{
+                    justifyContent: widget?.data?.textAlign
+                }}
                 {...!isSmall && props}
             >
                 {
@@ -23,8 +42,11 @@ const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSectio
                         return (
                             <Link
                                 key={i}
-                                style={{ borderColor: layout.textsColor }}
-                                className='bg-slate-200 flex justify-center items-center w-[40px] h-[40px] rounded-full font-bold border-[1px] hover:scale-105 transition-all shadow-md cursor-pointer'
+                                style={{
+                                    borderColor: widget?.data?.textColor || layout.textsColor,
+                                    color: widget?.data?.textColor || layout.textsColor
+                                }}
+                                className='flex justify-center items-center w-[40px] h-[40px] rounded-full font-bold border-[1px] hover:scale-105 transition-all shadow-md cursor-pointer'
                                 href={c?.url || ''}
                                 target='_blank'
                             >
@@ -37,13 +59,22 @@ const ContactInfoWidget: FC<{ selectSection?: (type: string) => void, editSectio
             {
                 selectSection &&
                 <ToolsWidget
-                    editFunc={() => selectSection('contact')}
+                    editFunc={editWidget}
                     isEditing={editSection?.section === 'contact'}
                     {...isSmall && { props }}
                 />
             }
-        </WidgetBaseCard>
-    )
+        </>
+
+    if (layout.templateLayout === 'classic') {
+        return (
+            <WidgetBaseCardContainer widget={widget}>
+                {comp}
+            </WidgetBaseCardContainer>
+        )
+    } else {
+        return comp
+    }
 }
 
 export default ContactInfoWidget
