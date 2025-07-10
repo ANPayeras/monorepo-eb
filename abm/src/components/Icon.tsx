@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { IconClockFilled, IconCopy, IconCopyCheck, IconProps, IconEdit, IconUpload, IconTrash, IconPhotoScan, IconCircleXFilled, IconInfoCircle, IconGripVertical, IconBrandInstagram, IconMail, IconExternalLink, IconAlignCenter, IconAlignJustified, IconAlignLeft, IconAlignRight, IconShadow, IconCircleLetterAFilled, IconPaletteFilled } from '@tabler/icons-react'
+import { IconClockFilled, IconCopy, IconCopyCheck, IconProps, IconEdit, IconUpload, IconTrash, IconPhotoScan, IconCircleXFilled, IconInfoCircle, IconGripVertical, IconBrandInstagram, IconMail, IconExternalLink, IconAlignCenter, IconAlignJustified, IconAlignLeft, IconAlignRight, IconShadow, IconCircleLetterAFilled, IconPaletteFilled, IconPlus } from '@tabler/icons-react'
 
 const IconsName = {
     copy: IconCopy,
@@ -23,6 +23,8 @@ const IconsName = {
     iconShadow: IconShadow,
     letterAFilled: IconCircleLetterAFilled,
     palletteFilled: IconPaletteFilled,
+    photoScan: IconPhotoScan,
+    plus: IconPlus,
 }
 
 export type KeyTextIcons = keyof typeof IconsName;

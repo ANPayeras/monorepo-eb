@@ -4,12 +4,12 @@ import ToolsWidget from './tools-widget'
 import { useDataStore } from '@/providers/data-store-providers'
 import Image from 'next/image'
 import { ImgWidgetInterface } from '@/interfaces'
-import { IconPhotoScan } from '@tabler/icons-react'
 import useUploadFile from '@/hooks/use-upload-file'
-import WidgetBaseCard from './widget-base-card'
 import { useIsSmall } from '@/hooks/use-media.query'
+import Icon from './Icon'
 
 const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterface) => {
+    const { data } = widget
     const deleteWidget = useDataStore(state => state.deleteWidget)
     const isEditing = widget.id === editWidget?.id
     const { deleteFileCloudinary } = useUploadFile()
@@ -25,14 +25,14 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
         }
     }
 
-    const image = widget.data?.img?.uploadImgUrl
+    const image = data?.img?.uploadImgUrl
 
     const isSmall = useIsSmall()
 
     return (
-        <WidgetBaseCard>
+        <>
             <div
-                className={`flex w-full max-h-[200px] rounded-md relative ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`}
+                className={`flex w-full max-h-[200px] relative ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'}`}
                 {...!isSmall && props}
             >
                 {
@@ -42,18 +42,24 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
                                 src={image}
                                 alt='img-widget'
                                 className='rounded-md object-cover'
+                                style={{
+                                    borderRadius: `${data?.container?.border?.rounded ? `${data?.container?.border?.rounded}px` : ''}`,
+                                }}
                                 width={1000}
                                 height={100}
                             />
                             <span
-                                className='absolute p-10 flex w-full h-full justify-center items-center overflow-hidden break-words break-all'
-                                style={{ color: widget.data?.textColor }}
+                                className='absolute p-10 w-full h-full overflow-hidden break-words break-all whitespace-pre-line'
+                                style={{
+                                    color: data?.textColor,
+                                    textAlign: data?.textAlign as '' || 'center',
+                                }}
                             >
-                                {widget.data?.value}
+                                {data?.value}
                             </span>
                         </> :
                         <div className='w-full h-full flex justify-center'>
-                            <IconPhotoScan size={80} />
+                            <Icon name='photoScan' iconProps={{ size: 80 }} />
                         </div>
                 }
             </div>
@@ -66,7 +72,7 @@ const ImgWidget = ({ widget, selectSection, editWidget, props }: ImgWidgetInterf
                     {...isSmall && { props }}
                 />
             }
-        </WidgetBaseCard>
+        </>
     )
 }
 

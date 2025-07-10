@@ -3,6 +3,7 @@ import {
   DeliverMethods,
   Layout,
   PaymentMethods,
+  ResizableItem,
   Widget,
 } from "@/stores/data-store";
 import {
@@ -88,4 +89,25 @@ export type DeliverPreviewProps = {
   props?: any;
   layout: Layout;
   widget: Widget;
+};
+
+export type ContentResizeWidgetProps = {
+  value?: string;
+  image?: string;
+  textColor?: string;
+  placeholder?: string;
+  textAlign?: string;
+};
+
+export type MenuBarProps = {
+  widget: Widget;
+  panel?: ResizableItem;
+  handleNestedWidgetChanges?: (data: ResizableItem) => void;
+};
+
+export type LinkWidgetEditProps = {
+  widget: Widget;
+  handleNestedWidgetChanges?: (data: ResizableItem) => void;
+  panel?: ResizableItem;
+  className?: string;
 };

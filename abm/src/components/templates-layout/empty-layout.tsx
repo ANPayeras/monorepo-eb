@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+
 import { useDataStore } from '@/providers/data-store-providers'
 import PaymentMethodsWidget from '../payment-methods-widget'
 import DeliverMethodsWidget from '../deliver-methods-widget'
@@ -19,9 +20,9 @@ const EmptyLayout: FC<EmptyLayoutProps> = ({ selectSection, editSection, data: {
         const widgetsComponents: { [key: string]: JSX.Element } = {
             text: <TextWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
             link: <LinkWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
-            pm: <PaymentMethodsWidget {...{ selectSection, editSection, paymentMethods, layout, props }} />,
-            dm: <DeliverMethodsWidget {...{ selectSection, editSection, deliverMethods, layout, props }} />,
-            socials: <ContactInfoWidget {...{ selectSection, editSection, contact, layout, props }} />,
+            pm: <PaymentMethodsWidget {...{ widget, selectSection, editSection, paymentMethods, layout, props }} />,
+            dm: <DeliverMethodsWidget {...{ widget, selectSection, editSection, deliverMethods, layout, props }} />,
+            socials: <ContactInfoWidget {...{ widget, selectSection, editSection, contact, layout, props }} />,
             resizable: <ResizableWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
             img: <ImgWidget {...{ widget, selectSection, editWidget: editSection.widget as Widget, layout, props }} />,
         }

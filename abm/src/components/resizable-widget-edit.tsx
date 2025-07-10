@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import { useDataStore } from '@/providers/data-store-providers'
-import { resizableItem, Widget, WidgetData } from '@/stores/data-store'
+import { ResizableItem, Widget } from '@/stores/data-store'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './ui/resizable'
 import { ImperativePanelHandle } from 'react-resizable-panels'
 import ImgWidgetEdit from './img-widget-edit'
@@ -9,7 +10,7 @@ import ContentResizeWidget from './content-resize-widget'
 const ResizableWidgetEdit = ({ widget }: { widget: Widget }) => {
     const handleWidgetChanges = useDataStore(state => state.handleWidgetChanges)
     const [isMount, setIsMount] = useState(false)
-    const [editedPanel, setEditedPanel] = useState<resizableItem>()
+    const [editedPanel, setEditedPanel] = useState<ResizableItem>()
 
     const panelRef1 = useRef<ImperativePanelHandle>(null);
     const panelRef2 = useRef<ImperativePanelHandle>(null);
@@ -46,9 +47,9 @@ const ResizableWidgetEdit = ({ widget }: { widget: Widget }) => {
         return () => { setEditedPanel(undefined) }
     }, [widget, resize, handleWidgetChanges, resizedArr])
 
-    const handleNestedWidgetChanges = (data: WidgetData) => {
+    const handleNestedWidgetChanges = (data: ResizableItem) => {
         const pos = editedPanel?.id!
-        resizedArr.splice(pos, 1, { ...resizedArr[pos], ...data as resizableItem })
+        resizedArr.splice(pos, 1, { ...resizedArr[pos], ...data })
         handleWidgetChanges(widget!, {
             resizables: resizedArr
         })
@@ -61,7 +62,7 @@ const ResizableWidgetEdit = ({ widget }: { widget: Widget }) => {
     return (
         <div className='flex flex-col gap-4 p-4'>
             <span className='text-center border-b'>
-                Redimensiona los paneles
+                Paneles
             </span>
             <ResizablePanelGroup
                 direction="horizontal"
@@ -76,6 +77,7 @@ const ResizableWidgetEdit = ({ widget }: { widget: Widget }) => {
                             value={resizedArr[0].value}
                             image={getPanelImage(0)}
                             textColor={resizedArr[0].textColor}
+                            textAlign={resizedArr[0].textAlign}
                         />
                     </button>
                 </ResizablePanel>
@@ -91,6 +93,7 @@ const ResizableWidgetEdit = ({ widget }: { widget: Widget }) => {
                                     value={resizedArr[1].value}
                                     image={getPanelImage(1)}
                                     textColor={resizedArr[1].textColor}
+                                    textAlign={resizedArr[1].textAlign}
                                 />
                             </button>
                         </ResizablePanel>
@@ -104,6 +107,7 @@ const ResizableWidgetEdit = ({ widget }: { widget: Widget }) => {
                                     value={resizedArr[2].value}
                                     image={getPanelImage(2)}
                                     textColor={resizedArr[2].textColor}
+                                    textAlign={resizedArr[2].textAlign}
                                 />
                             </button>
                         </ResizablePanel>

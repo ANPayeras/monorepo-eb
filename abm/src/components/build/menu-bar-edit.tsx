@@ -12,18 +12,18 @@ import {
     MenubarSub,
     MenubarSubTrigger,
     MenubarSubContent,
-    MenubarItem
 } from '../ui/menubar'
 import { ColorPicker, IColor, useColor } from 'react-color-palette';
 import Icon, { KeyTextIcons } from '../Icon';
-import { Widget, WidgetData } from '@/stores/data-store';
+import { ResizableItem, WidgetData } from '@/stores/data-store';
 import { useDataStore } from '@/providers/data-store-providers';
 import { cn } from '@/lib/utils';
 import '@/app/globals.css'
 import { borders, shadows, textAligns } from '@/constants/designs';
 import { Slider } from '../ui/slider';
+import { MenuBarProps } from '../types';
 
-const MenuBarEdit = ({ widget }: { widget: Widget }) => {
+const MenuBarEdit = ({ widget, panel, handleNestedWidgetChanges }: MenuBarProps) => {
     const { data } = widget
     const handleWidgetChanges = useDataStore(state => state.handleWidgetChanges)
     const [bgColorFeature, setBgColor] = useColor(data?.container?.bgColor || "#d5c9c9");
@@ -42,18 +42,26 @@ const MenuBarEdit = ({ widget }: { widget: Widget }) => {
                 break;
             case 'borderColor':
                 setBorderColor(color)
-                onChangeProps({ container: { border: { color: color.hex } } })
+                onChangeProps({ container: { border: { color: color.hex } } }, true)
                 break;
             default:
                 break;
         }
     }
 
-    const onChangeProps = (value: Partial<WidgetData>) => {
-        handleWidgetChanges(widget, value)
+    const onChangeProps = (value: Partial<WidgetData>, general?: boolean) => {
+        if (general) {
+            handleWidgetChanges(widget, value)
+            return
+        }
+        handleNestedWidgetChanges ?
+            handleNestedWidgetChanges({ ...(value.container ? { ...value.container } : { ...value }) } as ResizableItem) :
+            handleWidgetChanges(widget, value)
     }
 
-    const iconTextAlign = useMemo(() => textAligns.find(i => i.className === data?.textAlign)?.iconName as KeyTextIcons, [data?.textAlign])
+    const iconTextAlign = useMemo(() =>
+        textAligns.find(i => i.className === data?.textAlign || i.className === panel?.textAlign)?.iconName as KeyTextIcons,
+        [data?.textAlign, panel?.textAlign])
 
     return (
         <Menubar className='border-slate-400 border-[0.5px] drop-shadow-sm overflow-hidden overflow-x-scroll'>
@@ -66,8 +74,8 @@ const MenuBarEdit = ({ widget }: { widget: Widget }) => {
                         <MenubarSubTrigger>Estilo</MenubarSubTrigger>
                         <MenubarSubContent>
                             <MenubarRadioGroup
-                                value={data?.container?.border?.type}
-                                onValueChange={(v) => onChangeProps({ container: { border: { type: v } } })}
+                                value={data?.container?.border?.type || 'solid'}
+                                onValueChange={(v) => onChangeProps({ container: { border: { type: v } } }, true)}
                             >
                                 <MenubarRadioItem
                                     className="relative pl-0 flex select-none items-center rounded text-[13px] leading-none text-slate-700 outline-none data-[disabled]:pointer-events-none data-[disabled]:text-muted"
@@ -115,10 +123,10 @@ const MenuBarEdit = ({ widget }: { widget: Widget }) => {
                         <MenubarSubTrigger>Radio</MenubarSubTrigger>
                         <MenubarSubContent className='flex items-center h-10 gap-2'>
                             <Slider
-                                max={100}
+                                max={200}
                                 className='w-20'
                                 value={[Number(data?.container?.border?.rounded) || 0]}
-                                onValueChange={(v) => onChangeProps({ container: { border: { rounded: `${v[0]}` } } })}
+                                onValueChange={(v) => onChangeProps({ container: { border: { rounded: `${v[0]}` } } }, true)}
                             />
                             <span>{`${data?.container?.border?.rounded || 0}px`}</span>
                         </MenubarSubContent>
@@ -130,7 +138,7 @@ const MenuBarEdit = ({ widget }: { widget: Widget }) => {
                                 max={100}
                                 className='w-20'
                                 value={[Number(data?.container?.border?.width) || 0]}
-                                onValueChange={(v) => onChangeProps({ container: { border: { width: `${v[0]}` } } })}
+                                onValueChange={(v) => onChangeProps({ container: { border: { width: `${v[0]}` } } }, true)}
                             />
                             <span>{`${data?.container?.border?.width || 0}px`}</span>
                         </MenubarSubContent>
@@ -175,7 +183,7 @@ const MenuBarEdit = ({ widget }: { widget: Widget }) => {
                             <MenubarCheckboxItem
                                 key={i}
                                 className="relative gap-1 pl-0 flex select-none items-center rounded text-[13px] leading-none text-slate-700 outline-none data-[disabled]:pointer-events-none data-[disabled]:text-muted"
-                                checked={data?.textAlign === t.className || !data?.textAlign && t.className === 'center'}
+                                checked={iconTextAlign === t.iconName || !iconTextAlign && t.className === 'center'}
                                 onCheckedChange={() => onChangeProps({ textAlign: t.className })}
                             >
                                 <Icon name={t.iconName as KeyTextIcons} />
@@ -196,7 +204,7 @@ const MenuBarEdit = ({ widget }: { widget: Widget }) => {
                                 key={i}
                                 className="relative gap-1 pl-0 flex select-none items-center rounded text-[13px] leading-none text-slate-700 outline-none data-[disabled]:pointer-events-none data-[disabled]:text-muted"
                                 checked={s.className === data?.container?.shadow || !data?.container?.shadow && s.className === 'shadow-sm'}
-                                onCheckedChange={(v) => onChangeProps({ container: { shadow: s.className } })}
+                                onCheckedChange={(v) => onChangeProps({ container: { shadow: s.className } }, true)}
                             >
                                 {s.name}
                             </MenubarCheckboxItem>

@@ -4,7 +4,7 @@ import {
   ItemCart,
   Layout,
   PaymentMethods,
-  resizableItem,
+  ResizableItem,
   Widget,
   WidgetData,
 } from "@/stores/data-store";
@@ -151,8 +151,8 @@ export type ImageWidgetInterface = {
   widget: Widget;
   title?: string;
   isNestedWidget?: boolean;
-  handleNestedWidgetChanges?: (data: WidgetData) => void;
-  panel?: resizableItem;
+  handleNestedWidgetChanges?: (data: ResizableItem) => void;
+  panel?: ResizableItem;
   className?: string;
   layout?: Layout;
 };
