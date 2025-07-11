@@ -13,7 +13,7 @@ const ClassicView = ({ template: { layout, header, combos, paymentMethods, conta
     const dmWidget = useMemo(() => widgets.find(w => w.type === 'dm'), [widgets.length])
 
     return (
-        <div className="w-[90%] flex flex-col gap-4 items-center overflow-y-visible">
+        <div className="w-[90%] flex flex-col gap-4 items-center">
             {
                 header.title || isheaderImg ?
                     <div className='w-full min-h-20 max-h-20 flex justify-center items-center rounded-lg relative overflow-hidden'>

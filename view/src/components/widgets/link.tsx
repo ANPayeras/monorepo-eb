@@ -22,22 +22,25 @@ const Link = ({ widget, template }: { widget: Widget, template: Doc<"templates">
     }
 
     return (
-        <WidgetBaseCardContainer widget={widget}>
+        <>
             {
-                widget?.data?.value ?
-                    <button onClick={redirect} className='flex w-full h-full p-2 relative flex-1'>
-                        <div
-                            className='w-full overflow-hidden break-words whitespace-pre-line'
-                            style={{
-                                color: widget.data?.textColor || layout?.textsColor,
-                                textAlign: widget.data?.textAlign as '' || 'center',
-                            }}
-                        >
-                            {value}
-                        </div>
-                    </button> : <></>
+                data?.value ?
+                    <WidgetBaseCardContainer widget={widget}>
+                        <button onClick={redirect} className='flex w-full h-full p-2 relative flex-1'>
+                            <div
+                                className='w-full overflow-hidden break-words whitespace-pre-line'
+                                style={{
+                                    color: data?.textColor || layout?.textsColor,
+                                    textAlign: data?.textAlign as '' || 'center',
+                                }}
+                            >
+                                {value}
+                            </div>
+                        </button>
+                    </WidgetBaseCardContainer>
+                    : <></>
             }
-        </WidgetBaseCardContainer>
+        </>
     )
 }
 

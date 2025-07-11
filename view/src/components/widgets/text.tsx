@@ -9,23 +9,25 @@ const Text = ({ widget, template }: { widget: Widget, template: Doc<"templates">
     const { data } = widget
 
     return (
-        <WidgetBaseCardContainer widget={widget}>
+        <>
             {
-                widget?.data?.value ?
-                    <div className='flex w-full h-full p-2 relative flex-1 break-words whitespace-pre-line'>
-                        <div
-                            className='w-full text-center overflow-hidden break-words'
-                            style={{
-                                color: data?.textColor || layout?.textsColor,
-                                textAlign: data?.textAlign as '' || 'center',
-                            }}
-                        >
-                            {data?.value}
+                data?.value ?
+                    <WidgetBaseCardContainer widget={widget}>
+                        <div className='flex w-full h-full p-2 relative flex-1 break-words whitespace-pre-line'>
+                            <div
+                                className='w-full text-center overflow-hidden break-words'
+                                style={{
+                                    color: data?.textColor || layout?.textsColor,
+                                    textAlign: data?.textAlign as '' || 'center',
+                                }}
+                            >
+                                {data?.value}
+                            </div>
                         </div>
-                    </div>
+                    </WidgetBaseCardContainer>
                     : <></>
             }
-        </WidgetBaseCardContainer>
+        </>
     )
 }
 

@@ -19,7 +19,7 @@ const Template = ({ template, username }: { template: Doc<"templates">, username
 
 
     return (
-        <div className='relative flex flex-col py-10 gap-10 items-center overflow-y-scroll rounded-sm min-w-[300px] max-w-[400px] min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-[95%]'
+        <div className='relative rounded-sm min-w-[300px] max-w-[400px] min-h-[80vh] max-h-[80vh] sm:min-h-0 sm:max-h-full h-[95%]'
             style={{
                 backgroundColor: bgColor,
                 color: textsColor,
@@ -30,8 +30,10 @@ const Template = ({ template, username }: { template: Doc<"templates">, username
             {
                 isVideo && <BgVideoPlayer src={isVideo} videoProps={{ autoPlay: false }} />
             }
-            <div className='z-10'>{username}</div>
-            {templateView[templateLayout]}
+            <div className='relative flex w-full h-full flex-col py-10 gap-10 items-center overflow-y-auto z-[1]'>
+                <div className='z-10'>{username}</div>
+                {templateView[templateLayout]}
+            </div>
         </div>
     )
 }
