@@ -1,12 +1,17 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo } from 'react'
+
 import { Doc } from '../../../convex/_generated/dataModel'
 import Image from 'next/image'
 import PaymentMethodsWidget from '../payment-methods-widget'
 import DeliverMethodsWidget from '../deliver-methods-widget'
 import ContactInfoWidget from '../contact-info-widget'
 
-const ClassicView = ({ template: { layout, header, combos, paymentMethods, contact, deliverMethods } }: { template: Doc<"templates"> }) => {
+const ClassicView = ({ template: { layout, header, combos, paymentMethods, contact, deliverMethods, widgets } }: { template: Doc<"templates"> }) => {
     const isheaderImg = header.imgUrl.uploadImgUrl
+    const contactWidget = useMemo(() => widgets.find(w => w.type === 'socials'), [widgets.length])
+    const pmWidget = useMemo(() => widgets.find(w => w.type === 'pm'), [widgets.length])
+    const dmWidget = useMemo(() => widgets.find(w => w.type === 'dm'), [widgets.length])
+
     return (
         <div className="w-[90%] flex flex-col gap-4 items-center overflow-y-visible">
             {
@@ -54,13 +59,13 @@ const ClassicView = ({ template: { layout, header, combos, paymentMethods, conta
                 }
             </div>
             {
-                paymentMethods.length ? <PaymentMethodsWidget {...{ paymentMethods, layout }} /> : <></>
+                paymentMethods.length ? <PaymentMethodsWidget {...{ paymentMethods, layout, widget: pmWidget! }} /> : <></>
             }
             {
-                deliverMethods.length ? <DeliverMethodsWidget {...{ deliverMethods, layout }} /> : <></>
+                deliverMethods.length ? <DeliverMethodsWidget {...{ deliverMethods, layout, widget: dmWidget! }} /> : <></>
             }
             {
-                contact.length ? <ContactInfoWidget contact={contact} layout={layout} /> : <></>
+                contact.length ? <ContactInfoWidget contact={contact} layout={layout} widget={contactWidget!} /> : <></>
             }
         </div>
     )

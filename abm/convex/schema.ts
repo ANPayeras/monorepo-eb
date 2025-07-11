@@ -111,11 +111,28 @@ export default defineSchema({
                   ),
                   value: v.optional(v.string()),
                   textColor: v.optional(v.string()),
+                  textAlign: v.optional(v.string()),
+                  bgColor: v.optional(v.string()),
                   url: v.optional(v.string()),
                 })
               )
             ),
             textColor: v.optional(v.string()),
+            textAlign: v.optional(v.string()),
+            container: v.optional(
+              v.object({
+                bgColor: v.optional(v.string()),
+                shadow: v.optional(v.string()),
+                border: v.optional(
+                  v.object({
+                    type: v.optional(v.string()),
+                    rounded: v.optional(v.string()),
+                    color: v.optional(v.string()),
+                    width: v.optional(v.string()),
+                  })
+                ),
+              })
+            ),
             img: v.optional(
               v.object({
                 localImg: v.optional(v.string()),

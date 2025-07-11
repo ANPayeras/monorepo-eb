@@ -1,4 +1,5 @@
 import React, { createElement } from 'react'
+
 import { Doc } from '../../../convex/_generated/dataModel'
 import PaymentMethodsWidget from '../payment-methods-preview'
 import DeliverMethodsWidget from '../deliver-preview'
@@ -26,12 +27,15 @@ const EmptyView = ({ template }: { template: Doc<"templates"> }) => {
         <>
             {
                 widgets.map(w => {
-                    if (Widget[w.type]) {
-                        return createElement(Widget[w.type], {
-                            key: w.id,
-                            template,
-                            widget: w,
-                        });
+                    const widget = Widget[w.type]
+                    if (widget) {
+                        return (
+                            createElement(widget, {
+                                key: w.id,
+                                template,
+                                widget: w,
+                            })
+                        )
                     } else {
                         <></>
                     }

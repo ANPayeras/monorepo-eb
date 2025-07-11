@@ -81,7 +81,7 @@ export type Widget = {
   data?: WidgetData;
 };
 
-export type resizableItem = {
+export type ResizableItem = {
   id: number;
   size: number;
   img?: {
@@ -91,14 +91,27 @@ export type resizableItem = {
   };
   value?: string;
   textColor?: string;
+  textAlign?: string;
+  bgColor?: string;
   url?: string;
 };
 
 type WidgetData = {
   value?: string;
   url?: string;
-  resizables?: resizableItem[];
+  resizables?: ResizableItem[];
   textColor?: string;
+  textAlign?: string;
+  container?: {
+    bgColor?: string;
+    shadow?: string;
+    border?: {
+      type?: string;
+      rounded?: string;
+      color?: string;
+      width?: string;
+    };
+  };
   img?: {
     localImg?: string;
     uploadImgUrl?: string;
@@ -133,3 +146,11 @@ export type TemplateProps = {
 };
 
 export type ClassicViewProps = TemplateProps;
+
+export type ContentResizeWidgetProps = {
+  value?: string;
+  image?: string;
+  textColor?: string;
+  placeholder?: string;
+  textAlign?: string;
+};

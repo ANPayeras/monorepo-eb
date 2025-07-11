@@ -3,9 +3,9 @@ import React, { ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 import WidgetBaseCard from './widget-base-card'
-import { Widget } from '@/stores/data-store'
+import { Widget } from '@/types'
 
-const WidgetBaseCardContainer = ({ containerClassName, children, widget }: { containerClassName?: string, children: ReactNode, widget?: Widget }) => {
+const WidgetBaseCardContainer = ({ containerClassName = '', children, widget }: { containerClassName?: string, children: ReactNode, widget?: Widget }) => {
     const data = widget?.data
     return (
         <WidgetBaseCard

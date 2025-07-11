@@ -1,49 +1,70 @@
 import React from 'react'
+
 import { Widget } from '@/types'
-import WidgetBaseCard from '../widget-base-card'
 import useSentEvent from '@/hooks/use-sent-events'
 import { BlurImage } from '../blur-image'
+import WidgetBaseCardContainer from '../widget-base-card-container'
 
 const ImgWidget = ({ widget }: { widget: Widget }) => {
     const { sentEvent } = useSentEvent()
-    const image = widget.data?.img?.uploadImgUrl || ''
-    const value = widget?.data?.value
-    const url = widget?.data?.url
+    const { data, type } = widget
+    const image = data?.img?.uploadImgUrl || ''
+    const value = data?.value
+    const url = data?.url
 
     const redirect = () => {
-        window.open(widget?.data?.url, '_blank')
+        window.open(url, '_blank')
         sentEvent('widget_click', {
-            type: widget.type,
+            type,
             title: value,
             widgetUrl: url,
             img: image,
         })
     }
 
-    return (
-        <>
-            {
-                image &&
-                <WidgetBaseCard containerClassName={`${url && 'cursor-pointer'}`}>
-                    <div className='flex w-full max-h-[200px] relative' onClick={url ? () => redirect() : undefined}>
-                        <BlurImage
-                            alt='img-widget'
-                            width='1000'
-                            height='100'
-                            className='rounded-md object-cover'
-                            src={image}
-                        />
-                        <span
-                            className='absolute p-10 flex w-full h-full justify-center items-center overflow-hidden break-words break-all'
-                            style={{ color: widget.data?.textColor }}
-                        >
-                            {value}
-                        </span>
+    const comp = <>
+        <BlurImage
+            alt='img-widget'
+            width='1000'
+            height='100'
+            className='rounded-md object-cover'
+            style={{
+                borderRadius: `${data?.container?.border?.rounded ? `${data?.container?.border?.rounded}px` : ''}`,
+            }}
+            src={image}
+        />
+        <span
+            className='absolute p-10 w-full h-full overflow-hidden break-words break-all whitespace-pre-line'
+            style={{
+                color: data?.textColor,
+                textAlign: data?.textAlign as '' || 'center',
+            }}
+        >
+            {value}
+        </span>
+    </>
+
+    if (image) {
+        if (url) {
+            return (
+                <WidgetBaseCardContainer widget={widget}>
+                    <button className='flex w-full max-h-[200px] relative' onClick={() => redirect()}>
+                        {comp}
+                    </button>
+                </WidgetBaseCardContainer>
+            )
+        } else {
+            return (
+                <WidgetBaseCardContainer widget={widget}>
+                    <div className='flex w-full max-h-[200px] relative'>
+                        {comp}
                     </div>
-                </WidgetBaseCard>
-            }
-        </>
-    )
+                </WidgetBaseCardContainer>
+            )
+        }
+    } else {
+        return <></>
+    }
 }
 
 export default ImgWidget

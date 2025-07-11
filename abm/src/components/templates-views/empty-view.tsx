@@ -1,4 +1,5 @@
 import React, { createElement } from 'react'
+
 import { Doc } from '../../../convex/_generated/dataModel'
 import PaymentMethodsWidget from '../payment-methods-widget'
 import DeliverMethodsWidget from '../deliver-methods-widget'
@@ -7,6 +8,7 @@ import ImgWidget from '../img-widget'
 import { ResizableWidget } from '../resizable-widget'
 import TextWidget from '../text-widget'
 import LinkWidget from '../link-widget'
+import WidgetBaseCardContainer from '../widget-base-card-container'
 
 const EmptyView = ({ template: { layout, widgets, paymentMethods, deliverMethods, contact } }: { template: Doc<"templates"> }) => {
     const Widget: { [key: string]: any } = {
@@ -24,14 +26,22 @@ const EmptyView = ({ template: { layout, widgets, paymentMethods, deliverMethods
             {
                 widgets.map(w => {
                     if (Widget[w.type]) {
-                        return createElement(Widget[w.type], {
-                            key: w.id,
-                            paymentMethods,
-                            deliverMethods,
-                            contact,
-                            layout,
-                            widget: w,
-                        });
+                        return (
+                            <WidgetBaseCardContainer
+                                key={w.id}
+                                widget={w}
+                            >
+                                {
+                                    createElement(Widget[w.type], {
+                                        paymentMethods,
+                                        deliverMethods,
+                                        contact,
+                                        layout,
+                                        widget: w,
+                                    })
+                                }
+                            </WidgetBaseCardContainer>
+                        )
                     } else {
                         <></>
                     }

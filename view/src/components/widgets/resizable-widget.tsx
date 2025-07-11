@@ -1,30 +1,36 @@
-import { useCallback } from "react"
-import { resizableItem, Widget } from "@/types"
-import WidgetBaseCard from "../widget-base-card"
+import { useMemo } from "react"
+
+import { ResizableItem, Widget } from "@/types"
 import { Doc } from "../../../convex/_generated/dataModel"
 import { Separator } from "@radix-ui/react-separator"
 import ContentResizeWidget from "../content-resize-widget"
 import useSentEvent from "@/hooks/use-sent-events"
+import WidgetBaseCardContainer from "../widget-base-card-container"
 
 export function ResizableWidget({ widget, template }: { widget: Widget, template: Doc<"templates"> }) {
     const { sentEvent } = useSentEvent()
-    const sizes = widget.data!.resizables!
     const { layout } = template
+    const { data, type } = widget
 
-    const getPanelImage = useCallback((panel: number): string => {
-        const panelImg = sizes.length ? sizes[panel].img?.localImg || sizes[panel].img?.uploadImgUrl : ''
-        return panelImg || ''
-    }, [sizes])
+    const sizes = data!.resizables!
 
-    const getPanelData = useCallback((panel: number): resizableItem => {
-        return sizes[panel]
-    }, [sizes])
+    const panel1Data = useMemo(() => {
+        return sizes[0]
+    }, sizes)
 
-    const redirect = (panel: resizableItem, panelNumber: number) => {
+    const panel2Data = useMemo(() => {
+        return sizes[1]
+    }, sizes)
+
+    const panel3Data = useMemo(() => {
+        return sizes[2]
+    }, sizes)
+
+    const redirect = (panel: ResizableItem, panelNumber: number) => {
         const { url, img, value } = panel
         window.open(url, '_blank')
         sentEvent('widget_click', {
-            type: widget.type,
+            type,
             title: value,
             widgetUrl: url,
             img: img?.uploadImgUrl,
@@ -33,30 +39,37 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
     }
 
     return (
-        <WidgetBaseCard>
-            <div className='flex w-full h-full flex-1 rounded-md overflow-hidden'>
+        <WidgetBaseCardContainer widget={widget}>
+            <div
+                className='flex w-full h-full flex-1 overflow-hidden'
+                style={{
+                    borderRadius: `${data?.container?.border?.rounded ? `${data?.container?.border?.rounded}px` : ''}`,
+                }}
+            >
                 <div
-                    className='overflow-hidden rounded-md'
+                    className='overflow-hidden'
                     style={{
                         width: `${sizes ? sizes[0].size : 50}%`,
                         borderTopRightRadius: sizes && sizes[0].size === 100 ? '4px' : '0px',
                         borderTopLeftRadius: '4px',
                         borderBottomLeftRadius: '4px',
                         borderBottomRightRadius: sizes && sizes[0].size === 100 ? '4px' : '0px',
+                        backgroundColor: sizes && sizes[0].bgColor || ''
                     }}
                 >
-                    <div
-                        className={`flex h-[200px] w-full items-center justify-center p-6 relative transition-all ${getPanelData(0).url ? 'hover:scale-105' : ''}`}
-                        style={{ cursor: getPanelData(0).url ? 'pointer' : 'auto' }}
-                        onClick={getPanelData(0).url ? () => redirect(getPanelData(0), 1) : undefined}
+                    <button
+                        className={`flex h-[200px] w-full items-center justify-center p-6 relative transition-all ${panel1Data?.url ? 'hover:scale-105 hover:opacity-50' : ''}`}
+                        style={{ cursor: panel1Data?.url ? 'pointer' : 'auto' }}
+                        onClick={panel1Data?.url ? () => redirect(panel1Data, 1) : undefined}
                     >
                         <ContentResizeWidget
-                            value={getPanelData(0).value || ''}
-                            textColor={sizes ? getPanelData(0).textColor || layout?.textsColor : ''}
-                            image={getPanelImage(0)}
+                            value={panel1Data.value || ''}
+                            textColor={panel1Data?.textColor || layout?.textsColor}
+                            textAlign={panel1Data?.textAlign || 'center'}
+                            image={panel1Data?.img?.uploadImgUrl}
                             placeholder="Panel 1"
                         />
-                    </div>
+                    </button>
                 </div>
                 <Separator orientation="vertical" className="h-auto border-[0.5px]" />
                 <div
@@ -65,26 +78,28 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                 >
                     <div className="w-full h-full flex flex-col">
                         <div
-                            className="w-full overflow-hidden rounded-md"
+                            className="w-full overflow-hidden"
                             style={{
                                 height: `${sizes ? sizes[1].size : 25}%`,
                                 borderTopRightRadius: '4px',
                                 borderTopLeftRadius: sizes && sizes[0].size === 0 ? '4px' : '0px',
                                 borderBottomLeftRadius: sizes && sizes[0].size === 0 && sizes[1].size === 100 ? '4px' : '0px',
                                 borderBottomRightRadius: sizes && sizes[1].size === 100 ? '4px' : '0px',
+                                backgroundColor: sizes && sizes[1].bgColor || ''
                             }}
                         >
-                            <div className={`flex h-full items-center justify-center p-6 relative transition-all ${getPanelData(1).url ? 'hover:scale-105' : ''}`}
-                                style={{ cursor: getPanelData(1).url ? 'pointer' : 'auto' }}
-                                onClick={getPanelData(1).url ? () => redirect(getPanelData(1), 2) : undefined}
+                            <button className={`flex w-full h-full items-center justify-center p-6 relative transition-all ${panel2Data?.url ? 'hover:scale-105' : ''}`}
+                                style={{ cursor: panel2Data?.url ? 'pointer' : 'auto' }}
+                                onClick={panel2Data?.url ? () => redirect(panel2Data, 2) : undefined}
                             >
                                 <ContentResizeWidget
-                                    value={sizes ? widget.data?.resizables![1].value : ''}
-                                    textColor={sizes ? widget.data?.resizables![1].textColor || layout?.textsColor : ''}
-                                    image={getPanelImage(1)}
+                                    value={panel2Data?.value || ''}
+                                    textColor={panel2Data?.textColor || layout?.textsColor}
+                                    textAlign={panel2Data?.textAlign || 'center'}
+                                    image={panel2Data?.img?.uploadImgUrl}
                                     placeholder="Panel 2"
                                 />
-                            </div>
+                            </button>
                         </div>
                         <Separator className="border-[0.5px]" />
                         <div
@@ -95,23 +110,25 @@ export function ResizableWidget({ widget, template }: { widget: Widget, template
                                 borderTopLeftRadius: sizes && sizes[0].size === 0 && sizes[2].size === 100 ? '4px' : '0px',
                                 borderBottomLeftRadius: sizes && sizes[0].size === 0 ? '4px' : '0px',
                                 borderBottomRightRadius: '4px',
+                                backgroundColor: sizes && sizes[2].bgColor || ''
                             }}
                         >
-                            <div className={`flex h-full items-center justify-center p-6 relative transition-all ${getPanelData(1).url ? 'hover:scale-105' : ''}`}
-                                style={{ cursor: getPanelData(2).url ? 'pointer' : 'auto' }}
-                                onClick={getPanelData(2).url ? () => redirect(getPanelData(2), 3) : undefined}
+                            <button className={`flex w-full h-full items-center justify-center p-6 relative transition-all ${panel3Data?.url ? 'hover:scale-105' : ''}`}
+                                style={{ cursor: panel3Data?.url ? 'pointer' : 'auto' }}
+                                onClick={panel3Data?.url ? () => redirect(panel3Data, 3) : undefined}
                             >
                                 <ContentResizeWidget
-                                    value={sizes ? widget.data?.resizables![2].value : ''}
-                                    textColor={sizes ? widget.data?.resizables![2].textColor || layout?.textsColor : ''}
-                                    image={getPanelImage(2)}
+                                    value={panel3Data?.value || ''}
+                                    textColor={panel3Data?.textColor || layout?.textsColor}
+                                    textAlign={panel3Data?.textAlign || 'center'}
+                                    image={panel3Data?.img?.uploadImgUrl}
                                     placeholder="Panel 3"
                                 />
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </WidgetBaseCard>
+        </WidgetBaseCardContainer>
     )
 }
