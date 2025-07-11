@@ -1,34 +1,26 @@
 import React from 'react'
+
 import { useDataStore } from '@/providers/data-store-providers'
 import { Widget } from '@/stores/data-store'
 import { Textarea } from './ui/textarea'
-import PopoverChangeTextColor from './popover-change-text-color'
-import { IColor, useColor } from 'react-color-palette'
+import MenuBarEdit from './build/menu-bar-edit'
 
 const TextWidgetEdit = ({ widget }: { widget: Widget }) => {
-    const widgetTextColor = widget.data?.textColor
     const handleWidgetChanges = useDataStore(state => state.handleWidgetChanges)
-    const [color, setColor] = useColor(widgetTextColor || "#000000")
-
-    const changeColor = (color: IColor) => {
-        setColor(color)
-        handleWidgetChanges(widget, { textColor: color.hex })
-    }
 
     return (
         <div className='flex flex-col gap-2 p-4 relative'>
-            <div className='flex w-full justify-between'>
+            <div className='flex flex-col w-full gap-2'>
                 <span className='text-center'>
                     Texto
                 </span>
-                <PopoverChangeTextColor color={color} changeColor={changeColor} />
+                <MenuBarEdit widget={widget} />
             </div>
             <Textarea
                 rows={10}
                 maxLength={100}
                 className='min-h-[100px] max-h-[100px] text-center resize-none'
                 name='textWidget'
-                style={{ color: widgetTextColor || color.hex }}
                 value={widget.data?.value}
                 onChange={(e) => handleWidgetChanges(widget, { value: e.target.value })}
             />

@@ -22,7 +22,7 @@ const WidgetsDashboard = () => {
     return (
         <div className='flex-1 w-full h-full flex flex-col gap-4 items-start'>
             {
-                isPremium && activeTemplate.length ? <MetricsDashboard clerkId={user.user?.id!} /> : <></>
+                isPremium && activeTemplate.length ? <MetricsDashboard templateId={activeTemplate[0]._id} /> : <></>
             }
             <div className='w-full h-full grid grid-cols-[repeat(2,_minmax(0,_200px))] grid-rows-[repeat(2,_minmax(0,_200px))] gap-4 items-start'>
                 <div className='bg-slate-50 hover:scale-105 transition-all flex h-[200px] gap-2 justify-center items-center rounded-sm border p-2 relative shadow-lg'>

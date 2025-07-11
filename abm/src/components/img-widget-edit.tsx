@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { useDataStore } from '@/providers/data-store-providers'
 import UpdateAssetTool from './update-img-tool'
@@ -6,13 +6,14 @@ import useUploadFile from '@/hooks/use-upload-file'
 import LinkWidgetEdit from './link-widget-edit'
 import { cn } from '@/lib/utils'
 import { ImageWidgetInterface } from '@/interfaces'
+import { ResizableItem } from '@/stores/data-store'
 
 const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChanges, panel, className }: ImageWidgetInterface) => {
     const handleWidgetChanges = useDataStore(state => state.handleWidgetChanges)
 
     const { isUploading, getLocalUrls, onAccept, isSuccess, files, uploadFileCloudinary, deleteFileCloudinary } = useUploadFile()
 
-    const getImage = (): string => {
+    const isImage = useMemo(() => {
         let img = '';
         if (widget?.type === 'resizable' && panel) {
             img = panel.img?.uploadImgUrl || ''
@@ -20,13 +21,13 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
             img = widget?.data?.img?.uploadImgUrl || ''
         }
         return img
-    }
+    }, [widget.data?.img?.uploadImgUrl, panel?.img?.uploadImgUrl])
 
     const uploadImage = async (file: File) => {
         try {
             const { url, storageId } = await uploadFileCloudinary(file)
             handleNestedWidgetChanges ?
-                handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: url!, storageId: storageId } }) :
+                handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: url!, storageId: storageId } } as ResizableItem) :
                 handleWidgetChanges(widget, { img: { localImg: '', uploadImgUrl: url!, storageId: storageId } })
         } catch (error) {
             console.log(error)
@@ -48,7 +49,7 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
             const storageId = panel?.img?.storageId || widget.data?.img?.storageId
             await deleteFileCloudinary(storageId!, 'image')
             handleNestedWidgetChanges ?
-                handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: '', storageId: '' } }) :
+                handleNestedWidgetChanges({ img: { localImg: '', uploadImgUrl: '', storageId: '' } } as ResizableItem) :
                 handleWidgetChanges(widget, { img: { localImg: '', uploadImgUrl: '', storageId: '' } })
         } catch (error) {
             console.log(error)
@@ -63,7 +64,7 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
             <div className='flex justify-between'>
                 <span>Subir imagen:</span>
                 <UpdateAssetTool
-                    isAsset={!!getImage()}
+                    isAsset={!!isImage}
                     isSuccess={isSuccess}
                     deleteAsset={deleteImg}
                     onChangeFiles={getLocalUrls}
@@ -83,7 +84,7 @@ const ImgWidgetEdit = ({ widget, title, isNestedWidget, handleNestedWidgetChange
                 />
             </div>
             <div style={{
-                ...(!isNestedWidget && { opacity: getImage() ? 'unset' : '0.5', pointerEvents: getImage() ? 'unset' : 'none', userSelect: getImage() ? 'unset' : 'none' })
+                ...(!isNestedWidget && { opacity: isImage ? 'unset' : '0.5', pointerEvents: isImage ? 'unset' : 'none', userSelect: isImage ? 'unset' : 'none' })
             }}>
                 <LinkWidgetEdit widget={widget} panel={panel} handleNestedWidgetChanges={handleNestedWidgetChanges} className='p-0' />
             </div>

@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useEffect } from 'react'
-import { useQuery } from 'convex/react'
+import React, { useCallback, useEffect } from 'react'
+import { useMutation, useQuery } from 'convex/react'
 import Template from './template'
 import Loader from './loader'
 import { api } from '../../convex/_generated/api'
@@ -16,19 +16,30 @@ import All from './all'
 import Combo from './combo'
 import Checkout from './checkout'
 import Header from './header'
+import { Id } from '../../convex/_generated/dataModel'
 
 const ReactiveTemplate = ({ user, component = '', test = false }: ReactiveTemplateProps) => {
   const { init } = useInitPosthog()
 
   const data = useQuery(api.templates.getTemplateView, { user, test })
+  const setTemplateMetrics = useMutation(api.templates.setTemplateMetrics)
   const template = data?.template
   const userData = data?.user
 
-  useEffect(() => {
-    if (template?.length && userData && !test) {
-      init(template[0], userData)
+  const setHasTemplatesMetrics = useCallback(async (templateId: Id<"templates">) => {
+    try {
+      await setTemplateMetrics({ templateId })
+    } catch (error) {
+      console.log(error)
     }
-  }, [init, template, test, userData])
+  }, [setTemplateMetrics])
+
+  useEffect(() => {
+    if (template?.length && !test) {
+      init(template[0])
+      setHasTemplatesMetrics(template[0]._id)
+    }
+  }, [init, template, test, setHasTemplatesMetrics])
 
   if (!template) return <Loader />
 

@@ -3,20 +3,42 @@ import React, { FC } from 'react'
 import { deliverMethodsLabel } from '@/constants'
 import { cn } from '@/lib/utils'
 import ToolsWidget from './tools-widget'
-import WidgetBaseCard from './widget-base-card'
 import { DeliverPreviewProps } from './types'
 import { useIsSmall } from '@/hooks/use-media.query'
+import { useDataStore } from '@/providers/data-store-providers'
+import WidgetBaseCardContainer from './widget-base-card-container'
 
-const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSection, deliverMethods, containerClassName, layout, props }) => {
+const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSection, deliverMethods, layout, props, widget }) => {
+    const { addWidget, widgets } = useDataStore(state => state)
     const isSmall = useIsSmall()
-    return (
-        <WidgetBaseCard>
+
+    const editWidget = () => {
+        const existWidget = widgets.find(w => w.type === 'dm')
+        if (!existWidget) {
+            addWidget({
+                type: 'dm',
+                enabled: false,
+                title: 'Medios de entrega',
+                widgetHandler: 'unique',
+                id: '',
+            })
+        }
+        selectSection && selectSection('deliverMethods')
+    }
+
+    const comp =
+        <>
             <div
-                className={cn(`w-full min-h-16 flex flex-col space-y-1 p-2 rounded-md ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'} ${isSmall ? '' : 'touch-none'}`, containerClassName)}
-                style={{ color: layout?.textsColor }}
+                className={cn(`w-full min-h-16 flex flex-col space-y-1 p-2 ${!props ? 'sm:active:bg-inherit' : 'sm:active:bg-slate-400'}`)}
+                style={{ color: widget?.data?.textColor || layout?.textsColor }}
                 {...!isSmall && props}
             >
-                <div className='flex justify-between items-center gap-4'>
+                <div
+                    className='flex items-center'
+                    style={{
+                        justifyContent: widget?.data?.textAlign || 'center'
+                    }}
+                >
                     <span>Medios de entrega</span>
                 </div>
                 <div className='flex flex-col'>
@@ -40,13 +62,22 @@ const DeliverMethodsWidget: FC<DeliverPreviewProps> = ({ selectSection, editSect
             {
                 selectSection &&
                 <ToolsWidget
-                    editFunc={() => selectSection('deliverMethods')}
+                    editFunc={editWidget}
                     isEditing={editSection?.section === 'deliverMethods'}
                     {...isSmall && { props }}
                 />
             }
-        </WidgetBaseCard>
-    )
+        </>
+
+    if (layout.templateLayout === 'classic') {
+        return (
+            <WidgetBaseCardContainer widget={widget}>
+                {comp}
+            </WidgetBaseCardContainer>
+        )
+    } else {
+        return comp
+    }
 }
 
 export default DeliverMethodsWidget

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import EmptyInfo from '../empty-info'
 import { useDataStore } from '@/providers/data-store-providers'
@@ -11,8 +11,12 @@ import { SelectSection } from '@/interfaces'
 import { DirectionAwareHover } from '../ui/direction-aware-hover'
 
 const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: string, combo?: number) => void, editSection: SelectSection }) => {
-    const { layout, header, combos, paymentMethods, contact, deliverMethods } = useDataStore(state => state)
+    const { layout, header, combos, paymentMethods, contact, deliverMethods, widgets } = useDataStore(state => state)
     const isheaderImg = header.imgUrl.uploadImgUrl
+    const contactWidget = useMemo(() => widgets.find(w => w.type === 'socials'), [widgets.length])
+    const pmWidget = useMemo(() => widgets.find(w => w.type === 'pm'), [widgets.length])
+    const dmWidget = useMemo(() => widgets.find(w => w.type === 'dm'), [widgets.length])
+
     return (
         <div className="w-[90%] flex flex-col gap-4 items-center">
             <button
@@ -54,9 +58,9 @@ const ClassicLayout = ({ selectSection, editSection }: { selectSection: (type: s
                     ))
                 }
             </div>
-            <PaymentMethodsWidget {...{ selectSection, editSection, paymentMethods, layout }} />
-            <DeliverMethodsWidget {...{ selectSection, editSection, deliverMethods, layout }} />
-            <ContactInfoWidget {...{ selectSection, editSection, contact, layout }} />
+            <PaymentMethodsWidget {...{ selectSection, editSection, paymentMethods, layout, widget: pmWidget! }} />
+            <DeliverMethodsWidget {...{ selectSection, editSection, deliverMethods, layout, widget: dmWidget! }} />
+            <ContactInfoWidget {...{ selectSection, editSection, contact, layout, widget: contactWidget! }} />
         </div>
     )
 }

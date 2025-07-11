@@ -39,7 +39,7 @@ export function BarChartComponent({ title, description, chartConfig, chartData, 
 
     const tickFormatters: { [key: string]: any } = {
         date: (value: any) => {
-            const date = new Date(value)
+            const date = new Date(`${value}T00:00:00`)
             return date.toLocaleDateString("es-ES", {
                 month: "short",
                 day: "numeric",
@@ -52,7 +52,8 @@ export function BarChartComponent({ title, description, chartConfig, chartData, 
 
     const tooltipLabelFormatters: { [key: string]: any } = {
         date: (value: any) => {
-            return new Date(value).toLocaleDateString("es-ES", {
+            const date = new Date(`${value}T00:00:00`)
+            return date.toLocaleDateString("es-ES", {
                 month: "short",
                 day: "numeric",
                 year: "numeric",

@@ -1,20 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react'
+
 import { api } from '../../../convex/_generated/api'
 import { useAction } from 'convex/react'
 import LoaderSpinner from '../loader-spinner'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const DesktopUsersClient = ({ clerkId }: { clerkId: string }) => {
+const DesktopUsersClient = ({ templateId }: { templateId: Id<"templates"> }) => {
     const getMetrics = useAction(api.metrics.getMetrics)
     const [metrics, setMetrics] = useState([])
 
     const _getMetrics = useCallback(async () => {
         const _metrics = await getMetrics({
             query: "SELECT count() from events WHERE events.event = '$pageview' AND events.distinct_id = 'templateID' AND events.properties.$device_type = 'Desktop' AND events.properties.$prev_pageview_pathname is null",
-            clerkId
+            templateId
         })
 
         setMetrics(_metrics)
-    }, [clerkId, getMetrics])
+    }, [templateId, getMetrics])
 
     useEffect(() => {
         _getMetrics()

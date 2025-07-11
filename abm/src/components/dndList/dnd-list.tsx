@@ -1,4 +1,5 @@
 import React, { forwardRef, HTMLAttributes, useState } from 'react';
+
 import {
     closestCenter,
     DndContext,
@@ -27,6 +28,9 @@ import { CSS } from '@dnd-kit/utilities';
 import dndStyles from './dnd-list.module.css';
 import classNames from 'classnames';
 import { Widget } from '@/stores/data-store';
+import { cn } from '@/lib/utils';
+import WidgetBaseCard from '../widget-base-card';
+import { useIsSmall } from '@/hooks/use-media.query';
 
 export interface PageProps extends Omit<HTMLAttributes<HTMLButtonElement>, 'id'> {
     item: Widget;
@@ -47,6 +51,9 @@ export const Page = forwardRef<HTMLLIElement, PageProps>(function Page(
     { id, index, active, clone, style, item, onRender, ...props },
     ref
 ) {
+    const { data } = item
+    const isSmall = useIsSmall()
+
     return (
         <li
             className={classNames(
@@ -58,9 +65,18 @@ export const Page = forwardRef<HTMLLIElement, PageProps>(function Page(
             style={style}
             ref={ref}
         >
-            <div className={`${dndStyles.Page} rounded-md`}>
+            <WidgetBaseCard
+                containerClassName={cn(`${dndStyles.Page}`, `${isSmall ? '' : 'touch-none'} ${data?.container?.shadow}`)}
+                style={{
+                    backgroundColor: data?.container?.bgColor || '',
+                    borderStyle: data?.container?.border?.type || '',
+                    borderColor: data?.container?.border?.color || '',
+                    borderRadius: `${data?.container?.border?.rounded ? `${data?.container?.border?.rounded}px` : ''}`,
+                    borderWidth: `${data?.container?.border?.width ? `${data?.container?.border?.width}px` : ''}`,
+                }}
+            >
                 {onRender(item, props)}
-            </div>
+            </WidgetBaseCard>
         </li>
     );
 });

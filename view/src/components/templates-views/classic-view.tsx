@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo } from 'react'
 
 import PaymentMethodsWidget from '../payment-methods-preview'
 import DeliverMethodsWidget from '../deliver-preview'
@@ -13,7 +13,11 @@ import { DirectionAwareHover } from '../ui/direction-aware-hover'
 
 const ClassicView = ({ template }: ClassicViewProps) => {
     const { sentEvent } = useSentEvent()
-    const { header, combos, paymentMethods, contact, deliverMethods, name } = template
+    const { header, combos, paymentMethods, contact, deliverMethods, name, widgets } = template
+    const contactWidget = useMemo(() => widgets.find(w => w.type === 'socials'), [widgets.length])
+    const pmWidget = useMemo(() => widgets.find(w => w.type === 'pm'), [widgets.length])
+    const dmWidget = useMemo(() => widgets.find(w => w.type === 'dm'), [widgets.length])
+
     return (
         <>
             {
@@ -72,13 +76,13 @@ const ClassicView = ({ template }: ClassicViewProps) => {
             </div>
             <CartWidget {...{ user: template.name || '' }} />
             {
-                paymentMethods.length ? <PaymentMethodsWidget {...{ template }} /> : <></>
+                paymentMethods.length ? <PaymentMethodsWidget {...{ template, widget: pmWidget! }} /> : <></>
             }
             {
-                deliverMethods.length ? <DeliverMethodsWidget {...{ template }} /> : <></>
+                deliverMethods.length ? <DeliverMethodsWidget {...{ template, widget: dmWidget! }} /> : <></>
             }
             {
-                contact.length ? <ContactInfoWidget {...{ template }} /> : <></>
+                contact.length ? <ContactInfoWidget {...{ template, widget: contactWidget! }} /> : <></>
             }
         </>
     )

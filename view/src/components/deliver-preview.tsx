@@ -1,20 +1,29 @@
 import React, { FC } from 'react'
+
 import { deliverMethodsLabel } from '@/constants'
 import { Doc } from '../../convex/_generated/dataModel'
-import WidgetBaseCard from './widget-base-card'
+import { Widget } from '@/types'
+import WidgetBaseCardContainer from './widget-base-card-container'
 
-const DeliverMethodsWidget: FC<{ template: Doc<"templates"> }> = ({ template }) => {
+const DeliverMethodsWidget: FC<{ template: Doc<"templates">, widget: Widget }> = ({ template, widget }) => {
     const { deliverMethods, layout } = template
+    const { data } = widget
+
     return (
         <>
             {
                 deliverMethods.length ?
-                    <WidgetBaseCard>
+                    <WidgetBaseCardContainer widget={widget}>
                         <div
                             className='w-full flex flex-col space-y-1 p-2'
-                            style={{ color: layout?.textsColor }}
+                            style={{ color: data?.textColor || layout?.textsColor }}
                         >
-                            <div className='flex justify-between items-center gap-4'>
+                            <div
+                                className='flex items-center'
+                                style={{
+                                    justifyContent: data?.textAlign || 'center'
+                                }}
+                            >
                                 <span>Medios de entrega</span>
                             </div>
                             <div className='flex flex-col'>
@@ -34,7 +43,7 @@ const DeliverMethodsWidget: FC<{ template: Doc<"templates"> }> = ({ template }) 
                                 }
                             </div>
                         </div>
-                    </WidgetBaseCard>
+                    </WidgetBaseCardContainer>
                     : <></>
             }
         </>

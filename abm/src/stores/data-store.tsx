@@ -90,7 +90,7 @@ export type Widget = {
     data?: WidgetData;
 }
 
-export type resizableItem = {
+export type ResizableItem = {
     id: number;
     size: number;
     img?: {
@@ -100,14 +100,27 @@ export type resizableItem = {
     };
     value?: string;
     textColor?: string;
+    textAlign?: string;
+    bgColor?: string;
     url?: string;
 }
 
 export type WidgetData = {
     value?: string;
     url?: string;
-    resizables?: resizableItem[];
+    resizables?: ResizableItem[];
     textColor?: string;
+    textAlign?: string;
+    container?: {
+        bgColor?: string;
+        shadow?: string
+        border?: {
+            type?: string;
+            rounded?: string;
+            color?: string;
+            width?: string;
+        };
+    };
     img?: {
         localImg?: string;
         uploadImgUrl?: string;
@@ -566,7 +579,16 @@ export const createDataStore = (
         }),
         handleWidgetChanges: (widget: Widget, data: WidgetData) => set((state) => {
             const pos = state.widgets.findIndex(w => w.id === widget.id)
-            state.widgets[pos].data = { ...state.widgets[pos].data, ...data }
+            let widgetData = state.widgets[pos].data
+            state.widgets[pos].data = {
+                ...widgetData, ...data,
+                container: {
+                    ...widgetData?.container, ...data.container,
+                    border: {
+                        ...widgetData?.container?.border, ...data.container?.border
+                    }
+                }
+            }
             return { ...state }
         }),
         deleteWidget: (widget: Widget) => set((state) => {

@@ -1,10 +1,12 @@
 import React from 'react'
+
 import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
 import { BarChartComponent } from '../charts/bar-chart'
 import { ChartConfig } from '../ui/chart'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const DesktopMobileUsers = async ({ clerkId }: { clerkId: string }) => {
+const DesktopMobileUsers = async ({ templateId }: { templateId: Id<"templates"> }) => {
 
     let chartData: { xData: string, desktop: number, mobile: number }[] = []
 
@@ -25,13 +27,13 @@ const DesktopMobileUsers = async ({ clerkId }: { clerkId: string }) => {
     const desktopUsers = await fetchAction(api.metrics.getMetrics,
         {
             query: "SELECT toDate(timestamp - interval 3 hour) as timestamp, count() from events WHERE events.event = '$pageview' AND events.distinct_id = 'templateID' AND events.properties.$device_type = 'Desktop' AND events.properties.$prev_pageview_pathname is null AND timestamp > now() - interval 3 month group by timestamp order by timestamp",
-            clerkId
+            templateId
         })
 
     const mobileUsers = await fetchAction(api.metrics.getMetrics,
         {
             query: "SELECT toDate(timestamp - interval 3 hour) as timestamp, count() from events WHERE events.event = '$pageview' AND events.distinct_id = 'templateID' AND events.properties.$device_type = 'Mobile' AND events.properties.$prev_pageview_pathname is null AND timestamp > now() - interval 3 month group by timestamp order by timestamp",
-            clerkId
+            templateId
         })
 
     desktopUsers?.forEach((metric: [string, number]) => {

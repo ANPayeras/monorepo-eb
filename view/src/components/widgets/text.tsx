@@ -1,26 +1,31 @@
 import React from 'react'
+
 import { Widget } from '@/types'
-import WidgetBaseCard from '../widget-base-card'
 import { Doc } from '../../../convex/_generated/dataModel'
+import WidgetBaseCardContainer from '../widget-base-card-container'
 
 const Text = ({ widget, template }: { widget: Widget, template: Doc<"templates"> }) => {
     const { layout } = template
+    const { data } = widget
+
     return (
-        <>
+        <WidgetBaseCardContainer widget={widget}>
             {
                 widget?.data?.value ?
-                    <WidgetBaseCard>
-                        <div className='flex w-full h-full p-2 relative flex-1'>
-                            <div
-                                className='w-full text-center overflow-hidden break-words'
-                                style={{ color: widget.data?.textColor || layout?.textsColor }}
-                            >
-                                {widget.data?.value}
-                            </div>
+                    <div className='flex w-full h-full p-2 relative flex-1 break-words whitespace-pre-line'>
+                        <div
+                            className='w-full text-center overflow-hidden break-words'
+                            style={{
+                                color: data?.textColor || layout?.textsColor,
+                                textAlign: data?.textAlign as '' || 'center',
+                            }}
+                        >
+                            {data?.value}
                         </div>
-                    </WidgetBaseCard> : <></>
+                    </div>
+                    : <></>
             }
-        </>
+        </WidgetBaseCardContainer>
     )
 }
 

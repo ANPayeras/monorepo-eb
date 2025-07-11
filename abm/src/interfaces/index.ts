@@ -4,7 +4,7 @@ import {
   ItemCart,
   Layout,
   PaymentMethods,
-  resizableItem,
+  ResizableItem,
   Widget,
   WidgetData,
 } from "@/stores/data-store";
@@ -151,8 +151,8 @@ export type ImageWidgetInterface = {
   widget: Widget;
   title?: string;
   isNestedWidget?: boolean;
-  handleNestedWidgetChanges?: (data: WidgetData) => void;
-  panel?: resizableItem;
+  handleNestedWidgetChanges?: (data: ResizableItem) => void;
+  panel?: ResizableItem;
   className?: string;
   layout?: Layout;
 };
@@ -184,4 +184,13 @@ export type TemplateBtnsOptionsProps = {
   onActiveTemplate: (template: Doc<"templates">, isActive: boolean) => void;
   isPremium: boolean;
   activesTemplates: Doc<"templates">[];
+};
+
+export type ContactInfoWidgetProps = {
+  selectSection?: (type: string) => void;
+  editSection?: SelectSection;
+  contact: Contact[];
+  layout: Layout;
+  props?: any;
+  widget: Widget;
 };

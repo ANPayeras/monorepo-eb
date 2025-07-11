@@ -1,10 +1,12 @@
 import React from 'react'
+
 import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
 import { ChartConfig } from '../ui/chart'
 import { BarChartComponent } from '../charts/bar-chart'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const TimeVisitedHour = async ({ clerkId }: { clerkId: string }) => {
+const TimeVisitedHour = async ({ templateId }: { templateId: Id<"templates"> }) => {
 
     let chartData: { xData: number, hourViews: number }[] = []
 
@@ -21,7 +23,7 @@ const TimeVisitedHour = async ({ clerkId }: { clerkId: string }) => {
     const metrics: [number, number][] = await fetchAction(api.metrics.getMetrics,
         {
             query: "select toHour(timestamp - interval 3 hour), count() as t_count from events where events.event = '$pageview' and events.distinct_id = 'templateID' and timestamp > now() - interval 3 month group by toHour(timestamp - interval 3 hour) order by t_count desc limit 5",
-            clerkId
+            templateId
         })
 
     metrics?.forEach((metric: [number, number]) => {

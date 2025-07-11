@@ -7,12 +7,13 @@ import Image from 'next/image'
 import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
 import EmptyChartInfo from '../charts/empty-chart-info'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const HeaderComboImgs = async ({ clerkId, queryDinamic }: { clerkId: string, queryDinamic: string }) => {
+const HeaderComboImgs = async ({ templateId, queryDinamic }: { templateId: Id<"templates">, queryDinamic: string }) => {
     const detailWidgets: [string, string, number][] = await fetchAction(api.metrics.getMetrics,
         {
             query: `select properties.imgUrl, properties.title, count() as t_count  from events where distinct_id = 'templateID' and event = 'widget_click' ${queryDinamic} group by properties.imgUrl, properties.title order by t_count desc limit 5`,
-            clerkId
+            templateId
         })
     // const detailWidgets = [['https://res.cloudinary.com/dvf8cxl3e/image/upload/v1749409111/dphgl2kctkbbo4lgmewu.png', 'Titulo', 45], ['https://res.cloudinary.com/dvf8cxl3e/image/upload/v1749409111/dphgl2kctkbbo4lgmewu.png', 'Titulo 2', 60]]
     return (

@@ -9,7 +9,7 @@ import { checkAsset, cn } from '@/lib/utils';
 import { Menubar, MenubarContent, MenubarMenu, MenubarSeparator, MenubarTrigger, MenubarRadioGroup, MenubarRadioItem, MenubarCheckboxItem } from '@/components/ui/menubar';
 import Button from '@/components/buttons/button';
 import UpdateAssetTool from '@/components/update-img-tool';
-import './page.css'
+import '../../globals.css'
 import { useToast } from '@/hooks/use-toast';
 import { IconCircleLetterAFilled, IconPaletteFilled, IconPhotoScan, IconShadow } from '@tabler/icons-react';
 import "react-color-palette/css";

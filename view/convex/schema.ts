@@ -128,6 +128,7 @@ export default defineSchema({
       })
     ),
     lastBuild: v.boolean(),
+    hasMetrics: v.optional(v.boolean()),
   }),
   users: defineTable({
     email: v.string(),

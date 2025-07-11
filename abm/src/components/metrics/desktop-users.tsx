@@ -1,13 +1,15 @@
 import React from 'react'
+
 import { fetchAction } from 'convex/nextjs'
 import { api } from '../../../convex/_generated/api'
+import { Id } from '../../../convex/_generated/dataModel'
 
-const DesktopUsers = async ({ clerkId }: { clerkId: string }) => {
+const DesktopUsers = async ({ templateId }: { templateId: Id<"templates"> }) => {
 
     const metrics = await fetchAction(api.metrics.getMetrics,
         {
             query: "SELECT count() from events WHERE events.event = '$pageview' AND events.distinct_id = 'templateID' AND events.properties.$device_type = 'Desktop' AND events.properties.$prev_pageview_pathname is null",
-            clerkId
+            templateId
         })
 
     if (!metrics) return
